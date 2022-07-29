@@ -79,5 +79,5 @@ ModelManifest.xml
 *.bak
 
 #SourceHanSans font
-font/
+font/*.otf
 
