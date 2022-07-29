@@ -20,10 +20,48 @@
         <TabControl Style="{DynamicResource MaterialDesignNavigatilRailTabControl}">
 
             <TabItem Header="本地插件">
-                <TextBlock Text="别急，你先别急，在写了。" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="24" Margin="70,70,0,0" />
-            </TabItem>
-            <TabItem Header="插件仓库">
 
+                <Grid ClipToBounds="True">
+                    <materialDesign:Card Height="80" VerticalAlignment="Top">
+                        <Grid>
+                            <TextBlock Text="本地插件" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="24" Margin="20,20,0,0"/>
+                            <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="16" Margin="21,50,0,0">别急，你先别急，在写了</TextBlock>
+                        </Grid>
+                    </materialDesign:Card>
+                </Grid>
+            </TabItem>
+            <TabItem Header="论坛插件">
+                <Grid ClipToBounds="True">
+                    <ScrollViewer VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled" Margin="0,80,0,0" Background="#F4F4F4">
+                    <StackPanel Name="StackPluginList" VerticalAlignment="Top" Orientation="Vertical">
+                        <TextBlock Text="按下「刷新」开始探索吧!" TextAlignment="Center" Padding="50"/>
+                    </StackPanel>
+                    </ScrollViewer>
+                    <materialDesign:Card Height="80" VerticalAlignment="Top">
+                        <Grid>
+                            <TextBlock Text="插件发布" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="24" Margin="20,20,0,0"/>
+                            <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="16" Margin="21,50,0,0">数据来源于 <Hyperlink Click="OpenMiraiForum" >MiraiForum</Hyperlink></TextBlock>
+                            <Button x:Name="ForumPrevPage" IsEnabled="false" Content="上一页" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,40,160,0" Width="80" Style="{DynamicResource MaterialDesignFlatButton}" Click="ForumPrevPage_Click"/>
+                            <Button x:Name="ForumRefresh" Content="刷新" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,40,100,0" Width="60" Style="{DynamicResource MaterialDesignFlatButton}" Click="ForumRefresh_Click"/>
+                            <Button x:Name="ForumNextPage" IsEnabled="false" Content="下一页" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,40,20,0" Width="80" Style="{DynamicResource MaterialDesignFlatButton}" Click="ForumNextPage_Click"/>
+                            <TextBlock x:Name="ForumPage" Text="第 0/0 页" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,24,40,0"/>
+                        </Grid>
+                    </materialDesign:Card>
+                </Grid>
+            </TabItem>
+            <TabItem Header="仓库">
+
+                <Grid ClipToBounds="True">
+                    <StackPanel Name="StackRepoPluginList" ScrollViewer.CanContentScroll="True" Margin="0,80,0,0" Background="#F4F4F4">
+                        <TextBlock Text="按下「刷新」开始探索吧!" TextAlignment="Center" Padding="50"/>
+                    </StackPanel>
+                    <materialDesign:Card Height="80" VerticalAlignment="Top">
+                        <Grid>
+                            <TextBlock Text="mirai-repo" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="24" Margin="20,20,0,0"/>
+                            <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="16" Margin="21,50,0,0">正在等待编写实现进行对接...</TextBlock>
+                        </Grid>
+                    </materialDesign:Card>
+                </Grid>
             </TabItem>
 
         </TabControl>

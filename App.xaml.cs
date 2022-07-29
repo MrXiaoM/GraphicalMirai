@@ -45,6 +45,13 @@ namespace GraphicalMirai
         {
             get { return pagePluginCenter ??= new PagePluginCenter(); }
         }
+
+        public static long NowTimestamp { get { return new DateTimeOffset(DateTime.UtcNow).ToUnixTimeMilliseconds(); } }
+        public static DateTime FromTimestamp(long time)
+        {
+            return new DateTime(1970, 1, 1).Add(TimeSpan.FromMilliseconds(time));
+        }
+
         private static readonly string[] units = new string[] { "B", "KB", "MB", "GB", "TB" };
         public static string SizeToString(double? size, uint point = 2)
         {
@@ -59,6 +66,12 @@ namespace GraphicalMirai
                 unit = units[i];
             }
             return string.Format("{0:N" + point + "}", size) + unit;
+        }
+
+        public static void openUrl(string s)
+        {
+            if (s.StartsWith("https://") || s.StartsWith("http://"))
+                System.Diagnostics.Process.Start("explorer", s);
         }
 
         public static bool exists(string path) { return exists(new string[] { path }); }
