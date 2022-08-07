@@ -4,6 +4,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:GraphicalMirai.Pages.PluginCenter"
+      xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
      TextElement.Foreground="{DynamicResource MaterialDesignBody}"
      TextElement.FontWeight="Regular"
@@ -14,12 +15,46 @@
      FontFamily="{DynamicResource SourceHanSans}"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="PagePlugin">
+      Title="GraphicalMirai | 插件中心">
 
     <Grid>
         <materialDesign:Card VerticalAlignment="Top" Height="120" Background="#24ACF2">
+            <Grid>
+                <TextBlock x:Name="TextTitle" Text="" Margin="20,20,200,20" VerticalAlignment="Top" FontSize="24" FontWeight="Bold" Foreground="#EEE"/>
+                <TextBlock x:Name="TextSubTitle" Text="" Margin="22,52,200,20" VerticalAlignment="Top" FontSize="12" FontWeight="Bold" Foreground="#EEE"/>
+                <Border Background="#EEEEEE" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10" Width="60" Height="60" CornerRadius="35">
+                    <Grid>
+                        <TextBlock x:Name="AuthorHeadimgSimple" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="36" Foreground="#232323"/>
+                        <Image x:Name="AuthorHeadimg" Width="60" Height="60" Stretch="Uniform">
+                            <Image.Clip>
+                                <EllipseGeometry RadiusX="30" RadiusY="30" Center="30,30"/>
+                            </Image.Clip>
+                        </Image>
+                    </Grid>
+                </Border>
+                <TextBlock x:Name="AuthorName" Foreground="#FFF" HorizontalAlignment="Right" VerticalAlignment="Top" TextAlignment="Right" Width="120" Margin="0,15,75,0" FontSize="20"/>
+                <Grid Margin="20,20,20,20" VerticalAlignment="Top" Width="180" HorizontalAlignment="Right">
+                    
+                </Grid>
+            </Grid>
         </materialDesign:Card>
-        <Button x:Name="BtnBack" Content="返回" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,0,0,10" Style="{DynamicResource MaterialDesignFloatingActionButton}" Click="BtnBack_Click"/>
+        <TabControl Margin="0,120,0,0" Style="{DynamicResource MaterialDesignNavigatilRailTabControl}">
+            <TabItem Header="简介">
+                <Grid>
+                    <wv2:WebView2 x:Name="webInfo"  NavigationStarting="webInfo_NavigationStarting" />
+                </Grid>
+            </TabItem>
+            <TabItem Header="下载">
+                
+            </TabItem>
+            <TabItem Header="评论">
+
+            </TabItem>
+            <TabItem Header="源代码">
+                <TextBox AcceptsReturn="True" x:Name="temp" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Auto"/>
+            </TabItem>
+        </TabControl>
+        <Button x:Name="BtnBack" Content="返回" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="7,0,0,7" Style="{DynamicResource MaterialDesignFloatingActionButton}" Click="BtnBack_Click"/>
 
     </Grid>
 </Page>

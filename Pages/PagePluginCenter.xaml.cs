@@ -26,7 +26,7 @@ namespace GraphicalMirai.Pages
         private static readonly string MIRAI_REPO_PACKAGES = "https://mirai.mamoe.net/assets/mcl/packages.json";
         private static readonly string MIRAI_FORUM_API = "https://mirai.mamoe.net/api/";
         HttpClient repoClient = new HttpClient();
-        HttpClient forumClient = new HttpClient() { BaseAddress = new Uri(MIRAI_FORUM_API) };
+        public HttpClient forumClient = new HttpClient() { BaseAddress = new Uri(MIRAI_FORUM_API) };
         Task? refreshTask;
         int forumPage = 1;
         public PagePluginCenter()
@@ -64,17 +64,17 @@ namespace GraphicalMirai.Pages
                 MessageBox.Show("json 解析错误");
                 return;
             }
-            Pagination page = category.pagination;
+            CPagination page = category.pagination;
             Dispatcher.Invoke(() =>
             {
                 ForumPrevPage.IsEnabled = page.currentPage > 1;
                 ForumNextPage.IsEnabled = page.currentPage < page.pageCount;
                 ForumPage.Text = "第 " + page.currentPage + "/" + page.pageCount + " 页";
             });
-            foreach (Topic topic in category.topics)
+            foreach (CTopic topic in category.topics)
             {
                 List<string> tags = new List<string>();
-                foreach(Tag tag in topic.tags)
+                foreach(CTag tag in topic.tags)
                 {
                     tags.Add(tag.value);
                 }

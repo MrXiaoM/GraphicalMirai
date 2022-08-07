@@ -45,12 +45,12 @@
             </Style.Triggers>
         </Style>
         </Grid.Resources>
-        <Grid Style="{DynamicResource Hover}" >
+        <Grid x:Name="HoverGrid" Style="{DynamicResource Hover}" >
             
         <Border Background="#EEEEEE" HorizontalAlignment="Left" Margin="10" Width="60" Height="60" CornerRadius="35">
             <Grid>
                 <TextBlock x:Name="AuthorHeadimgSimple" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="36" Foreground="#232323"/>
-                <Image x:Name="AuthorHeadimg" Width="60" Height="60">
+                <Image x:Name="AuthorHeadimg" HorizontalAlignment="Center" VerticalAlignment="Center" Width="60" Height="60" Stretch="Uniform">
                     <Image.Clip>
                         <EllipseGeometry RadiusX="30" RadiusY="30" Center="30,30"/>
                     </Image.Clip>

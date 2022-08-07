@@ -52,6 +52,19 @@ namespace GraphicalMirai
             return new DateTime(1970, 1, 1).Add(TimeSpan.FromMilliseconds(time));
         }
 
+        public static string TimestampToString(long time)
+        {
+            TimeSpan span = TimeSpan.FromMilliseconds(NowTimestamp - time);
+            if (span.TotalMinutes < 60)
+                return "大约" + Math.Ceiling(span.TotalMinutes).ToString("0") + "分钟之前";
+            else if (span.TotalHours < 24)
+                return "大约" + Math.Ceiling(span.TotalHours).ToString("0") + "小时之前";
+            else if (span.TotalDays < 30)
+                return Math.Ceiling(span.TotalDays).ToString("0") + "天之前";
+            else
+                return FromTimestamp(time).ToString("yyyy年MM月dd日 HH:mm");
+        }
+
         private static readonly string[] units = new string[] { "B", "KB", "MB", "GB", "TB" };
         public static string SizeToString(double? size, uint point = 2)
         {

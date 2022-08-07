@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -25,10 +26,13 @@ namespace GraphicalMirai.Pages.PluginCenter
             InitializeComponent();
             if (IsDeleted)
             {
+                this.Cursor = Cursors.No;
                 this.Opacity = 0.5;
+                HoverGrid.Style = null;
             }
             else
             {
+                this.Cursor = Cursors.Hand;
                 this.MouseDown += delegate
                 {
                     MainWindow.Navigate(new PagePlugin(tid));
@@ -40,16 +44,8 @@ namespace GraphicalMirai.Pages.PluginCenter
             AuthorHeadimgSimple.Text = Author.Length > 0 ? Author.Substring(0, 1).ToUpper() : "";
             TextLike.Text = Votes;
             TextView.Text = ViewCount;
-            TimeSpan span = TimeSpan.FromMilliseconds(App.NowTimestamp - CreateTime);
-            string time = "";
-            if (span.TotalMinutes < 60)
-                time = "大约" + Math.Ceiling(span.TotalMinutes).ToString("0") + "分钟之前";
-            else if (span.TotalHours < 24)
-                time = "大约" + Math.Ceiling(span.TotalHours).ToString("0") + "小时之前";
-            else if (span.TotalDays < 30)
-                time = Math.Ceiling(span.TotalDays).ToString("0") + "天之前";
-            else
-                time = App.FromTimestamp(CreateTime).ToString("yyyy年MM月dd日 HH:mm");
+
+            string time = App.TimestampToString(CreateTime);
             
             if (!IsDeleted && TopicTags != null)
             {
@@ -87,7 +83,10 @@ namespace GraphicalMirai.Pages.PluginCenter
                     if (!picture.StartsWith("/")) picture = "/" + picture;
                     picture = "https://mirai.mamoe.net" + picture;
                 }
-                AuthorHeadimg.Source = new BitmapImage(new Uri(picture));
+                AuthorHeadimg.Source = BitmapFrame.Create(new Uri(picture),
+                    BitmapCreateOptions.None, BitmapCacheOption.Default);
+                AuthorHeadimgSimple.Visibility = Visibility.Hidden;
+                ToolTip = picture;
             };
         }
     }
