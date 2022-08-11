@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using GraphicalMirai;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -83,9 +84,7 @@ namespace GraphicalMirai.Pages.PluginCenter
                     if (!picture.StartsWith("/")) picture = "/" + picture;
                     picture = "https://mirai.mamoe.net" + picture;
                 }
-                AuthorHeadimg.Source = BitmapFrame.Create(new Uri(picture),
-                    BitmapCreateOptions.None, BitmapCacheOption.Default);
-                AuthorHeadimgSimple.Visibility = Visibility.Hidden;
+                AuthorHeadimg.Source = new BitmapImage(new Uri(picture));
                 ToolTip = picture;
             };
         }

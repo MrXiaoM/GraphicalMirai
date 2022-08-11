@@ -62,6 +62,8 @@ namespace GraphicalMirai.Pages.PluginCenter
                              .Skip(1)
                              .ToArray());
             }));
+
+            CUser? author = topic.posts.Count > 0 ? topic.posts[0].user : null;
             Dispatcher.Invoke(() =>
             {
                 if (!isDeleted && topic.tags != null)
@@ -98,7 +100,6 @@ namespace GraphicalMirai.Pages.PluginCenter
                 TextTitle.Text = topic.titleRaw;
                 temp.Text = content;
 
-                CUser? author = topic.posts.Count > 0 ? topic.posts[0].user : null;
                 if (author != null)
                 {
                     AuthorName.Inlines.Clear();
@@ -116,11 +117,13 @@ namespace GraphicalMirai.Pages.PluginCenter
                             if (!picture.StartsWith("/")) picture = "/" + picture;
                             picture = "https://mirai.mamoe.net" + picture;
                         }
-                        AuthorHeadimg.Source = BitmapFrame.Create(new Uri(picture),
-                            BitmapCreateOptions.None, BitmapCacheOption.Default);
-                    };
+                        AuthorHeadimg.Source = new BitmapImage(new Uri(picture));
+                    }
                 }
+
+                temp.Text += "\n\n额外调试信息:\n  Github/Gitee 链接列表:\n    " + string.Join("\n    ", topic.posts[0].repo().Select(r => r.ToString()).ToArray());
             });
+            
             await webInfo.EnsureCoreWebView2Async();
             webInfo.NavigateToString(content);
         }
@@ -128,26 +131,6 @@ namespace GraphicalMirai.Pages.PluginCenter
         private void BtnBack_Click(object sender, RoutedEventArgs e)
         {
             MainWindow.Navigate(App.PagePluginCenter);
-        }
-
-        private void webInfo_Navigating(object sender, NavigatingCancelEventArgs e)
-        {
-            string url = e.Uri != null ? (e.Uri.IsAbsoluteUri ? e.Uri.AbsoluteUri : "") : "";
-            if (url.Length > 0)
-            {
-                App.openUrl(url);
-                e.Cancel = true;
-                return;
-            }
-            var fiComWebBrowser = typeof(WebBrowser).GetField("_axIWebBrowser2", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
-            if (fiComWebBrowser == null)
-                return;
-
-            object? objComWebBrowser = fiComWebBrowser.GetValue(webInfo);
-            if (objComWebBrowser == null)
-                return;
-
-            objComWebBrowser.GetType().InvokeMember("Silent", System.Reflection.BindingFlags.SetProperty, null, objComWebBrowser, new object[] { true });
         }
 
         private void webInfo_NavigationStarting(object sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs e)

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace GraphicalMirai.Pages.PluginCenter
@@ -38,15 +39,59 @@ namespace GraphicalMirai.Pages.PluginCenter
             return "<!DOCTYPE html>\n<html>\n" + header + "\n" + body + "\n<html>";
         }
     }
+    public class Repo
+    {
+        public readonly string platform;
+        public readonly string username;
+        public readonly string repo;
 
+        public Repo(string platform, string username, string repo)
+        {
+            this.platform = platform;
+            this.username = username;
+            this.repo = repo;
+        }
+
+        public override string ToString()
+        {
+            return "https://" + platform + ".com/" + username + "/" + repo;
+        }
+    }
     public class Post
     {
+        private static readonly Regex regexLink = new Regex("(<a .*? ?href=\")(.*?)(\".*?>)", RegexOptions.IgnoreCase);
+        private static readonly Regex regexRepo = new Regex("https?://(www\\.)?(github|gitee)\\.com/([A-Za-z0-9_-]+)/([A-Za-z0-9_-]+)", RegexOptions.IgnoreCase);
+
         public string content;
         public CUser user;
         public long timestamp;
         public long edited;
         public int deleted;
         public int index;
+
+        public List<Repo> repo()
+        {
+            return links().Select<string, Repo?>(s =>
+            {
+                Match m = regexRepo.Match(s);
+                if (!m.Success) return null;
+                string platform = m.Groups[2].Value;
+                string username = m.Groups[3].Value;
+                string repo = m.Groups[4].Value;
+                return new Repo(platform, username, repo);
+
+            }).SkipWhile(repo => repo == null).OfType<Repo>().ToList();
+        }
+
+        public List<string> links()
+        {
+            List<string> links = new();
+            foreach (Match m in regexLink.Matches(content))
+            {
+                links.Add(m.Groups[2].Value);
+            }
+            return links;
+        }
     }
 
     public class THeader

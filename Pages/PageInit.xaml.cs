@@ -7,6 +7,10 @@ using System.Windows.Controls;
 using System.IO;
 using System.Xml;
 using System.Net.Http.Handlers;
+using System.Windows.Media.Imaging;
+using System.Windows.Media;
+using System.Diagnostics;
+using System.Linq;
 
 namespace GraphicalMirai
 {
@@ -38,6 +42,136 @@ namespace GraphicalMirai
             }
             UpdateInfo();
             Config.Save();
+
+            if (!CheckWebpCodec())
+            {
+                MessageBoxResult result = MessageBox.Show(
+                    @"未找到 webp 解码器，插件中心的用户头像将无法显示！
+是否需要安装 Google Webp Codec?
+「是」  下载并安装
+「否」  不安装
+「取消」不再提醒", "GraphicalMirai", MessageBoxButton.YesNoCancel);
+                if (result == MessageBoxResult.Yes)
+                {
+                    DownloadWebpCodec();
+                }
+                else if (result == MessageBoxResult.Cancel)
+                {
+                    MessageBox.Show("「不再提醒」功能正在编写中", "TODO");
+                }
+            }/**/
+        }
+
+        public bool CheckWebpCodec()
+        {
+            try
+            {
+                BitmapDecoder.Create(new Uri("pack://application:,,,/sample.webp", UriKind.Absolute), BitmapCreateOptions.None, BitmapCacheOption.Default);
+                return true;
+            }
+            catch (NotSupportedException)
+            {
+                return false;
+            }
+        }
+
+        private async void DownloadWebpCodec()
+        {
+            Dispatcher.Invoke(() =>
+            {
+                BtnUpdate.IsEnabled = BtnInstall.IsEnabled = ComboMiraiVer.IsEnabled = ComboRepo.IsEnabled = false;
+            });
+            HttpClientHandler handler = new HttpClientHandler();
+            ProgressMessageHandler processHandler = new ProgressMessageHandler(handler);
+            HttpClient httpClient = new HttpClient(processHandler);
+
+            string nowFile = "正在准备";
+
+            // 回调进度
+            processHandler.HttpReceiveProgress += (sender, e) =>
+            {
+                Dispatcher.Invoke(() =>
+                {
+                    double received = e.BytesTransferred;
+                    double? total = e.TotalBytes;
+                    string percent = total == null ? "未知进度" : string.Format("{0:N2}%", received / total * 100d);
+                    downloadProcess.Width = this.ActualWidth * received / (total ?? received);
+                    downloadInfo.Text = "正在下载 " + nowFile + " | " + App.SizeToString(received) + "/" + App.SizeToString(total) + " | " + percent;
+                });
+            };
+
+            // 正式下载
+            nowFile = "WebpCodecSetup.exe";
+            byte[] codec = await httpClient.GetByteArrayAsync("https://storage.googleapis.com/downloads.webmproject.org/releases/webp/WebpCodecSetup.exe");
+            string exepath = App.path("WebpCodecSetup.exe");
+            File.WriteAllBytes(exepath, codec);
+            Process proc = new Process();
+            proc.StartInfo.FileName = exepath;
+            proc.Start();
+            MessageBox.Show("下载完成。已为你打开安装包，请手动安装 Google Webp Codec\n安装后重启 GraphicalMirai 生效");
+            // 已知使用提取的 msi 来安装不会注册到 WIC，导致还是无法查看 webp 图片，故移除该功能
+            /*
+            string msipath = App.path("WebpCodecSetup.msi");
+            string msihead = "D0 CF 11 E0 A1 B1 1A E1 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 3E 00 04 00 FE FF 0C 00 06 00 00 00 00 00 00 00 02 00 00 00 01 00 00 00 01 00 00 00 00 00 00 00 00 10 00 00 02 00 00 00 01 00 00 00 FE FF FF FF 00 00 00 00 00 00 00 00";
+            
+
+            // byte[] 转 16 进制字符串
+            string bytes = string.Join(" ", codec.Select(b => hex(b)).ToArray()).ToUpper();
+            
+            void done()
+            {
+            /**/
+            Dispatcher.Invoke(() =>
+                {
+                    downloadProcess.Width = 0;
+                    downloadInfo.Text = "";
+                    BtnUpdate.IsEnabled = BtnInstall.IsEnabled = ComboMiraiVer.IsEnabled = ComboRepo.IsEnabled = true;
+                });
+            /*
+            }
+            void err(string s)
+            {
+                File.WriteAllBytes(exepath, codec);
+                MessageBox.Show("错误: ");
+                Process proc = new Process();
+                proc.StartInfo.FileName = exepath;
+                proc.Start();
+                done();
+            }
+
+            // 16 进制字符串转 byte[]
+            string[] msi = bytes.Substring(msistart, msiend - 1).Split(" ");
+            byte[] msifinal = msi.Select(s => hex(s)).ToArray();
+            File.WriteAllBytes(msipath, msifinal);
+
+            Process p = new Process();
+            p.StartInfo.FileName = "msiexec";
+            p.StartInfo.Arguments = "-qn -i WebpCodecSetup.msi";
+            p.StartInfo.WorkingDirectory = Environment.CurrentDirectory;
+            p.Start();
+            await p.WaitForExitAsync();
+            if (p.ExitCode == 0)
+            {
+                if (File.Exists(msipath)) File.Delete(msipath);
+                MessageBox.Show("安装完成，重启 GraphicalMirai 生效");
+            }
+            else
+            {
+                File.WriteAllBytes(exepath, codec);
+                MessageBox.Show("安装可能出现错误，退出码为 " + p.ExitCode + "\n为便于诊断问题，exe 安装包和导出的 MSI 安装包已保留在 GraphicalMirai 所在目录");
+            }
+            done();
+            */
+        }
+
+        private byte hex(string s)
+        {
+            return Convert.ToByte(s, 16);
+        }
+
+        private string hex(byte b)
+        {
+            return Convert.ToString(b, 16).PadLeft(2, '0');
         }
 
         private void UpdateInfo()
