@@ -46,10 +46,14 @@ namespace GraphicalMirai
             get { return pagePluginCenter ??= new PagePluginCenter(); }
         }
 
-        public static long NowTimestamp { get { return new DateTimeOffset(DateTime.UtcNow).ToUnixTimeMilliseconds(); } }
+        public static long NowTimestamp { get { return ToTimestamp(DateTime.UtcNow); } }
         public static DateTime FromTimestamp(long time)
         {
             return new DateTime(1970, 1, 1).Add(TimeSpan.FromMilliseconds(time));
+        }
+        public static long ToTimestamp(DateTime time)
+        {
+            return new DateTimeOffset(time).ToUnixTimeMilliseconds();
         }
 
         public static string FormatTimestamp(long time)
