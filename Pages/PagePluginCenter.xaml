@@ -41,6 +41,14 @@
                         <Grid>
                             <TextBlock Text="插件发布" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="24" Margin="20,20,0,0"/>
                             <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="16" Margin="21,50,0,0">数据来源于 <Hyperlink Click="OpenMiraiForum" >MiraiForum</Hyperlink></TextBlock>
+                            <ComboBox x:Name="ForumComboSort" IsEnabled="False" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,45,330,0" Width="80" SelectedIndex="0">
+                                <ComboBoxItem Tag="newest_to_oldest" Content="从新到旧" Selected="ForumComboSort_ItemSelected"/>
+                                <ComboBoxItem Tag="oldest_to_newest" Content="从旧到新" Selected="ForumComboSort_ItemSelected"/>
+                                <ComboBoxItem Tag="most_posts" Content="最多回复" Selected="ForumComboSort_ItemSelected"/>
+                                <ComboBoxItem Tag="most_votes" Content="最多赞同" Selected="ForumComboSort_ItemSelected"/>
+                                <ComboBoxItem Tag="most_views" Content="最多浏览" Selected="ForumComboSort_ItemSelected"/>
+                            </ComboBox>
+                            <ComboBox x:Name="ForumComboPages" IsEnabled="False" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,45,260,0" Width="60"/>
                             <Button x:Name="ForumPrevPage" IsEnabled="false" Content="上一页" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,40,160,0" Width="80" Style="{DynamicResource MaterialDesignFlatButton}" Click="ForumPrevPage_Click"/>
                             <Button x:Name="ForumRefresh" Content="刷新" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,40,100,0" Width="60" Style="{DynamicResource MaterialDesignFlatButton}" Click="ForumRefresh_Click"/>
                             <Button x:Name="ForumNextPage" IsEnabled="false" Content="下一页" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,40,20,0" Width="80" Style="{DynamicResource MaterialDesignFlatButton}" Click="ForumNextPage_Click"/>

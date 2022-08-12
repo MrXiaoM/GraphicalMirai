@@ -96,7 +96,7 @@ namespace GraphicalMirai
                     double? total = e.TotalBytes;
                     string percent = total == null ? "未知进度" : string.Format("{0:N2}%", received / total * 100d);
                     downloadProcess.Width = this.ActualWidth * received / (total ?? received);
-                    downloadInfo.Text = "正在下载 " + nowFile + " | " + App.SizeToString(received) + "/" + App.SizeToString(total) + " | " + percent;
+                    downloadInfo.Text = "正在下载 " + nowFile + " | " + App.FormatSize(received) + "/" + App.FormatSize(total) + " | " + percent;
                 });
             };
 
@@ -281,7 +281,7 @@ namespace GraphicalMirai
                         double? total = e.TotalBytes;
                         string percent = total == null ? "未知进度" : string.Format("{0:N2}%", received / total * 100d);
                         downloadProcess.Width = this.ActualWidth * received / (total ?? received);
-                        downloadInfo.Text = "正在下载 " + nowFile + " | " + App.SizeToString(received) + "/" + App.SizeToString(total) + " | " + percent;
+                        downloadInfo.Text = "正在下载 " + nowFile + " | " + App.FormatSize(received) + "/" + App.FormatSize(total) + " | " + percent;
                     });
                 };
 

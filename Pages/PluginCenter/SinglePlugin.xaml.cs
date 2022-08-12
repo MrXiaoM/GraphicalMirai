@@ -22,7 +22,7 @@ namespace GraphicalMirai.Pages.PluginCenter
     /// </summary>
     public partial class SinglePlugin : Grid
     {
-        public SinglePlugin(bool IsDeleted, int tid, string Title = "", string Author = "", string Votes = "", string ViewCount = "", List<string>? TopicTags = null, long CreateTime = 0, string? picture = null)
+        public SinglePlugin(bool IsDeleted, int tid, string Title = "", string Author = "", int Votes = 0, int ViewCount = 0, List<string>? TopicTags = null, long CreateTime = 0, string? picture = null)
         {
             InitializeComponent();
             if (IsDeleted)
@@ -43,10 +43,10 @@ namespace GraphicalMirai.Pages.PluginCenter
             TopicTitle.ToolTip = IsDeleted ? "此主题已被删除!" : Title;
             
             AuthorHeadimgSimple.Text = Author.Length > 0 ? Author.Substring(0, 1).ToUpper() : "";
-            TextLike.Text = Votes;
-            TextView.Text = ViewCount;
+            TextLike.Text = App.FormatNumber(Votes);
+            TextView.Text = App.FormatNumber(ViewCount);
 
-            string time = App.TimestampToString(CreateTime);
+            string time = App.FormatTimestamp(CreateTime);
             
             if (!IsDeleted && TopicTags != null)
             {
@@ -74,6 +74,7 @@ namespace GraphicalMirai.Pages.PluginCenter
             {
                 FontWeight = FontWeights.Bold,
                 Foreground = App.hexBrush("#999999"),
+                ToolTip = time + " 由 " + Author + " 发布",
                 Text = time + " 由 " + Author + " 发布"
             };
             border1.Child = tb1;
@@ -85,7 +86,6 @@ namespace GraphicalMirai.Pages.PluginCenter
                     picture = "https://mirai.mamoe.net" + picture;
                 }
                 AuthorHeadimg.Source = new BitmapImage(new Uri(picture));
-                ToolTip = picture;
             };
         }
     }

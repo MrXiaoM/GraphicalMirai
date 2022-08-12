@@ -19,8 +19,8 @@ namespace GraphicalMirai
     public partial class App : Application
     {
         public static Mirai? mirai;
-        // 储存一些仅会用到一次的页面实例。
-        private static PageInit? pageInit;
+        // 储存一些单例页面实例。
+        private static PageInit? pageInit = PageInit;
         public static PageInit PageInit
         {
             get { return pageInit ??= new PageInit(); }
@@ -40,7 +40,7 @@ namespace GraphicalMirai
         {
             get { return pageMainLogin ??= new PageLogin(); }
         }
-        private static PagePluginCenter? pagePluginCenter;
+        private static PagePluginCenter? pagePluginCenter = PagePluginCenter;
         public static PagePluginCenter PagePluginCenter
         {
             get { return pagePluginCenter ??= new PagePluginCenter(); }
@@ -52,7 +52,7 @@ namespace GraphicalMirai
             return new DateTime(1970, 1, 1).Add(TimeSpan.FromMilliseconds(time));
         }
 
-        public static string TimestampToString(long time)
+        public static string FormatTimestamp(long time)
         {
             TimeSpan span = TimeSpan.FromMilliseconds(NowTimestamp - time);
             if (span.TotalMinutes < 60)
@@ -65,20 +65,36 @@ namespace GraphicalMirai
                 return FromTimestamp(time).ToString("yyyy年MM月dd日 HH:mm");
         }
 
-        private static readonly string[] units = new string[] { "B", "KB", "MB", "GB", "TB" };
-        public static string SizeToString(double? size, uint point = 2)
+        private static readonly string[] SIZE_UNITS = { "B", "KB", "MB", "GB", "TB" };
+        public static string FormatSize(double? size, uint point = 2)
         {
             if (size == null || size <= 0) return "?";
-            string unit = units[0];
+            string unit = SIZE_UNITS[0];
             int i = 0;
             while (size > 1024)
             {
                 i++;
-                if (i >= units.Length) break;
+                if (i >= SIZE_UNITS.Length) break;
                 size /= 1024;
-                unit = units[i];
+                unit = SIZE_UNITS[i];
             }
             return string.Format("{0:N" + point + "}", size) + unit;
+        }
+        private static readonly string[] NUMBER_UNITS = { "", "K", "M", "B" };
+        public static string FormatNumber(double? number, uint point = 1)
+        {
+            if (number == null) return "?";
+            if (number < 1000) return number.GetValueOrDefault(0).ToString();
+            string unit = NUMBER_UNITS[0];
+            int i = 0;
+            while (number >= 1000)
+            {
+                i++;
+                if (i >= SIZE_UNITS.Length) break;
+                number /= 1000;
+                unit = SIZE_UNITS[i];
+            }
+            return string.Format("{0:N" + point + "}", number) + unit;
         }
 
         public static void openUrl(string s)

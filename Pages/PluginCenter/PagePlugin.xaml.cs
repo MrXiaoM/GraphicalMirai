@@ -43,7 +43,7 @@ namespace GraphicalMirai.Pages.PluginCenter
             }
             this.topic = topic;
             bool isDeleted = topic.deleted == 1;
-            string time = App.TimestampToString(topic.timestamp);
+            string time = App.FormatTimestamp(topic.timestamp);
             string content = topic.ToString();
             // 技术问题，需要移除所有 target="*" 避免打开新窗口
             // 并将链接重定向到系统浏览器
