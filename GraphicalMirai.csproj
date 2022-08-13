@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup Label="Globals">
-    <WebView2LoaderPreference>Static</WebView2LoaderPreference>
+    <WebView2LoaderPreference>Dynamic</WebView2LoaderPreference>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -12,6 +12,11 @@
     <StartupObject>GraphicalMirai.App</StartupObject>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ApplicationIcon>mirai.ico</ApplicationIcon>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <PackageProjectUrl>https://github.com/MrXiaoM/GraphicalMirai</PackageProjectUrl>
+    <PackageReadmeFile>READE.md</PackageReadmeFile>
+    <Description>mirai-console 的下载器/启动器/插件中心</Description>
+    <Copyright>©MrXiaoM 2022 保留所有权利</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
