@@ -18,6 +18,8 @@ namespace GraphicalMirai
     /// </summary>
     public partial class App : Application
     {
+        public static readonly string UserAgent = "GraphicalMirai/"+ ((object?)System.Reflection.Assembly.GetExecutingAssembly().GetName().Version ?? "1.0.0").ToString() +
+            " Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.81 Safari/537.36 Edg/104.0.1293.47";
         public static Mirai? mirai;
         // 储存一些单例页面实例。
         private static PageInit? pageInit = PageInit;

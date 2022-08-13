@@ -32,6 +32,8 @@ namespace GraphicalMirai.Pages
         string forumSort = "newest_to_oldest";
         public PagePluginCenter()
         {
+            repoClient.DefaultRequestHeaders.Add("User-Agent", App.UserAgent);
+            forumClient.DefaultRequestHeaders.Add("User-Agent", App.UserAgent);
             InitializeComponent();
         }
 

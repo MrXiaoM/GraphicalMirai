@@ -23,6 +23,7 @@ namespace GraphicalMirai.Pages
         public PageConsole()
         {
             InitializeComponent();
+           
             App.mirai.onDataReceived += DataReceived;
             App.mirai.onExited += Exited;
         }
@@ -31,36 +32,39 @@ namespace GraphicalMirai.Pages
         {
             Dispatcher.Invoke(() =>
             {
-                if (textConsole.Inlines.Count > 0) textConsole.Inlines.Add(new LineBreak());
+                Paragraph p = new Paragraph();
+                p.LineHeight = 5;
                 Button btnRestart = new Button() { Content = "重新启动" };
                 btnRestart.Click += delegate
                 {
-                    textConsole.Inlines.Clear();
-                    App.mirai.Start();
+                    flow.Document.Blocks.Clear();
+                    App.mirai?.Start();
                 };
                 Button btnInitMenu = new Button() { Content = "返回欢迎菜单" };
                 btnInitMenu.Click += delegate
                 {
-                    textConsole.Inlines.Clear();
+                    flow.Document.Blocks.Clear();
                     App.PageInit.BtnStart.IsEnabled = true;
                     MainWindow.Navigate(App.PageInit);
                 };
-                textConsole.Inlines.Add(btnRestart);
-                textConsole.Inlines.Add(new Rectangle() { Width = 5 });
-                textConsole.Inlines.Add(btnInitMenu);
-                textConsole.Inlines.Add(new LineBreak());
+                p.Inlines.Add(btnRestart);
+                p.Inlines.Add(new Rectangle() { Width = 5 });
+                p.Inlines.Add(btnInitMenu);
+                p.Inlines.Add(new LineBreak());
+                doc.Blocks.Add(p);
             });
         }
         private void DataReceived(string data)
         {
-            Dispatcher.Invoke(() =>
+            try
             {
-                if (textConsole.Inlines.Count > 0) textConsole.Inlines.Add(new LineBreak());
-                
-                //textConsole.Inlines.Add(data.Replace("\0", "\\0"));
-                ConsoleFormatTransfer.AppendTo(textConsole, data);
-                if (autoScroll.IsChecked.GetValueOrDefault(false)) scroll.ScrollToBottom();
-            });
+                Dispatcher.Invoke(() =>
+                {
+                    doc.Blocks.Add(ConsoleFormatTransfer.ToParagraph(data, flow.Foreground));
+                    if (autoScroll.IsChecked.GetValueOrDefault(false)) scroll.ScrollToEnd();
+                });
+            }
+            catch { }
         }
 
         private void TextBox_KeyDown(object sender, KeyEventArgs e)

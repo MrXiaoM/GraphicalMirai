@@ -11,6 +11,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Media;
 using System.Diagnostics;
 using System.Linq;
+using Pages.PluginCenter;
 
 namespace GraphicalMirai
 {

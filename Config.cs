@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using YamlDotNet.Serialization;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace GraphicalMirai
 {
@@ -53,6 +54,9 @@ namespace GraphicalMirai
         
         [YamlMember(Alias = "selected-mirai-version", Description = "指定要启动的 mirai 版本")]
         public string? selectedMiraiVersion { get; set; }
+
+        [YamlIgnore]
+        public Version? SelectedMiraiVersion { get { return Version.Parse(selectedMiraiVersion); } }
         
         [YamlMember(Alias = "main-class", Description = "指定启动时 mirai 的主类")]
         public string mainClass { get; set; } = "net.mamoe.mirai.console.terminal.MiraiConsoleTerminalLoader";
@@ -74,5 +78,86 @@ namespace GraphicalMirai
 
         [YamlMember(Alias = "webp-codec-check", Description = "是否在启动时检查程序是否可加载 webp 图片")]
         public bool webp_codec_check { get; set; } = true;
+    }
+
+    public class Version
+    {
+        public static readonly Version MIRAI_2 = new Version(2, 11, 0);
+        private static readonly Regex regex = new Regex("([0-9]+)(.[0-9]+)?(.[0-9]+)?");
+        int x;
+        int y;
+        int z;
+        private Version(int x, int y, int z)
+        {
+            this.x = x;
+            this.y = y;
+            this.z = z;
+        }
+        public static Version? Parse(string? s)
+        {
+            if (s == null) return null;
+            Match m = regex.Match(s);
+            if (!m.Success) return null;
+            string sx = m.Groups[1].Value;
+            string sy = m.Groups[2].Value;
+            if (sy.Length > 0) sy = sy.Substring(1);
+            string sz = m.Groups[3].Value;
+            if (sz.Length > 0) sz = sz.Substring(1);
+            int x = 0, y = 0, z = 0;
+            int.TryParse(sx, out x);
+            int.TryParse(sy, out y);
+            int.TryParse(sz, out z);
+            return new Version(x, y, z);
+        }
+
+        public static bool operator ==(Version? left, Version? right)
+        {
+            if (ReferenceEquals(left, null) || ReferenceEquals(right, null)) return false;
+            return left.x == right.x && left.y == right.y && left.z == right.z;
+        }
+        public static bool operator !=(Version? left, Version? right)
+        {
+            if (ReferenceEquals(left, null) || ReferenceEquals(right, null)) return true;
+            return left.x != right.x || left.y != right.y || left.z != right.z;
+        }
+        public static bool operator >(Version? left, Version? right)
+        {
+            if (ReferenceEquals(left, null) || ReferenceEquals(right, null)) return false;
+            if (left.x > right.x) return true;
+            if (left.y > right.y) return true;
+            return left.z > right.z;
+        }
+        public static bool operator <(Version? left, Version? right)
+        {
+            if (ReferenceEquals(left, null) || ReferenceEquals(right, null)) return false;
+            if (left.x < right.x) return true;
+            if (left.y < right.y) return true;
+            return left.z < right.z;
+        }
+        public static bool operator <=(Version? left, Version? right)
+        {
+            return left == right || left < right;
+        }
+        public static bool operator >=(Version? left, Version? right)
+        {
+            return left == right || left > right;
+        }
+
+        public override bool Equals(object? obj)
+        {
+            if (ReferenceEquals(this, null) || ReferenceEquals(obj, null) || !(obj is Version)) return false;
+            Version right = (Version)obj;
+            return x == right.x && y == right.y && z == right.z;
+        }
+
+        public override int GetHashCode()
+        {
+            return ToString().GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            return x + "." + y + "." + z;
+        }
     }
 }

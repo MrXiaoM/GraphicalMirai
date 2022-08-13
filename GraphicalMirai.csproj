@@ -28,6 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Markdown.Xaml" Version="1.0.0" />
     <PackageReference Include="MaterialDesignThemes" Version="4.5.0" />
     <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.9" />
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1293.44" />
@@ -39,6 +40,12 @@
   <ItemGroup>
     <Resource Include="Pages\mirai_card_bg.jpg" />
     <Resource Include="sample.webp" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Pages\PluginCenter\SingleRelease.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
   </ItemGroup>
 
 </Project>

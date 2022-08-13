@@ -52,13 +52,13 @@
 
                     </StackPanel>
 
-                    <Button x:Name="BtnUpdate" Content="刷新版本列表" VerticalAlignment="Bottom" Height="30" Margin="10,10,10,45" Click="BtnUpdate_Click"/>
-                    <Button x:Name="BtnInstall" Content="安装版本" VerticalAlignment="Bottom" Height="30" Margin="10" Click="BtnInstall_Click"/>
+                    <Button x:Name="BtnUpdate" Content="刷新版本列表" VerticalAlignment="Bottom" Height="30" Margin="10,10,10,45" Click="BtnUpdate_Click" Cursor="Hand"/>
+                    <Button x:Name="BtnInstall" Content="安装版本" IsEnabled="False" VerticalAlignment="Bottom" Height="30" Margin="10" Click="BtnInstall_Click" Cursor="Hand"/>
                 </Grid>
             </materialDesign:Card>
-            <Button x:Name="BtnStart" Content="启动" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="288" Height="30" Margin="79,0,0,140" IsEnabled="False" Style="{DynamicResource MaterialDesignRaisedAccentButton}" Click="BtnStart_Click"/>
-            <Button x:Name="BtnPluginsCenter" Content="插件中心" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="288" Height="30" Margin="79,0,0,105" Click="BtnPluginsCenter_Click"/>
-            <Button x:Name="BtnOptions" Content="选项" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="288" Height="30" Margin="79,0,0,70" Click="BtnOptions_Click"/>
+            <Button x:Name="BtnStart" Content="启动" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="288" Height="30" Margin="79,0,0,140" IsEnabled="False" Foreground="#EBE5F5" FontWeight="Bold" Style="{DynamicResource MaterialDesignRaisedAccentButton}" Click="BtnStart_Click" Cursor="Hand"/>
+            <Button x:Name="BtnPluginsCenter" Content="插件中心" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="288" Height="30" Margin="79,0,0,105" Click="BtnPluginsCenter_Click" Cursor="Hand"/>
+            <Button x:Name="BtnOptions" Content="选项" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="288" Height="30" Margin="79,0,0,70" Click="BtnOptions_Click" Cursor="Hand"/>
             <TextBlock x:Name="TextInfo" TextAlignment="Right" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="5,0,5,10" FontSize="16" Margin="79,0,0,177" Width="288"><Run Text="已安装插件数量: 0"/><LineBreak/><Run Text="已选择 mirai 版本: 未安装"/></TextBlock>
         </Grid>
         <Rectangle x:Name="downloadProcess" HorizontalAlignment="Left" VerticalAlignment="Bottom" Height="10" Fill="#673AB7" />

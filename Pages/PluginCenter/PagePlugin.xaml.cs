@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Pages.PluginCenter;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -126,6 +127,61 @@ namespace GraphicalMirai.Pages.PluginCenter
             
             await webInfo.EnsureCoreWebView2Async();
             webInfo.NavigateToString(content);
+            await refreshDownloadList();
+        }
+
+        public async Task refreshDownloadList()
+        {
+            if (topic == null) return;
+            void err(string msg, bool center = true)
+            {
+                StackReleases.Children.Clear();
+                StackReleases.Children.Add(new TextBlock() 
+                { 
+                    Text = msg, 
+                    TextAlignment = center ? TextAlignment.Center : TextAlignment.Left,
+                    Padding = new Thickness(center ? 0 : 20, 50, center ? 0 : 20, 10),
+                    TextWrapping = TextWrapping.Wrap });
+                Button retry = new Button() 
+                {
+                    Content = "重试",
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    Width = 100
+                };
+                retry.Click += async delegate { await refreshDownloadList(); };
+                StackReleases.Children.Add(retry);
+            }
+            List<Repo> repos = topic.posts[0].repo();
+            repos.RemoveAll(repo => repo.username == "mamoe" && repo.repo == "mirai");
+            if (repos.Count <= 0)
+            {
+                err("无法找到合适的开源仓库");
+                return;
+            }
+            Repo repo = repos[0];
+            if (!IDevPlatformApi.apis.ContainsKey(repo.platform.ToLower()))
+            {
+                err("无法找到合适的开源平台解析接口");
+                return;
+            }
+            IDevPlatformApi api = IDevPlatformApi.apis[repo.platform.ToLower()];
+            (List<IDevPlatformApi.Release>, Exception?) response = await api.GetReleasesAsync(repo.username, repo.repo);
+            if (response.Item2 != null)
+            {
+                Exception e = response.Item2;
+                err("请求接口时出现异常: " + e.GetType().FullName + "\n" +
+                    "消息: " + e.Message + "\n" +
+                    "源: " + e.Source + "\n" +
+                    "堆栈跟踪: \n" + e.StackTrace, false);
+                return;
+            }
+            StackReleases.Children.Clear();
+            List<IDevPlatformApi.Release> releases = response.Item1;
+            foreach(IDevPlatformApi.Release r in releases)
+            {
+                StackReleases.Children.Add(new SingleRelease(r));
+                StackReleases.Children.Add(new Rectangle() { Height = 5 });
+            }
         }
 
         private void BtnBack_Click(object sender, RoutedEventArgs e)

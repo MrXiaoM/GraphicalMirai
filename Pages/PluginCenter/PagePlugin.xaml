@@ -41,11 +41,15 @@
         <TabControl Margin="0,120,0,0" Style="{DynamicResource MaterialDesignNavigatilRailTabControl}">
             <TabItem Header="简介">
                 <Grid>
-                    <wv2:WebView2 x:Name="webInfo"  NavigationStarting="webInfo_NavigationStarting" />
+                    <wv2:WebView2 x:Name="webInfo" NavigationStarting="webInfo_NavigationStarting"/>
                 </Grid>
             </TabItem>
             <TabItem Header="下载">
-                
+                <ScrollViewer VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled" Background="#F4F4F4">
+                    <StackPanel Name="StackReleases" VerticalAlignment="Top" Orientation="Vertical">
+                        <TextBlock Text="正在加载..." TextAlignment="Center" Padding="50"/>
+                    </StackPanel>
+                </ScrollViewer>
             </TabItem>
             <TabItem Header="评论">
 

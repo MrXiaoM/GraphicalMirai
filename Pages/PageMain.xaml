@@ -20,7 +20,7 @@
             <ColumnDefinition Width="150"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <ListBox x:Name="listBox" Grid.Column="0" SelectedIndex="0" Style="{DynamicResource MaterialDesignNavigationPrimaryListBox}" Margin="0,0,0,85">
+        <ListBox x:Name="listBox" Grid.Column="0" SelectedIndex="0" Style="{DynamicResource MaterialDesignNavigationPrimaryListBox}" Margin="0,5,0,85">
             <ListBoxItem x:Name="listBoxItemConsole" Content="控制台" Tag="Page:Console"/>
         </ListBox>
         <Button x:Name="BtnPluginCenter" Content="插件中心" Grid.Column="0" VerticalAlignment="Bottom" Margin="5,0,5,45" Click="BtnPluginCenter_Click"/>

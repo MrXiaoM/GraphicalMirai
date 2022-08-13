@@ -10,6 +10,7 @@ namespace Pages.PluginCenter
 {
     public interface IDevPlatformApi
     {
+        #region 结构体
         public struct Release
         {
             public struct Asset
@@ -70,6 +71,13 @@ namespace Pages.PluginCenter
                 AvatarUrl = avatarUrl;
             }
         }
+        #endregion
+
+        public static readonly Dictionary<string, IDevPlatformApi> apis = new()
+        {
+            { "github", new GithubApi() },
+            { "gitee", new GiteeApi() }
+        };
 
         public virtual (User, Exception?) GetUser(string user)
         {
@@ -87,7 +95,7 @@ namespace Pages.PluginCenter
     {
 
         #region Json 实体类
-        internal struct JsonUser
+        internal class JsonUser
         {
             string login;
             string name;
@@ -108,7 +116,7 @@ namespace Pages.PluginCenter
                 return new IDevPlatformApi.User(login, name, html_url, avatar_url);
             }
         }
-        internal struct JsonRelease
+        internal class JsonRelease
         {
             JsonUser author;
             string tag_name;
@@ -146,7 +154,7 @@ namespace Pages.PluginCenter
                 return new IDevPlatformApi.Release(tag_name, name, target_commitish, author.ToUser(), prerelease, createTime, publishTime, body, processedAssets);
             }
         }
-        internal struct JsonAsset
+        internal class JsonAsset
         {
             string name;
             JsonUser uploader;
@@ -184,8 +192,16 @@ namespace Pages.PluginCenter
         {
             BaseAddress = new Uri("https://api.github.com/")
         };
+        public GithubApi()
+        {
+            http.DefaultRequestVersion = new System.Version(1, 1);
+            http.DefaultVersionPolicy = HttpVersionPolicy.RequestVersionOrHigher;
+            http.DefaultRequestHeaders.Add("User-Agent", App.UserAgent);
+            http.Timeout = TimeSpan.FromSeconds(30);
+        }
         public async Task<(List<IDevPlatformApi.Release>, Exception?)> GetReleasesAsync(string user, string repo)
         {
+           
             List<IDevPlatformApi.Release> releases = new();
             Exception? ex = null;
             try
@@ -213,7 +229,7 @@ namespace Pages.PluginCenter
                 string json = await http.GetStringAsync("users/" + user);
                 JsonUser? ju = JsonConvert.DeserializeObject<JsonUser>(json);
                 if (ju == null) throw new JsonException("无法读取 json");
-                return (ju.Value.ToUser(), null);
+                return (ju.ToUser(), null);
             }
             catch (Exception e)
             {
@@ -227,6 +243,11 @@ namespace Pages.PluginCenter
         {
             BaseAddress = new Uri("https://gitee.com/api/v5/")
         };
+        public GiteeApi()
+        {
+            http.DefaultRequestHeaders.Add("User-Agent", App.UserAgent);
+            http.Timeout = TimeSpan.FromSeconds(30);
+        }
         public async Task<(List<IDevPlatformApi.Release>, Exception?)> GetReleasesAsync(string user, string repo)
         {
             List<IDevPlatformApi.Release> releases = new();
@@ -256,7 +277,7 @@ namespace Pages.PluginCenter
                 string json = await http.GetStringAsync("users/" + user);
                 GithubApi.JsonUser? ju = JsonConvert.DeserializeObject<GithubApi.JsonUser>(json);
                 if (ju == null) throw new JsonException("无法读取 json");
-                return (ju.Value.ToUser(), null);
+                return (ju.ToUser(), null);
             }
             catch (Exception e)
             {
