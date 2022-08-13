@@ -43,7 +43,7 @@ namespace GraphicalMirai
             UpdateInfo();
             Config.Save();
 
-            if (!CheckWebpCodec())
+            if (Config.Instance.webp_codec_check && !CheckWebpCodec())
             {
                 MessageBoxResult result = MessageBox.Show(
                     @"未找到 webp 解码器，插件中心的用户头像将无法显示！
@@ -57,7 +57,8 @@ namespace GraphicalMirai
                 }
                 else if (result == MessageBoxResult.Cancel)
                 {
-                    MessageBox.Show("「不再提醒」功能正在编写中", "TODO");
+                    Config.Instance.webp_codec_check = false;
+                    Config.Save();
                 }
             }/**/
         }
