@@ -1,10 +1,25 @@
-﻿<img align="right" width="160" height="160" src="logo.png"/>
+﻿<img align="right" width="128" height="128" src="logo.png"/>
 
 # GraphicalMirai
 
 [mirai-console](https://github.com/mamoe/mirai) 的图形界面下载器/启动器/插件中心。
 
 未完成，正在编写中。
+
+## 当前进度
+
+- [x] 下载 mirai
+- [x] 启动 mirai
+- [x] 控制台着色
+- [ ] 登录UI
+- [ ] 管理自动登录
+- [ ] 辅助处理滑块验证
+- [ ] 多用户聊天窗口
+- [ ] 管理本地插件
+- [x] 获取论坛上的插件
+- [ ] 下载论坛上的插件
+- [ ] 获取 mirai-repo 上的插件
+- [ ] 下载 mirai-repo 上的插件
 
 ## 使用字体
 
