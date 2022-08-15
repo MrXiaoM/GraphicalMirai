@@ -30,28 +30,15 @@ namespace GraphicalMirai.Pages.PluginCenter
         {
             InitializeComponent();
             this.release = release;
-            Border tag = new Border()
-            {
-                CornerRadius = new CornerRadius(4),
-                Background = App.hexBrush("#23000000"),
-                Padding = new Thickness(5, 2, 5, 2),
-            };
-            TextBlock tb = new TextBlock()
-            {
-                FontWeight = FontWeights.Bold,
-                Foreground = App.hexBrush("#999999"),
-                Text = release.TagName
-            };
-            tag.Child = tb;
-            ReleaseTitle.Inlines.Clear();
-            ReleaseTitle.Inlines.Add(tag);
-            ReleaseTitle.Inlines.Add(release.Name);
+            TitleTag.Text = release.TagName;
+            TitleText.Text = release.Name;
 
-            ReleaseInfo.Inlines.Clear();
+            ReleaseInfo1.Inlines.Clear();
             Hyperlink authorLink = new(new Run(release.Author.Name));
             authorLink.Click += delegate { App.openUrl(release.Author.Url); };
-            ReleaseInfo.Inlines.Add(authorLink);
-            ReleaseInfo.Inlines.Add(" 创建于 " + App.FromTimestamp(release.CreatedTime).ToString("yyyy年MM月dd日 HH:mm:ss"));
+            ReleaseInfo1.Inlines.Add(authorLink);
+            ReleaseInfo1.Inlines.Add(" 创建于");
+            ReleaseInfo2.Text = App.FromTimestamp(release.CreatedTime).ToString("yyyy年MM月dd日 HH:mm:ss");
 
             if (release.Author.AvatarUrl != null) {
                 AuthorHeadimg.Source = new BitmapImage(new Uri(release.Author.AvatarUrl));
@@ -76,6 +63,8 @@ namespace GraphicalMirai.Pages.PluginCenter
 
             Markdown.Xaml.TextToFlowDocumentConverter md = new() { Markdown = new Markdown.Xaml.Markdown() };
             ReleaseBody.Document = new Markdown.Xaml.Markdown().Transform(release.Body);
+            ReleaseBody.Document.LineHeight = 1;
+            ReleaseBody.Document.TextAlignment = TextAlignment.Left;
         }
 
         private void BtnDownload_Click(object sender, RoutedEventArgs e)

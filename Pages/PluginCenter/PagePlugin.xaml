@@ -20,7 +20,7 @@
     <Grid>
         <materialDesign:Card VerticalAlignment="Top" Height="120" Background="#24ACF2">
             <Grid>
-                <TextBlock x:Name="TextTitle" Text="" Margin="20,20,200,20" VerticalAlignment="Top" FontSize="24" FontWeight="Bold" Foreground="#EEE"/>
+                <TextBlock x:Name="TextTitle" Text="" Margin="20,20,200,20" VerticalAlignment="Top" FontSize="24" FontWeight="Bold" Foreground="#EEE" TextTrimming="WordEllipsis"/>
                 <TextBlock x:Name="TextSubTitle" Text="" Margin="22,52,200,20" VerticalAlignment="Top" FontSize="12" FontWeight="Bold" Foreground="#EEE"/>
                 <Border Background="#EEEEEE" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10" Width="60" Height="60" CornerRadius="35">
                     <Grid>

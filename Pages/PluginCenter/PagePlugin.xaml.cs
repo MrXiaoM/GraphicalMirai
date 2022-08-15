@@ -99,6 +99,7 @@ namespace GraphicalMirai.Pages.PluginCenter
                 TextSubTitle.Inlines.Add(border1);
                 
                 TextTitle.Text = topic.titleRaw;
+                TextTitle.ToolTip = TextTitle.Text;
                 temp.Text = content;
 
                 if (author != null)

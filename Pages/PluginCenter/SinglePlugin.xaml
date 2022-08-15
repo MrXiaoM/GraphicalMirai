@@ -7,45 +7,7 @@
              mc:Ignorable="d" Background="#F4F4F4"
              d:DesignHeight="80" d:DesignWidth="700">
     <Grid>
-        <Grid.Resources>
-            <Style x:Key="Hover" TargetType="Grid">
-                <Setter Property="Background">
-                    <Setter.Value>
-                        <SolidColorBrush Opacity="0" Color="#BBBBBB"></SolidColorBrush>
-                    </Setter.Value>
-                </Setter>
-                <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="true">
-                    <Trigger.EnterActions>
-                        <BeginStoryboard>
-                            <Storyboard>
-                                    <DoubleAnimation Storyboard.TargetProperty="(Grid.Background).Opacity"
-                                                    BeginTime="00:00:00.000" Duration="00:00:00.200"
-                                                    To="0.2">
-                                        <DoubleAnimation.EasingFunction>
-                                            <PowerEase Power="1" EasingMode='EaseIn'></PowerEase>
-                                        </DoubleAnimation.EasingFunction>
-                                    </DoubleAnimation>
-                                </Storyboard>
-                        </BeginStoryboard>
-                    </Trigger.EnterActions>
-                    <Trigger.ExitActions>
-                        <BeginStoryboard>
-                                <Storyboard>
-                                    <DoubleAnimation Storyboard.TargetProperty="(Grid.Background).Opacity"
-                                                    BeginTime="00:00:00.000" Duration="00:00:00.200">
-                                        <DoubleAnimation.EasingFunction>
-                                            <PowerEase Power="1" EasingMode='EaseIn'></PowerEase>
-                                        </DoubleAnimation.EasingFunction>
-                                    </DoubleAnimation>
-                                </Storyboard>
-                        </BeginStoryboard>
-                    </Trigger.ExitActions>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-        </Grid.Resources>
-        <Grid x:Name="HoverGrid" Style="{DynamicResource Hover}" >
+        <Grid x:Name="HoverGrid" Style="{DynamicResource HoverDark}" >
             
         <Border Background="#EEEEEE" HorizontalAlignment="Left" Margin="10" Width="60" Height="60" CornerRadius="35">
             <Grid>

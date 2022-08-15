@@ -4,61 +4,32 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:GraphicalMirai.Pages.PluginCenter"
-             mc:Ignorable="d" Background="#F4F4F4"
-             d:DesignHeight="120" d:DesignWidth="700">
+             mc:Ignorable="d" Background="#F4F4F4" d:DesignWidth="700" d:DesignHeight="150">
     <Grid>
-        <Grid.Resources>
-            <Style x:Key="Hover" TargetType="Grid">
-                <Setter Property="Background">
-                    <Setter.Value>
-                        <SolidColorBrush Opacity="0" Color="#BBBBBB"></SolidColorBrush>
-                    </Setter.Value>
-                </Setter>
-                <Style.Triggers>
-                    <Trigger Property="IsMouseOver" Value="true">
-                        <Trigger.EnterActions>
-                            <BeginStoryboard>
-                                <Storyboard>
-                                    <DoubleAnimation Storyboard.TargetProperty="(Grid.Background).Opacity"
-                                                    BeginTime="00:00:00.000" Duration="00:00:00.200"
-                                                    To="0.2">
-                                        <DoubleAnimation.EasingFunction>
-                                            <PowerEase Power="1" EasingMode='EaseIn'></PowerEase>
-                                        </DoubleAnimation.EasingFunction>
-                                    </DoubleAnimation>
-                                </Storyboard>
-                            </BeginStoryboard>
-                        </Trigger.EnterActions>
-                        <Trigger.ExitActions>
-                            <BeginStoryboard>
-                                <Storyboard>
-                                    <DoubleAnimation Storyboard.TargetProperty="(Grid.Background).Opacity"
-                                                    BeginTime="00:00:00.000" Duration="00:00:00.200">
-                                        <DoubleAnimation.EasingFunction>
-                                            <PowerEase Power="1" EasingMode='EaseIn'></PowerEase>
-                                        </DoubleAnimation.EasingFunction>
-                                    </DoubleAnimation>
-                                </Storyboard>
-                            </BeginStoryboard>
-                        </Trigger.ExitActions>
-                    </Trigger>
-                </Style.Triggers>
-            </Style>
-        </Grid.Resources>
-        <Grid x:Name="HoverGrid" Style="{DynamicResource Hover}" >
-            <TextBlock Text="" x:Name="ReleaseTitle" VerticalAlignment="Top" FontSize="20" Margin="15,15,130,0" TextTrimming="WordEllipsis"/>
-
-            <Grid HorizontalAlignment="Left" VerticalAlignment="Top" Margin="15,45,0,0">
-                <Border Background="#DDD" HorizontalAlignment="Left" VerticalAlignment="Center" Width="20" Height="20"  CornerRadius="10">
-                    <Image x:Name="AuthorHeadimg" HorizontalAlignment="Center" VerticalAlignment="Center" Width="20" Height="20" Stretch="Uniform">
-                        <Image.Clip>
-                            <EllipseGeometry RadiusX="10" RadiusY="10" Center="30,30"/>
-                        </Image.Clip>
-                    </Image>
+        <Grid x:Name="HoverGrid" Style="{DynamicResource HoverDark}" >
+            <TextBlock x:Name="ReleaseTitle" VerticalAlignment="Top" FontSize="20" Margin="15,15,230,0" TextTrimming="WordEllipsis">
+                <Border Background="#23000000" CornerRadius="4" Padding="5,2,5,2">
+                    <TextBlock x:Name="TitleTag" FontSize="16" Foreground="#999"/>
                 </Border>
-                <Grid HorizontalAlignment="Left" VerticalAlignment="Top" Height="40" Margin="24,0,0,0">
-                    <TextBlock x:Name="ReleaseInfo" Text="" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                <Grid>
+                    <TextBlock x:Name="TitleText"/>
                 </Grid>
+            </TextBlock>
+
+            <Grid HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,95,15,15" MaxWidth="200">
+
+                <Grid HorizontalAlignment="Right" VerticalAlignment="Top" Height="20">
+                    <Border Background="#DDD" HorizontalAlignment="Left" VerticalAlignment="Center" Width="20" Height="20"  CornerRadius="10">
+                        <Image x:Name="AuthorHeadimg" Width="20" Height="20" Stretch="Uniform">
+                            <Image.Clip>
+                                <EllipseGeometry RadiusX="10" RadiusY="10" Center="30,30"/>
+                            </Image.Clip>
+                        </Image>
+                    </Border>
+                    <TextBlock x:Name="ReleaseInfo1" Text="MrXiaoM 发布于" VerticalAlignment="Center" Margin="24,0,0,0"/>
+                </Grid>
+
+                <TextBlock x:Name="ReleaseInfo2" Text="2022年08月01日 19:19:08" VerticalAlignment="Top" Margin="24,24,0,0"/>
             </Grid>
             <Grid HorizontalAlignment="Right">
                 <Grid.ColumnDefinitions>
@@ -69,7 +40,7 @@
                 <ComboBox x:Name="ComboAssets" HorizontalAlignment="Right" VerticalAlignment="Top" Width="200" Margin="0,60,15,0" Grid.ColumnSpan="2"/>
             </Grid>
             <FlowDocumentScrollViewer x:Name="ReleaseBody"
-                                    Margin="15,90,15,10"
+                                    Margin="15,50,220,10"
                                   VerticalAlignment="Top">
             </FlowDocumentScrollViewer>
 
