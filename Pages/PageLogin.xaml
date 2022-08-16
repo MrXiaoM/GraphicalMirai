@@ -3,26 +3,34 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-     TextElement.Foreground="#FAFAFA"
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
      TextElement.FontWeight="Regular"
      TextElement.FontSize="13"
      TextOptions.TextFormattingMode="Ideal"
      TextOptions.TextRenderingMode="Auto"
-     Background="#3D3D3D"
+     Background="#8F8F8F"
      FontFamily="{DynamicResource SourceHanSans}"
       xmlns:local="clr-namespace:GraphicalMirai.Pages"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="650"
       Title="登录">
     <Grid>
-        <TextBlock Text="QQ号:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="99,162,0,0" Foreground="#FAFAFA" />
-        <TextBlock Text="密码:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="99,192,0,0" Foreground="#FAFAFA" />
-        <ComboBox x:Name="textQQ" HorizontalAlignment="Left" VerticalAlignment="Top" Width="200" Margin="147,157,0,0" Background="#1F1F1F" IsTextSearchEnabled="True" IsEditable="True"/>
-        <PasswordBox x:Name="textPW" HorizontalAlignment="Left" VerticalAlignment="Top" Width="200" Margin="147,187,0,0" Background="#1F1F1F"/>
-        <CheckBox x:Name="CheckAutoLogin" Content="自动登录" HorizontalAlignment="Left" Margin="144,0,0,0" VerticalAlignment="Center" Foreground="#FAFAFA" Style="{DynamicResource MaterialDesignUserForegroundCheckBox}"/>
+        <materialDesign:Card Padding="20" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Grid>
+                <TextBlock Text="登录" FontSize="48" Foreground="#EEE" FontWeight="Light" Margin="-20,-80,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                
+                <TextBlock Text="QQ号:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,5,0,0"/>
+                <TextBlock Text="密码:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,35,0,0"/>
+                <ComboBox x:Name="textQQ" HorizontalAlignment="Left" VerticalAlignment="Top" Width="200" Margin="45,0,0,0" IsTextSearchEnabled="True" IsEditable="True"/>
+                <PasswordBox x:Name="textPW" HorizontalAlignment="Left" VerticalAlignment="Top" Width="200" Margin="45,30,0,0"/>
+                
+                <CheckBox x:Name="CheckAutoLogin" Content="自动登录" ToolTip="勾选此项，点击登录按钮后该账号将被添加到 mirai 的自动登录配置" HorizontalAlignment="Left" Margin="45,60,0,0" VerticalAlignment="Top" Style="{DynamicResource MaterialDesignUserForegroundCheckBox}"/>
+                <CheckBox x:Name="CheckUseMD5" Content="MD5 密码 (?)" ToolTip="如果你不知道这是什么，请不要勾选" HorizontalAlignment="Right" Margin="0,60,0,0" VerticalAlignment="Top" Style="{DynamicResource MaterialDesignUserForegroundCheckBox}"/>
 
-        <Button x:Name="BtnLogin" Content="登录" HorizontalAlignment="Left" VerticalAlignment="Top" Width="115" Height="30" Margin="99,247,0,0"/>
-        <Button x:Name="BtnAutoLogin" Content="管理自动登录" HorizontalAlignment="Left" VerticalAlignment="Top" Width="115" Height="30" Margin="232,247,0,0"/>
-        <Button x:Name="BtnDevice" Content="配置设备信息" HorizontalAlignment="Left" VerticalAlignment="Top" Width="248" Height="30" Margin="99,287,0,0"/>
+                <Button x:Name="BtnLogin" Content="登录" HorizontalAlignment="Left" VerticalAlignment="Top" Width="115" Height="30" Margin="0,90,0,0"/>
+                <Button x:Name="BtnAutoLogin" Content="管理自动登录" HorizontalAlignment="Left" VerticalAlignment="Top" Width="115" Height="30" Margin="130,90,0,0"/>
+                <Button x:Name="BtnDevice" Content="配置设备信息" HorizontalAlignment="Left" VerticalAlignment="Top" Width="245" Height="30" Margin="0,130,0,0"/>
+            </Grid>
+        </materialDesign:Card>
     </Grid>
 </Page>
