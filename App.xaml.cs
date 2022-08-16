@@ -1,13 +1,7 @@
 ﻿using GraphicalMirai.Pages;
 using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
 using System.IO;
-using System.Linq;
-using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 
@@ -18,34 +12,40 @@ namespace GraphicalMirai
     /// </summary>
     public partial class App : Application
     {
-        public static readonly string UserAgent = "GraphicalMirai/"+ ((object?)System.Reflection.Assembly.GetExecutingAssembly().GetName().Version ?? "1.0.0").ToString() +
+        public static readonly string UserAgent = "GraphicalMirai/" + ((object?)System.Reflection.Assembly.GetExecutingAssembly().GetName().Version ?? "1.0.0").ToString() +
             " Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.81 Safari/537.36 Edg/104.0.1293.47";
-        public static Mirai? mirai;
+        private static Lazy<Mirai> miraiLazy = new();
+        public static Mirai mirai => miraiLazy.Value;
+
+        public App() {
+           
+        }
+
         // 储存一些单例页面实例。
-        private static PageInit? pageInit = PageInit;
+        private static Lazy<PageInit> pageInit = new();
         public static PageInit PageInit
         {
-            get { return pageInit ??= new PageInit(); }
+            get { return pageInit.Value; }
         }
-        private static PageMain? pageMain;
+        private static Lazy<PageMain> pageMain = new();
         public static PageMain PageMain
         {
-            get { return pageMain ??= new PageMain(); }
+            get { return pageMain.Value; }
         }
-        private static PageConsole? pageMainConsole;
+        private static Lazy<PageConsole> pageMainConsole = new();
         public static PageConsole PageMainConsole
         {
-            get { return pageMainConsole ??= new PageConsole(); }
+            get { return pageMainConsole.Value; }
         }
-        private static PageLogin? pageMainLogin;
+        private static Lazy<PageLogin> pageMainLogin = new();
         public static PageLogin PageMainLogin
         {
-            get { return pageMainLogin ??= new PageLogin(); }
+            get { return pageMainLogin.Value; }
         }
-        private static PagePluginCenter? pagePluginCenter = PagePluginCenter;
+        private static Lazy<PagePluginCenter> pagePluginCenter = new();
         public static PagePluginCenter PagePluginCenter
         {
-            get { return pagePluginCenter ??= new PagePluginCenter(); }
+            get { return pagePluginCenter.Value; }
         }
 
         public static long NowTimestamp { get { return ToTimestamp(DateTime.UtcNow); } }
@@ -122,7 +122,8 @@ namespace GraphicalMirai
 
         public static void mkdir(string path)
         {
-            if (!Directory.Exists(App.path(path))) {
+            if (!Directory.Exists(App.path(path)))
+            {
                 Directory.CreateDirectory(App.path(path));
             }
         }
@@ -149,7 +150,7 @@ namespace GraphicalMirai
 
         public static Color hex(string s)
         {
-            return (Color) ColorConverter.ConvertFromString(s);
+            return (Color)ColorConverter.ConvertFromString(s);
         }
 
         public static string MD5(string s)

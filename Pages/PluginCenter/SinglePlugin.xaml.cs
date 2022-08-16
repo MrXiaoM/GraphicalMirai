@@ -1,18 +1,9 @@
-﻿using Newtonsoft.Json;
-using GraphicalMirai;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace GraphicalMirai.Pages.PluginCenter
@@ -41,13 +32,13 @@ namespace GraphicalMirai.Pages.PluginCenter
             }
             TopicTitle.Text = IsDeleted ? "此主题已被删除!" : Title;
             TopicTitle.ToolTip = IsDeleted ? "此主题已被删除!" : Title;
-            
+
             AuthorHeadimgSimple.Text = Author.Length > 0 ? Author.Substring(0, 1).ToUpper() : "";
             TextLike.Text = App.FormatNumber(Votes);
             TextView.Text = App.FormatNumber(ViewCount);
 
             string time = App.FormatTimestamp(CreateTime);
-            
+
             if (!IsDeleted && TopicTags != null)
             {
                 foreach (string tag in TopicTags)
@@ -79,7 +70,8 @@ namespace GraphicalMirai.Pages.PluginCenter
             };
             border1.Child = tb1;
             TopicSubtitle.Inlines.Add(border1);
-            if (picture != null) { 
+            if (picture != null)
+            {
                 if (!picture.StartsWith("http://") && !picture.StartsWith("https://"))
                 {
                     if (!picture.StartsWith("/")) picture = "/" + picture;

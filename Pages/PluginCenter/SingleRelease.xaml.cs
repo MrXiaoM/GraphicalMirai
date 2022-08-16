@@ -1,20 +1,10 @@
-﻿using Newtonsoft.Json;
-using GraphicalMirai;
+﻿using Pages.PluginCenter;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using Pages.PluginCenter;
 using static Pages.PluginCenter.IDevPlatformApi.Release;
 
 namespace GraphicalMirai.Pages.PluginCenter
@@ -40,7 +30,8 @@ namespace GraphicalMirai.Pages.PluginCenter
             ReleaseInfo1.Inlines.Add(" 创建于");
             ReleaseInfo2.Text = App.FromTimestamp(release.CreatedTime).ToString("yyyy年MM月dd日 HH:mm:ss");
 
-            if (release.Author.AvatarUrl != null) {
+            if (release.Author.AvatarUrl != null)
+            {
                 AuthorHeadimg.Source = new BitmapImage(new Uri(release.Author.AvatarUrl));
             }
 

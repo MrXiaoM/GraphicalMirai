@@ -1,17 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Net.Http;
+using System.Net.Http.Handlers;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.IO;
-using System.Xml;
-using System.Net.Http.Handlers;
 using System.Windows.Media.Imaging;
-using System.Windows.Media;
-using System.Diagnostics;
+using System.Xml;
 using System.Linq;
-using Pages.PluginCenter;
 
 namespace GraphicalMirai
 {
@@ -216,14 +214,18 @@ namespace GraphicalMirai
                 string xml = await httpClient.GetStringAsync("net/mamoe/mirai-bom/maven-metadata.xml");
                 XmlDocument objDoc = new XmlDocument();
                 objDoc.LoadXml(xml);
-                XmlNodeList versions = objDoc["metadata"]["versioning"]["versions"].ChildNodes;
+                XmlNodeList? versions = objDoc?["metadata"]?["versioning"]?["versions"]?.ChildNodes;
                 // 同步
                 Dispatcher.Invoke(() =>
                 {
-                    // 反转列表，使最新版在最上面
-                    for (int i = versions.Count - 1; i >= 0; i--)
+                    if (versions != null)
                     {
-                        ComboMiraiVer.Items.Add(versions.Item(i).InnerText);
+                        // 反转列表，使最新版在最上面
+                        string[] nodes = versions.OfType<XmlNode>().Reverse().Select(node => node.InnerText).ToArray();
+                        foreach (string ver in nodes)
+                        {
+                            ComboMiraiVer.Items.Add(ver);
+                        }
                     }
                     if (ComboMiraiVer.Items.Count > 0) ComboMiraiVer.SelectedIndex = 0;
                     BtnUpdate.IsEnabled = true;
@@ -274,11 +276,13 @@ namespace GraphicalMirai
                 string xml = await httpClient.GetStringAsync("org/bouncycastle/bcprov-jdk15on/maven-metadata.xml");
                 XmlDocument objDoc = new XmlDocument();
                 objDoc.LoadXml(xml);
-                string bcprovVer = objDoc["metadata"]["versioning"]["release"].InnerText;
+                string bcprovVer = objDoc["metadata"]?["versioning"]?["release"]?.InnerText ?? "1.70";
 
                 // 回调进度
-                processHandler.HttpReceiveProgress += (sender, e) => {
-                    Dispatcher.Invoke(() => {
+                processHandler.HttpReceiveProgress += (sender, e) =>
+                {
+                    Dispatcher.Invoke(() =>
+                    {
                         double received = e.BytesTransferred;
                         double? total = e.TotalBytes;
                         string percent = total == null ? "未知进度" : string.Format("{0:N2}%", received / total * 100d);
@@ -291,23 +295,23 @@ namespace GraphicalMirai
                 nowFile = "bcprov-jdk15on-" + sel + ".jar (1/4)";
                 byte[] bcprov = await httpClient.GetByteArrayAsync("org/bouncycastle/bcprov-jdk15on/" + bcprovVer + "/bcprov-jdk15on-" + bcprovVer + ".jar");
                 File.WriteAllBytes(App.path("mirai/content/bcprov-jdk15on-" + bcprovVer + ".jar"), bcprov);
-                
+
                 nowFile = "mirai-core-all-" + sel + "-all.jar (2/4)";
                 byte[] core = await httpClient.GetByteArrayAsync("net/mamoe/mirai-core-all/" + sel + "/mirai-core-all-" + sel + "-all.jar");
                 File.WriteAllBytes(App.path("mirai/content/mirai-core-all-" + sel + "-all.jar"), core);
-                
+
                 nowFile = "mirai-console-" + sel + "-all.jar (3/4)";
                 byte[] console = await httpClient.GetByteArrayAsync("net/mamoe/mirai-console/" + sel + "/mirai-console-" + sel + "-all.jar");
                 File.WriteAllBytes(App.path("mirai/content/mirai-console-" + sel + "-all.jar"), console);
-                
+
                 nowFile = "mirai-console-terminal-" + sel + "-all.jar (4/4)";
                 byte[] terminal = await httpClient.GetByteArrayAsync("net/mamoe/mirai-console-terminal/" + sel + "/mirai-console-terminal-" + sel + "-all.jar");
                 File.WriteAllBytes(App.path("mirai/content/mirai-console-terminal-" + sel + "-all.jar"), terminal);
-                
+
                 // 同步
                 Dispatcher.Invoke(() =>
                 {
-                    Config.Instance.selectedMiraiVersion = (string) sel;
+                    Config.Instance.selectedMiraiVersion = (string)sel;
                     Config.Save();
                     UpdateInfo();
                     downloadProcess.Width = 0;
@@ -330,7 +334,8 @@ namespace GraphicalMirai
             BtnStart.IsEnabled = false;
             Config config = Config.Instance;
             string? ver = config.selectedMiraiVersion;
-            if (ver == null) {
+            if (ver == null)
+            {
                 MessageBox.Show("你没有指定启动版本");
                 return;
             }
@@ -351,8 +356,8 @@ namespace GraphicalMirai
             string javaPath = config.javaPath;
             string extArgs = config.extArgs;
             string mainClass = config.mainClass;
-            
-            App.mirai = new Mirai(javaPath, App.path("mirai"), libraries, mainClass, extArgs);
+
+            App.mirai.InitMirai(javaPath, App.path("mirai"), libraries, mainClass, extArgs);
             MainWindow.Navigate(App.PageMain);
             App.mirai.Start();
         }

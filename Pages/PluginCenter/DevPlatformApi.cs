@@ -3,7 +3,6 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Pages.PluginCenter
@@ -43,7 +42,7 @@ namespace Pages.PluginCenter
             public readonly long PublishedTime;
             public readonly string Body;
             public readonly List<Asset> Assets;
-            
+
             public Release(string tagName, string name, string targetCommitish, User author, bool isPreRelease, long createdTime, long publishedTime, string body, List<Asset> assets)
             {
                 TagName = tagName;
@@ -201,7 +200,7 @@ namespace Pages.PluginCenter
         }
         public async Task<(List<IDevPlatformApi.Release>, Exception?)> GetReleasesAsync(string user, string repo)
         {
-           
+
             List<IDevPlatformApi.Release> releases = new();
             Exception? ex = null;
             try
@@ -209,7 +208,7 @@ namespace Pages.PluginCenter
                 string json = await http.GetStringAsync("repos/" + user + "/" + repo + "/releases");
                 List<JsonRelease>? jr = JsonConvert.DeserializeObject<List<JsonRelease>>(json);
                 if (jr == null) throw new JsonException("无法读取 json");
-                foreach(JsonRelease r in jr)
+                foreach (JsonRelease r in jr)
                 {
                     releases.Add(r.ToRelease());
                 }

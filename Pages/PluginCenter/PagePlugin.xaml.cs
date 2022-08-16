@@ -3,17 +3,12 @@ using Pages.PluginCenter;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace GraphicalMirai.Pages.PluginCenter
@@ -48,7 +43,8 @@ namespace GraphicalMirai.Pages.PluginCenter
             string content = topic.ToString();
             // 技术问题，需要移除所有 target="*" 避免打开新窗口
             // 并将链接重定向到系统浏览器
-            content = regexLink.Replace(content, new MatchEvaluator((m) => {
+            content = regexLink.Replace(content, new MatchEvaluator((m) =>
+            {
                 return string.Join("", m.Groups
                              .OfType<Group>()
                              .Select((g, i) => i == 2 ? "" : g.Value)
@@ -56,7 +52,8 @@ namespace GraphicalMirai.Pages.PluginCenter
                              .ToArray());
             }));
             // 将相对于网站根目录的图片路径替换成链接
-            content = regexImage.Replace(content, new MatchEvaluator((m) => {
+            content = regexImage.Replace(content, new MatchEvaluator((m) =>
+            {
                 return string.Join("", m.Groups
                              .OfType<Group>()
                              .Select((g, i) => i == 2 ? "src=\"https://mirai.mamoe.net/" : g.Value)
@@ -97,7 +94,7 @@ namespace GraphicalMirai.Pages.PluginCenter
                 };
                 border1.Child = tb1;
                 TextSubTitle.Inlines.Add(border1);
-                
+
                 TextTitle.Text = topic.titleRaw;
                 TextTitle.ToolTip = TextTitle.Text;
                 temp.Text = content;
@@ -125,7 +122,7 @@ namespace GraphicalMirai.Pages.PluginCenter
 
                 temp.Text += "\n\n额外调试信息:\n  Github/Gitee 链接列表:\n    " + string.Join("\n    ", topic.posts[0].repo().Select(r => r.ToString()).ToArray());
             });
-            
+
             await webInfo.EnsureCoreWebView2Async();
             webInfo.NavigateToString(content);
             await refreshDownloadList();
@@ -137,13 +134,14 @@ namespace GraphicalMirai.Pages.PluginCenter
             void err(string msg, bool center = true)
             {
                 StackReleases.Children.Clear();
-                StackReleases.Children.Add(new TextBlock() 
-                { 
-                    Text = msg, 
+                StackReleases.Children.Add(new TextBlock()
+                {
+                    Text = msg,
                     TextAlignment = center ? TextAlignment.Center : TextAlignment.Left,
                     Padding = new Thickness(center ? 0 : 20, 50, center ? 0 : 20, 10),
-                    TextWrapping = TextWrapping.Wrap });
-                Button retry = new Button() 
+                    TextWrapping = TextWrapping.Wrap
+                });
+                Button retry = new Button()
                 {
                     Content = "重试",
                     HorizontalAlignment = HorizontalAlignment.Center,
@@ -178,7 +176,7 @@ namespace GraphicalMirai.Pages.PluginCenter
             }
             StackReleases.Children.Clear();
             List<IDevPlatformApi.Release> releases = response.Item1;
-            foreach(IDevPlatformApi.Release r in releases)
+            foreach (IDevPlatformApi.Release r in releases)
             {
                 StackReleases.Children.Add(new SingleRelease(r));
                 StackReleases.Children.Add(new Rectangle() { Height = 5 });
@@ -192,7 +190,8 @@ namespace GraphicalMirai.Pages.PluginCenter
 
         private void webInfo_NavigationStarting(object sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs e)
         {
-            if (e.Uri.StartsWith("https://") || e.Uri.StartsWith("http://")) {
+            if (e.Uri.StartsWith("https://") || e.Uri.StartsWith("http://"))
+            {
                 App.openUrl(e.Uri);
                 e.Cancel = true;
             }

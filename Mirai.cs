@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -15,19 +14,15 @@ namespace GraphicalMirai
         public OnDataReceived onDataReceived;
         public delegate void OnExited();
         public OnExited onExited;
-        public List<string> log = new List<string>();
-        public readonly List<string> Libraries = new List<string>();
-        public readonly Process Process = new Process();
-        public readonly string WorkingDir;
-        public readonly string JavaPath;
-        public string MainClass;
+        public readonly List<string> log = new List<string>();
+        public List<string> Libraries { get; private set; } = new List<string>();
+        public Process Process { get; private set; } = new Process();
+        public string? WorkingDir { get; private set; }
+        public string? JavaPath { get; private set; }
+        public string? MainClass { get; private set; }
         public Task? task;
-        public Mirai(string javaPath, string workingDir, List<string> libraries, string mainClass, string extArgs = "")
+        public Mirai()
         {
-            JavaPath = javaPath;
-            WorkingDir = workingDir;
-            Libraries = libraries;
-            MainClass = mainClass;
             onDataReceived += delegate (string s)
             {
                 Console.WriteLine(s);
@@ -39,7 +34,16 @@ namespace GraphicalMirai
                 IsRunning = false;
                 onDataReceived("\u001b[91mmirai-console 已停止运行\u001b[0m");
             };
+        }
+        public bool InitMirai(string javaPath, string workingDir, List<string> libraries, string mainClass, string extArgs = "")
+        {
+            if (IsRunning || !Process.HasExited) return false;
+            JavaPath = javaPath;
+            WorkingDir = workingDir;
+            Libraries = libraries;
+            MainClass = mainClass;
 
+            Process = new Process();
             ProcessStartInfo psi = new ProcessStartInfo(JavaPath);
             psi.WorkingDirectory = WorkingDir;
             psi.UseShellExecute = false;
@@ -53,7 +57,12 @@ namespace GraphicalMirai
             psi.Arguments = (extArgs + " -classpath \"" + string.Join(";", Libraries) + "\" " + MainClass).TrimStart();
             Process.StartInfo = psi;
             Process.EnableRaisingEvents = true;
-            Process.Exited += delegate { onExited(); } ;
+            Process.Exited += delegate
+            { 
+                IsRunning = false;
+                onExited(); 
+            };
+            return true;
         }
 
         public void Start()
@@ -80,6 +89,8 @@ namespace GraphicalMirai
 
         public async Task Stop()
         {
+            if (!IsRunning || Process.HasExited) return;
+            IsRunning = false;
             WriteLine("stop");
             await Process.WaitForExitAsync();
             Process.Close();

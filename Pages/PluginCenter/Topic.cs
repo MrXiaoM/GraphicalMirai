@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace GraphicalMirai.Pages.PluginCenter
 {
@@ -159,7 +156,7 @@ namespace GraphicalMirai.Pages.PluginCenter
         public string? sizes;
         public override string ToString()
         {
-            
+
             List<string> args = new();
             if (rel != null) args.Add("rel=\"" + rel + "\"");
             if (type != null) args.Add("type=\"" + type + "\"");

@@ -1,16 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
+﻿using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace GraphicalMirai.Pages
@@ -23,9 +13,13 @@ namespace GraphicalMirai.Pages
         public PageConsole()
         {
             InitializeComponent();
-           
-            App.mirai.onDataReceived += DataReceived;
-            App.mirai.onExited += Exited;
+
+        }
+
+        public void InitConsole(Mirai mirai)
+        {
+            mirai.onDataReceived += DataReceived;
+            mirai.onExited += Exited;
         }
 
         private void Exited()
@@ -38,7 +32,7 @@ namespace GraphicalMirai.Pages
                 btnRestart.Click += delegate
                 {
                     flow.Document.Blocks.Clear();
-                    App.mirai?.Start();
+                    App.mirai.Start();
                 };
                 Button btnInitMenu = new Button() { Content = "返回欢迎菜单" };
                 btnInitMenu.Click += delegate
@@ -69,7 +63,7 @@ namespace GraphicalMirai.Pages
 
         private void TextBox_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Enter && textInput.Text.Length > 0)
+            if (App.mirai != null && e.Key == Key.Enter && textInput.Text.Length > 0)
             {
                 App.mirai.WriteLine(textInput.Text);
                 textInput.Text = "";

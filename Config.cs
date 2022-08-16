@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using YamlDotNet.Serialization;
 using System.IO;
 using System.Text.RegularExpressions;
+using YamlDotNet.Serialization;
 
 namespace GraphicalMirai
 {
@@ -25,13 +22,14 @@ namespace GraphicalMirai
         [YamlIgnore]
         public static Config Instance
         {
-            get {
+            get
+            {
                 try
                 {
                     if (!File.Exists(ConfigPath)) throw new FileNotFoundException(ConfigPath);
                     return instance ??= DESERIALIZER.Deserialize<Config>(File.ReadAllText(ConfigPath));
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     Console.WriteLine(e.ToString());
                     instance = new Config();
@@ -51,19 +49,19 @@ namespace GraphicalMirai
             { "https://maven.aliyun.com/repository/central", "阿里云 Maven 镜像" },
             { "https://repo1.maven.org/maven2", "Maven Central" },
         };
-        
+
         [YamlMember(Alias = "selected-mirai-version", Description = "指定要启动的 mirai 版本")]
         public string? selectedMiraiVersion { get; set; }
 
         [YamlIgnore]
         public Version? SelectedMiraiVersion { get { return Version.Parse(selectedMiraiVersion); } }
-        
+
         [YamlMember(Alias = "main-class", Description = "指定启动时 mirai 的主类")]
         public string mainClass { get; set; } = "net.mamoe.mirai.console.terminal.MiraiConsoleTerminalLoader";
-        
+
         [YamlMember(Alias = "java-path", Description = "指定启动 mirai 所使用的 java 可执行文件路径")]
         public string javaPath { get; set; } = "java";
-        
+
         [YamlMember(Alias = "extra-arguments", Description = "启动 mirai 时额外添加的 jvm 参数")]
         public string extArgs { get; set; } = "-Dfile.encoding=utf-8";
 
