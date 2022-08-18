@@ -25,7 +25,7 @@
     </UserControl.Resources>
     <Grid>
         <Rectangle x:Name="BgRect" Fill="#40000000" Opacity="1"/>
-        <Border VerticalAlignment="Center" Background="#232324" BorderBrush="#FFF000" Padding="0,30,0,20" BorderThickness="0,1,0,2">
+        <Border x:Name="BgMsgBox" VerticalAlignment="Center" Background="#232324" BorderBrush="#FFF000" Padding="0,30,0,20" BorderThickness="0,1,0,2">
             <Grid HorizontalAlignment="Center">
                 <Grid HorizontalAlignment="Center" Margin="0,0,0,45" MaxHeight="{Binding ElementName=BgRect, Path=ActualHeight, Converter={StaticResource MathMultiplyConverter}, ConverterParameter=0.5}">
                     <TextBlock x:Name="MsgTitle" Text="" Foreground="#EEE" FontSize="32" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Top" Padding="0,0,0,2"/>
@@ -37,11 +37,11 @@
                         </TextBlock>
                     </ScrollViewer>
                 </Grid>
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom">
-                    <Button x:Name="BtnOK" Content="确定" Style="{StaticResource MsgBtn}"/>
-                    <Button x:Name="BtnYes" Content="是" Style="{StaticResource MsgBtn}"/>
-                    <Button x:Name="BtnNo" Content="否" Style="{StaticResource MsgBtn}"/>
-                    <Button x:Name="BtnCancel" Content="取消" Style="{StaticResource MsgBtn}"/>
+                <StackPanel x:Name="StackButton" Orientation="Horizontal" VerticalAlignment="Bottom">
+                    <Button x:Name="BtnOK" Content="确定" Style="{StaticResource MsgBtn}" Click="BtnOK_Click"/>
+                    <Button x:Name="BtnYes" Content="是" Style="{StaticResource MsgBtn}" Click="BtnYes_Click"/>
+                    <Button x:Name="BtnNo" Content="否" Style="{StaticResource MsgBtn}" Click="BtnNo_Click"/>
+                    <Button x:Name="BtnCancel" Content="取消" Style="{StaticResource MsgBtn}" Click="BtnCancel_Click"/>
                 </StackPanel>
             </Grid>
         </Border>
