@@ -21,6 +21,10 @@ namespace GraphicalMirai
                 instance.Title = title;
             }
         }
+        public static void Msg(string content, string title, MessageBoxButton button = MessageBoxButton.OK)
+        {
+            instance?.msgBox.ShowAsync(content, title, button);
+        }
         public MainWindow()
         {
             InitializeComponent();

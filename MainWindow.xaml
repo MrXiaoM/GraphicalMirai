@@ -18,5 +18,6 @@
         Title="GraphicalMirai" Loaded="Window_Loaded" Closing="Window_Closing" Icon="/mirai.ico">
     <Grid x:Name="grid">
         <Frame x:Name="frame" NavigationUIVisibility="Hidden" Navigated="frame_Navigated"/>
+        <local:InnerMessageBox x:Name="msgBox"/>
     </Grid>
 </Window>

@@ -11,7 +11,7 @@
      TextElement.FontSize="13"
      TextOptions.TextFormattingMode="Ideal"
      TextOptions.TextRenderingMode="Auto"
-     Background="{DynamicResource MaterialDesignPaper}"
+     Background="Transparent"
      FontFamily="{DynamicResource SourceHanSans}"
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
@@ -26,14 +26,15 @@
     <Grid>
         <Rectangle x:Name="BgRect" Fill="#40000000" Opacity="1"/>
         <Border x:Name="BgMsgBox" VerticalAlignment="Center" Background="#232324" BorderBrush="#FFF000" Padding="0,30,0,20" BorderThickness="0,1,0,2">
-            <Grid HorizontalAlignment="Center">
+            <ScrollViewer VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Hidden">
+            <Grid x:Name="BgMsgBoxInner" VerticalAlignment="Top" HorizontalAlignment="Center">
                 <Grid HorizontalAlignment="Center" Margin="0,0,0,45" MaxHeight="{Binding ElementName=BgRect, Path=ActualHeight, Converter={StaticResource MathMultiplyConverter}, ConverterParameter=0.5}">
                     <TextBlock x:Name="MsgTitle" Text="" Foreground="#EEE" FontSize="32" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Top" Padding="0,0,0,2"/>
                     <ScrollViewer Margin="{Binding ElementName=MsgTitle, Path=ActualHeight, Converter={StaticResource MarginConverter}, ConverterParameter=0;x;0;0}" 
                                   MaxWidth="{Binding ElementName=BgRect, Path=ActualWidth, Converter={StaticResource MathMultiplyConverter}, ConverterParameter=0.7}"
                                   HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" materialDesign:ScrollViewerAssist.CornerRectangleVisibility="Hidden">
                         <TextBlock x:Name="MsgContent" Foreground="#FFF" HorizontalAlignment="Left" VerticalAlignment="Top" Padding="2">
-                            
+                        
                         </TextBlock>
                     </ScrollViewer>
                 </Grid>
@@ -44,6 +45,7 @@
                     <Button x:Name="BtnCancel" Content="取消" Style="{StaticResource MsgBtn}" Click="BtnCancel_Click"/>
                 </StackPanel>
             </Grid>
+            </ScrollViewer>
         </Border>
 
     </Grid>

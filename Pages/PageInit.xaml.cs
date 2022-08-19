@@ -238,7 +238,7 @@ namespace GraphicalMirai
 
         private void BtnOptions_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("WIP");
+            MainWindow.Msg("WIP", "");
         }
 
         private void BtnInstall_Click(object sender, RoutedEventArgs e)

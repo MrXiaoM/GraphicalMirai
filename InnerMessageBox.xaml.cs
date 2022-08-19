@@ -1,17 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using System.Windows.Media.Animation;
 
 namespace GraphicalMirai
 {
@@ -39,11 +34,82 @@ namespace GraphicalMirai
     {
         AutoResetEvent notice = new(false);
         MessageBoxResult result = MessageBoxResult.None;
+        DoubleAnimation AniOptFadeIn = new()
+        {
+            From = 0,
+            To = 1,
+            Duration = new(TimeSpan.FromMilliseconds(200)),
+            AccelerationRatio = 0.6,
+            DecelerationRatio = 0.3
+        };
+        DoubleAnimation AniOptFadeOut = new()
+        {
+            From = 1,
+            To = 0,
+            Duration = new(TimeSpan.FromMilliseconds(200)),
+            AccelerationRatio = 0.6,
+            DecelerationRatio = 0.3
+        };
+        Storyboard AniIn
+        {
+            get
+            {
+                Visibility = Visibility.Hidden;
+                BgMsgBox.Height = double.NaN;
+                BgMsgBox.UpdateLayout();
+                Thickness padding = BgMsgBox.Padding;
+                double height = BgMsgBoxInner.ActualHeight + padding.Top + padding.Bottom;
+                Storyboard storyboard = new();
+                DoubleAnimation aniIn = new()
+                {
+                    From = 0,
+                    To = height,
+                    Duration = new(TimeSpan.FromMilliseconds(200)),
+                    AccelerationRatio = 0.6,
+                    DecelerationRatio = 0.3
+                };
+                Storyboard.SetTarget(aniIn, BgMsgBox);
+                Storyboard.SetTargetProperty(aniIn, new("Height"));
+                storyboard.Children.Add(AniOptFadeIn);
+                storyboard.Children.Add(aniIn);
+                storyboard.Completed += delegate { BgMsgBox.Height = double.NaN; };
+                BgMsgBox.Height = 0;
+                Visibility = Visibility.Visible;
+                return storyboard;
+            }
+        }
+        Storyboard AniOut
+        {
+            get
+            {
+                double height = BgMsgBox.ActualHeight;
+                Storyboard storyboard = new();
+                DoubleAnimation aniOut = new()
+                {
+                    From = height,
+                    To = 0,
+                    Duration = new(TimeSpan.FromMilliseconds(200)),
+                    AccelerationRatio = 0.6,
+                    DecelerationRatio = 0.3
+                };
+                Storyboard.SetTarget(aniOut, BgMsgBox);
+                Storyboard.SetTargetProperty(aniOut, new("Height"));
+                storyboard.Children.Add(AniOptFadeOut);
+                storyboard.Children.Add(aniOut);
+                storyboard.Completed += delegate { Visibility = Visibility.Hidden;BgMsgBox.Height = double.NaN; };
+                return storyboard;
+            }
+        }
         public InnerMessageBox()
         {
             InitializeComponent();
+            Visibility = Visibility.Hidden;
             BgRect.Opacity = 0;
             BgMsgBox.Height = 0;
+            Storyboard.SetTarget(AniOptFadeIn, BgRect);
+            Storyboard.SetTargetProperty(AniOptFadeIn, new("Opacity"));
+            Storyboard.SetTarget(AniOptFadeOut, BgRect);
+            Storyboard.SetTargetProperty(AniOptFadeOut, new("Opacity"));
         }
 
         private void SetButton(Button button, bool visible)
@@ -64,14 +130,15 @@ namespace GraphicalMirai
             SetButton(BtnNo, yesno);
         }
 
-        public MessageBoxResult Show(string content, string title, MessageBoxButton button = MessageBoxButton.OK)
+        public async Task<MessageBoxResult> ShowAsync(string content, string title, MessageBoxButton button = MessageBoxButton.OK)
         {
-            return Show(new Inline[] { new Run(content) }, title, button);
+            return await ShowAsync(new Inline[] { new Run(content) }, title, button);
         }
-        public MessageBoxResult Show(Inline[] content, string title, MessageBoxButton button = MessageBoxButton.OK)
+        public async Task<MessageBoxResult> ShowAsync(Inline[] content, string title, MessageBoxButton button = MessageBoxButton.OK)
         {
             Dispatcher.Invoke(() =>
             {
+                Visibility = Visibility.Visible;
                 SetButton(button);
                 MsgTitle.Text = title;
                 MsgContent.Inlines.Clear();
@@ -80,7 +147,7 @@ namespace GraphicalMirai
             // TODO 执行动画
             ShowMessageBg();
             // 等待响应
-            notice.WaitOne();
+            await Task.Run(() => notice.WaitOne());
             notice.Reset();
             HideMessageBg();
             return result;
@@ -88,15 +155,15 @@ namespace GraphicalMirai
 
         public void ShowMessageBg()
         {
+            IsHitTestVisible = true;
             StackButton.IsEnabled = true;
-            BgRect.Opacity = 1;
-            BgMsgBox.Height = double.NaN;
+            BeginStoryboard(AniIn);
         }
         public void HideMessageBg()
         {
+            IsHitTestVisible = false;
             StackButton.IsEnabled = false;
-            BgRect.Opacity = 0;
-            BgMsgBox.Height = 0;
+            BeginStoryboard(AniOut);
         }
 
         private void BtnOK_Click(object sender, RoutedEventArgs e)
