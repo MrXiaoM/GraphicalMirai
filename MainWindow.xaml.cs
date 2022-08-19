@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
 
@@ -10,6 +11,7 @@ namespace GraphicalMirai
     public partial class MainWindow : Window
     {
         private static MainWindow? instance;
+        public static MainWindow? Instance => instance;
         public static void Navigate(object content)
         {
             instance?.frame.Navigate(content);
@@ -21,9 +23,9 @@ namespace GraphicalMirai
                 instance.Title = title;
             }
         }
-        public static void Msg(string content, string title, MessageBoxButton button = MessageBoxButton.OK)
+        public static InnerMessageBox? Msg
         {
-            instance?.msgBox.ShowAsync(content, title, button);
+            get { return instance?.msgBox; }
         }
         public MainWindow()
         {

@@ -58,7 +58,8 @@ namespace GraphicalMirai
                 BgMsgBox.Height = double.NaN;
                 BgMsgBox.UpdateLayout();
                 Thickness padding = BgMsgBox.Padding;
-                double height = BgMsgBoxInner.ActualHeight + padding.Top + padding.Bottom;
+                BgMsgBoxInner.UpdateLayout();
+                double height = BgMsgBoxInner.DesiredSize.Height + padding.Top + padding.Bottom;
                 Storyboard storyboard = new();
                 DoubleAnimation aniIn = new()
                 {
@@ -144,7 +145,14 @@ namespace GraphicalMirai
                 MsgContent.Inlines.Clear();
                 MsgContent.Inlines.AddRange(content);
             });
-            // TODO 执行动画
+            await Task.Run(async () => {
+                // 似乎在窗口 Loading 期间不能计算高度，这时执行动画会错位
+                // 故等待到高度不为 0 时再执行动画
+                while (BgMsgBoxInner.ActualHeight == 0)
+                {
+                    await Task.Delay(200);
+                }
+            });
             ShowMessageBg();
             // 等待响应
             await Task.Run(() => notice.WaitOne());

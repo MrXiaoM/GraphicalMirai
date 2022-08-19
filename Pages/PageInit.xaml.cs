@@ -44,22 +44,24 @@ namespace GraphicalMirai
 
             if (Config.Instance.webp_codec_check && !CheckWebpCodec())
             {
-                MessageBoxResult result = MessageBox.Show(
+                MainWindow.Msg?.ShowAsync(
                     @"未找到 webp 解码器，插件中心的用户头像将无法显示！
 是否需要安装 Google Webp Codec?
-「是」  下载并安装
-「否」  不安装
-「取消」不再提醒", "GraphicalMirai", MessageBoxButton.YesNoCancel);
-                if (result == MessageBoxResult.Yes)
-                {
-                    DownloadWebpCodec();
-                }
-                else if (result == MessageBoxResult.Cancel)
-                {
-                    Config.Instance.webp_codec_check = false;
-                    Config.Save();
-                }
-            }/**/
+「是」	下载并安装
+「否」	不安装
+「取消」	不再提醒", "无法解码 Webp 图片", MessageBoxButton.YesNoCancel).ContinueWith(t =>
+                    {
+                        if (t.Result == MessageBoxResult.Yes)
+                        {
+                            DownloadWebpCodec();
+                        }
+                        else if (t.Result == MessageBoxResult.Cancel)
+                        {
+                            Config.Instance.webp_codec_check = false;
+                            Config.Save();
+                        }
+                    });
+            }
         }
 
         public bool CheckWebpCodec()
@@ -238,7 +240,7 @@ namespace GraphicalMirai
 
         private void BtnOptions_Click(object sender, RoutedEventArgs e)
         {
-            MainWindow.Msg("WIP", "");
+            MainWindow.Msg?.ShowAsync("WIP", "");
         }
 
         private void BtnInstall_Click(object sender, RoutedEventArgs e)
