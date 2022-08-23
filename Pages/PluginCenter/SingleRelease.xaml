@@ -26,10 +26,10 @@
                             </Image.Clip>
                         </Image>
                     </Border>
-                    <TextBlock x:Name="ReleaseInfo1" Text="MrXiaoM 发布于" VerticalAlignment="Center" Margin="24,0,0,0"/>
+                    <TextBlock x:Name="ReleaseInfo1" Text="ghost 发布于" VerticalAlignment="Center" Margin="24,0,0,0"/>
                 </Grid>
 
-                <TextBlock x:Name="ReleaseInfo2" Text="2022年08月01日 19:19:08" VerticalAlignment="Top" Margin="24,24,0,0"/>
+                <TextBlock x:Name="ReleaseInfo2" Text="----年--月--日 --:--:--" VerticalAlignment="Top" Margin="24,24,0,0"/>
             </Grid>
             <Grid HorizontalAlignment="Right">
                 <Grid.ColumnDefinitions>
@@ -39,11 +39,7 @@
                 <Button x:Name="BtnDownload" Content="添加选中文件到下载任务" Margin="0,15,15,0" HorizontalAlignment="Right" VerticalAlignment="Top" Click="BtnDownload_Click" Grid.ColumnSpan="2"/>
                 <ComboBox x:Name="ComboAssets" HorizontalAlignment="Right" VerticalAlignment="Top" Width="200" Margin="0,60,15,0" Grid.ColumnSpan="2"/>
             </Grid>
-            <FlowDocumentScrollViewer x:Name="ReleaseBody"
-                                    Margin="15,50,220,10"
-                                  VerticalAlignment="Top">
-            </FlowDocumentScrollViewer>
-
+            <FlowDocumentScrollViewer x:Name="ReleaseBody" FontFamily="{DynamicResource SourceHanSans}" Margin="15,50,220,10" VerticalAlignment="Top"/>
         </Grid>
 
     </Grid>

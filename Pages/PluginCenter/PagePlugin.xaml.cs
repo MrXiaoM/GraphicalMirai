@@ -25,6 +25,8 @@ namespace GraphicalMirai.Pages.PluginCenter
         public PagePlugin(int tid)
         {
             InitializeComponent();
+            AuthorTag.Visibility = Visibility.Hidden;
+            
             Dispatcher.BeginInvoke(Load, tid);
         }
 
@@ -80,23 +82,13 @@ namespace GraphicalMirai.Pages.PluginCenter
                             Text = tag.value
                         };
                         border.Child = tb;
-                        TextSubTitle.Inlines.Add(border);
-                        TextSubTitle.Inlines.Add(new Rectangle() { Width = 5 });
+                        TextTag.Inlines.Add(border);
+                        TextTag.Inlines.Add(new Rectangle() { Width = 5 });
                     }
-                    TextSubTitle.Inlines.Add(new LineBreak());
                 }
-                Border border1 = new Border();
-                TextBlock tb1 = new TextBlock()
-                {
-                    FontWeight = FontWeights.Bold,
-                    VerticalAlignment = VerticalAlignment.Center,
-                    Text = "发布于 " + time
-                };
-                border1.Child = tb1;
-                TextSubTitle.Inlines.Add(border1);
 
+                TextTime.Text = "发布于 " + time;
                 TextTitle.Text = topic.titleRaw;
-                TextTitle.ToolTip = TextTitle.Text;
                 temp.Text = content;
 
                 if (author != null)
@@ -117,6 +109,14 @@ namespace GraphicalMirai.Pages.PluginCenter
                             picture = "https://mirai.mamoe.net" + picture;
                         }
                         AuthorHeadimg.Source = new BitmapImage(new Uri(picture));
+                    }
+                    UGroup? group = author.selectedGroups.FirstOrDefault();
+                    if (group != null)
+                    {
+                        AuthorTag.Background = App.hexBrush(group.labelColor);
+                        AuthorTagText.Foreground = App.hexBrush(group.textColor);
+                        AuthorTagText.Text = group.userTitle;
+                        AuthorTag.Visibility = Visibility.Visible;
                     }
                 }
 

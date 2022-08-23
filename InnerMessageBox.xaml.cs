@@ -133,7 +133,28 @@ namespace GraphicalMirai
 
         public async Task<MessageBoxResult> ShowAsync(string content, string title, MessageBoxButton button = MessageBoxButton.OK)
         {
-            return await ShowAsync(new Inline[] { new Run(content) }, title, button);
+            Dispatcher.Invoke(() =>
+            {
+                Visibility = Visibility.Visible;
+                SetButton(button);
+                MsgTitle.Text = title;
+                MsgContent.Inlines.Clear();
+                MsgContent.Inlines.Add(content);
+            });
+            await Task.Run(async () => {
+                // 似乎在窗口 Loading 期间不能计算高度，这时执行动画会错位
+                // 故等待到高度不为 0 时再执行动画
+                while (BgMsgBoxInner.ActualHeight == 0)
+                {
+                    await Task.Delay(200);
+                }
+            });
+            ShowMessageBg();
+            // 等待响应
+            await Task.Run(() => notice.WaitOne());
+            notice.Reset();
+            HideMessageBg();
+            return result;
         }
         public async Task<MessageBoxResult> ShowAsync(Inline[] content, string title, MessageBoxButton button = MessageBoxButton.OK)
         {
@@ -163,15 +184,21 @@ namespace GraphicalMirai
 
         public void ShowMessageBg()
         {
-            IsHitTestVisible = true;
-            StackButton.IsEnabled = true;
-            BeginStoryboard(AniIn);
+            Dispatcher.Invoke(() =>
+            {
+                IsHitTestVisible = true;
+                StackButton.IsEnabled = true;
+                BeginStoryboard(AniIn);
+            });
         }
         public void HideMessageBg()
         {
-            IsHitTestVisible = false;
-            StackButton.IsEnabled = false;
-            BeginStoryboard(AniOut);
+            Dispatcher.Invoke(() =>
+            {
+                IsHitTestVisible = false;
+                StackButton.IsEnabled = false;
+                BeginStoryboard(AniOut);
+            });
         }
 
         private void BtnOK_Click(object sender, RoutedEventArgs e)

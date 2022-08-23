@@ -20,9 +20,11 @@
     <Grid>
         <materialDesign:Card VerticalAlignment="Top" Height="120" Background="#24ACF2">
             <Grid>
-                <TextBlock x:Name="TextTitle" Text="" Margin="20,20,200,20" VerticalAlignment="Top" FontSize="24" FontWeight="Bold" Foreground="#EEE" TextTrimming="WordEllipsis"/>
-                <TextBlock x:Name="TextSubTitle" Text="" Margin="22,52,200,20" VerticalAlignment="Top" FontSize="12" FontWeight="Bold" Foreground="#EEE"/>
-                <Border Background="#EEEEEE" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10" Width="60" Height="60" CornerRadius="35">
+                <TextBlock x:Name="TextTitle" Text="" Margin="20,20,220,20" VerticalAlignment="Top" FontSize="24" FontWeight="Bold" Foreground="#EEE" TextTrimming="WordEllipsis" ToolTip="{Binding ElementName=TextTitle, Path=Text}"/>
+                <TextBlock x:Name="TextTag" Text="" Margin="22,52,220,20" VerticalAlignment="Top" FontSize="12" FontWeight="Bold" Foreground="#EEE"/>
+                <TextBlock x:Name="TextTime" Text="" Margin="22,76,220,20" VerticalAlignment="Top" FontSize="12" FontWeight="Bold" Foreground="#EEE"/>
+
+                <Border Background="#EEEEEE" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,10,20,0" Width="60" Height="60" CornerRadius="35">
                     <Grid>
                         <TextBlock x:Name="AuthorHeadimgSimple" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="36" Foreground="#232323"/>
                         <Image x:Name="AuthorHeadimg" Width="60" Height="60" Stretch="Uniform">
@@ -32,9 +34,12 @@
                         </Image>
                     </Grid>
                 </Border>
-                <TextBlock x:Name="AuthorName" Foreground="#FFF" HorizontalAlignment="Right" VerticalAlignment="Top" TextAlignment="Right" Width="120" Margin="0,15,75,0" FontSize="20"/>
-                <Grid Margin="20,20,20,20" VerticalAlignment="Top" Width="180" HorizontalAlignment="Right">
-                    
+                <TextBlock x:Name="AuthorName" Foreground="#FFF" HorizontalAlignment="Right" VerticalAlignment="Top" TextAlignment="Right" Width="120" Margin="0,15,90,0" FontSize="20"/>
+                
+                <Grid Margin="0,70,0,0" VerticalAlignment="Top" Width="100" HorizontalAlignment="Right">
+                    <Border x:Name="AuthorTag" Background="#FFF" HorizontalAlignment="Center" VerticalAlignment="Top"  CornerRadius="3">
+                        <TextBlock x:Name="AuthorTagText" Padding="7,2,7,2" Text="称号"/>
+                    </Border>
                 </Grid>
             </Grid>
         </materialDesign:Card>

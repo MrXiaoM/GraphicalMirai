@@ -25,7 +25,7 @@
     </UserControl.Resources>
     <Grid>
         <Rectangle x:Name="BgRect" Fill="#40000000" Opacity="1"/>
-        <Border x:Name="BgMsgBox" VerticalAlignment="Center" Background="#232324" BorderBrush="#FFF000" Padding="0,30,0,20" BorderThickness="0,1,0,2">
+        <Border x:Name="BgMsgBox" VerticalAlignment="Center" Background="#37474f" BorderBrush="#FFF000" Padding="0,30,0,20" BorderThickness="0,1,0,2">
             <ScrollViewer VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Hidden">
             <Grid x:Name="BgMsgBoxInner" VerticalAlignment="Top" HorizontalAlignment="Center">
                 <Grid HorizontalAlignment="Center" Margin="0,0,0,45" MaxHeight="{Binding ElementName=BgRect, Path=ActualHeight, Converter={StaticResource MathMultiplyConverter}, ConverterParameter=0.5}">

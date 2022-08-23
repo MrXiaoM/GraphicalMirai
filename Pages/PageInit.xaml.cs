@@ -110,7 +110,7 @@ namespace GraphicalMirai
             Process proc = new Process();
             proc.StartInfo.FileName = exepath;
             proc.Start();
-            MessageBox.Show("下载完成。已为你打开安装包，请手动安装 Google Webp Codec\n安装后重启 GraphicalMirai 生效");
+            await MainWindow.Msg?.ShowAsync("已为你打开安装包，请手动安装 Google Webp Codec\n安装后重启 GraphicalMirai 生效", "下载完成");
             // 已知使用提取的 msi 来安装不会注册到 WIC，导致还是无法查看 webp 图片，故移除该功能
             /*
             string msipath = App.path("WebpCodecSetup.msi");
