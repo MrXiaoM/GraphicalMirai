@@ -82,7 +82,7 @@ namespace GraphicalMirai.Pages.PluginCenter
 
                 TextTime.Text = "发布于 " + time;
                 TextTitle.Text = topic.titleRaw;
-                temp.Text = content + "\n\n" + xaml;
+                temp.Text = App.FormatXaml(xaml);
 
                 if (author != null)
                 {

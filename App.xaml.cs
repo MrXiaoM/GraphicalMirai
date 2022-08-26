@@ -3,7 +3,9 @@ using System;
 using System.IO;
 using System.Text;
 using System.Windows;
+using System.Windows.Markup;
 using System.Windows.Media;
+using System.Xml;
 
 namespace GraphicalMirai
 {
@@ -158,6 +160,18 @@ namespace GraphicalMirai
             string result = "";
             foreach (byte b in System.Security.Cryptography.MD5.Create().ComputeHash(Encoding.UTF8.GetBytes(s))) result += b.ToString("x2");
             return result;
+        }
+
+        public static string FormatXaml(string xaml)
+        {
+            XmlWriterSettings settings = new XmlWriterSettings();
+            settings.Indent = true;
+            settings.IndentChars = "    ";
+            settings.NewLineOnAttributes = true;
+            StringBuilder sb = new StringBuilder();
+            XmlWriter xmlWriter = XmlWriter.Create(sb, settings);
+            XamlWriter.Save(XamlReader.Parse(xaml), xmlWriter);
+            return sb.ToString();
         }
     }
 }
