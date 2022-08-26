@@ -33,7 +33,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Markdown.Xaml" Version="1.0.0" />
+    <PackageReference Include="Markdig" Version="0.30.3" />
     <PackageReference Include="MaterialDesignThemes" Version="4.5.0" />
     <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.9" />
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1293.44" />
@@ -51,6 +51,10 @@
     <Page Update="Pages\PluginCenter\SingleRelease.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
     </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="HtmlToXaml\" />
   </ItemGroup>
 
 </Project>

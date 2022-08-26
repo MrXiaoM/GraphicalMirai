@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
+using System.Windows.Markup;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
@@ -43,16 +44,6 @@ namespace GraphicalMirai.Pages.PluginCenter
             bool isDeleted = topic.deleted == 1;
             string time = App.FormatTimestamp(topic.timestamp);
             string content = topic.ToString();
-            // 技术问题，需要移除所有 target="*" 避免打开新窗口
-            // 并将链接重定向到系统浏览器
-            content = regexLink.Replace(content, new MatchEvaluator((m) =>
-            {
-                return string.Join("", m.Groups
-                             .OfType<Group>()
-                             .Select((g, i) => i == 2 ? "" : g.Value)
-                             .Skip(1)
-                             .ToArray());
-            }));
             // 将相对于网站根目录的图片路径替换成链接
             content = regexImage.Replace(content, new MatchEvaluator((m) =>
             {
@@ -62,6 +53,8 @@ namespace GraphicalMirai.Pages.PluginCenter
                              .Skip(1)
                              .ToArray());
             }));
+
+            string xaml = HtmlToXaml.HtmlToXamlConverter.ConvertHtmlToXaml(content, true);
 
             CUser? author = topic.posts.Count > 0 ? topic.posts[0].user : null;
             Dispatcher.Invoke(() =>
@@ -89,7 +82,7 @@ namespace GraphicalMirai.Pages.PluginCenter
 
                 TextTime.Text = "发布于 " + time;
                 TextTitle.Text = topic.titleRaw;
-                temp.Text = content;
+                temp.Text = content + "\n\n" + xaml;
 
                 if (author != null)
                 {
@@ -119,7 +112,10 @@ namespace GraphicalMirai.Pages.PluginCenter
                         AuthorTag.Visibility = Visibility.Visible;
                     }
                 }
-
+                FlowDocument doc = (FlowDocument)XamlReader.Parse(xaml);
+                doc.LineHeight = 1;
+                doc.PagePadding = new Thickness(10);
+                flowInfo.Document = doc;
                 temp.Text += "\n\n额外调试信息:\n  Github/Gitee 链接列表:\n    " + string.Join("\n    ", topic.posts[0].repo().Select(r => r.ToString()).ToArray());
             });
 
@@ -186,15 +182,6 @@ namespace GraphicalMirai.Pages.PluginCenter
         private void BtnBack_Click(object sender, RoutedEventArgs e)
         {
             MainWindow.Navigate(App.PagePluginCenter);
-        }
-
-        private void webInfo_NavigationStarting(object sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs e)
-        {
-            if (e.Uri.StartsWith("https://") || e.Uri.StartsWith("http://"))
-            {
-                App.openUrl(e.Uri);
-                e.Cancel = true;
-            }
         }
     }
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
+using System.Windows.Markup;
 using System.Windows.Media.Imaging;
 using static Pages.PluginCenter.IDevPlatformApi.Release;
 
@@ -51,9 +52,9 @@ namespace GraphicalMirai.Pages.PluginCenter
                 ComboAssets.SelectedItem = ComboAssets.Items.OfType<ComboBoxItem>()
                     .FirstOrDefault(i => ((string)((ComboBoxItem)i).Content).EndsWith(suffix), ComboAssets.Items[0]);
             }
-
-            Markdown.Xaml.TextToFlowDocumentConverter md = new() { Markdown = new Markdown.Xaml.Markdown() };
-            ReleaseBody.Document = new Markdown.Xaml.Markdown().Transform(release.Body);
+            string html = Markdig.Markdown.ToHtml(release.Body);
+            string xaml = HtmlToXaml.HtmlToXamlConverter.ConvertHtmlToXaml(html, true);
+            ReleaseBody.Document = (FlowDocument)XamlReader.Parse(xaml);
             ReleaseBody.Document.LineHeight = 1;
             ReleaseBody.Document.TextAlignment = TextAlignment.Left;
         }

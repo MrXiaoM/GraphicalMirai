@@ -47,6 +47,7 @@
             <TabItem Header="简介">
                 <Grid>
                     <wv2:WebView2 x:Name="webInfo" NavigationStarting="webInfo_NavigationStarting"/>
+                    <FlowDocumentScrollViewer x:Name="flowInfo" VerticalScrollBarVisibility="Visible"/>
                 </Grid>
             </TabItem>
             <TabItem Header="下载">

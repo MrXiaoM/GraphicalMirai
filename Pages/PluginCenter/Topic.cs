@@ -25,15 +25,11 @@ namespace GraphicalMirai.Pages.PluginCenter
         /// <returns></returns>
         public override string ToString()
         {
-            string header = _header.ToString();
-            string body = "<body style=\"padding:15px;\">\n";
             if (posts.Count > 0)
             {
-                body += posts[0].content ?? "<p>找不到帖子内容 :(</p>";
+                return posts[0].content ?? "<p>找不到帖子内容 :(</p>";
             }
-            body += "\n<style>.fold-content{display:block!important}</style>";
-            body += "\n</body>";
-            return "<!DOCTYPE html>\n<html>\n" + header + "\n" + body + "\n<html>";
+            return "";
         }
     }
     public class Repo
