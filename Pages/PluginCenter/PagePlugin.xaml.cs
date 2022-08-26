@@ -118,9 +118,6 @@ namespace GraphicalMirai.Pages.PluginCenter
                 flowInfo.Document = doc;
                 temp.Text += "\n\n额外调试信息:\n  Github/Gitee 链接列表:\n    " + string.Join("\n    ", topic.posts[0].repo().Select(r => r.ToString()).ToArray());
             });
-
-            await webInfo.EnsureCoreWebView2Async();
-            webInfo.NavigateToString(content);
             await refreshDownloadList();
         }
 

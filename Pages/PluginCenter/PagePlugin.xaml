@@ -4,7 +4,6 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:GraphicalMirai.Pages.PluginCenter"
-      xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
      TextElement.Foreground="{DynamicResource MaterialDesignBody}"
      TextElement.FontWeight="Regular"
@@ -46,7 +45,6 @@
         <TabControl Margin="0,120,0,0" Style="{DynamicResource MaterialDesignNavigatilRailTabControl}">
             <TabItem Header="简介">
                 <Grid>
-                    <wv2:WebView2 x:Name="webInfo" NavigationStarting="webInfo_NavigationStarting"/>
                     <FlowDocumentScrollViewer x:Name="flowInfo" VerticalScrollBarVisibility="Visible"/>
                 </Grid>
             </TabItem>
