@@ -19,14 +19,14 @@
             <Grid HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,95,15,15" MaxWidth="200">
 
                 <Grid HorizontalAlignment="Right" VerticalAlignment="Top" Height="20">
-                    <Border Background="#DDD" HorizontalAlignment="Left" VerticalAlignment="Center" Width="20" Height="20"  CornerRadius="10">
+                    <Border Background="#DDD" HorizontalAlignment="Left" VerticalAlignment="Center" Width="20" Height="20" BorderBrush="#232323" BorderThickness="0.25" CornerRadius="10">
                         <Image x:Name="AuthorHeadimg" Width="20" Height="20" Stretch="Uniform">
                             <Image.Clip>
-                                <EllipseGeometry RadiusX="10" RadiusY="10" Center="30,30"/>
+                                <EllipseGeometry RadiusX="10" RadiusY="10" Center="10,10"/>
                             </Image.Clip>
                         </Image>
                     </Border>
-                    <TextBlock x:Name="ReleaseInfo1" Text="ghost 发布于" VerticalAlignment="Center" Margin="24,0,0,0"/>
+                    <TextBlock x:Name="ReleaseInfo1" Text="ghost 发布于" VerticalAlignment="Center" Margin="25,0,0,0"/>
                 </Grid>
 
                 <TextBlock x:Name="ReleaseInfo2" Text="----年--月--日 --:--:--" VerticalAlignment="Top" Margin="24,24,0,0"/>
