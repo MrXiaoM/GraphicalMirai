@@ -980,6 +980,9 @@ namespace HtmlToXaml
             {
                 // Create xamlTableElement
                 XmlElement xamlTableElement = xamlParentElement.OwnerDocument.CreateElement(null, Xaml_Table, _xamlNamespace);
+                xamlTableElement.SetAttribute(Xaml_Table_CellSpacing, "0");
+                xamlTableElement.SetAttribute(Xaml_BorderBrush, "#000000");
+                xamlTableElement.SetAttribute(Xaml_BorderThickness, "0.5");
 
                 // Analyze table structure for column widths and rowspan attributes
                 ArrayList columnStarts = AnalyzeTableStructure(htmlTableElement, stylesheet);
@@ -2447,7 +2450,7 @@ namespace HtmlToXaml
                     break;
                 case "blockquote":
                     localProperties["padding"] = "20,5,0,5";
-                    localProperties["font-size"] = "12";
+                    localProperties["font-size"] = "14";
                     break;
 
                 case "h1":
@@ -2630,7 +2633,8 @@ namespace HtmlToXaml
             Debug.Assert(xamlTableCellElement.LocalName == Xaml_TableCell);
 
             // set default border thickness for xamlTableCellElement to enable gridlines
-            xamlTableCellElement.SetAttribute(Xaml_TableCell_BorderThickness, "1,1,1,1");
+            xamlTableCellElement.SetAttribute(Xaml_Padding, "4");
+            xamlTableCellElement.SetAttribute(Xaml_TableCell_BorderThickness, "0.5");
             xamlTableCellElement.SetAttribute(Xaml_TableCell_BorderBrush, Xaml_Brushes_Black);
             string rowSpanString = GetAttribute((XmlElement)htmlChildNode, "rowspan");
             if (rowSpanString != null)
@@ -2684,6 +2688,7 @@ namespace HtmlToXaml
         public const string Xaml_BorderThickness = "BorderThickness";
 
         public const string Xaml_Table = "Table";
+        public const string Xaml_Table_CellSpacing = "CellSpacing";
 
         public const string Xaml_TableColumn = "TableColumn";
         public const string Xaml_TableRowGroup = "TableRowGroup";
