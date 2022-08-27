@@ -57,8 +57,8 @@ namespace GraphicalMirai.Pages.PluginCenter
             string xaml = HtmlToXaml.HtmlToXamlConverter.ConvertHtmlToXaml(content, true);
             
             FlowDocument doc = (FlowDocument)XamlReader.Parse(xaml);
-            doc.LineHeight = 1;
             doc.PagePadding = new Thickness(10);
+            doc.FontFamily = (System.Windows.Media.FontFamily) Application.Current.Resources["SourceHanSans"];
             flowInfo.Document = doc;
 
             CUser? author = topic.posts.Count > 0 ? topic.posts[0].user : null;

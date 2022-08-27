@@ -45,7 +45,7 @@ namespace HtmlToXaml
             _lookAheadCharacterCode = _inputStringReader.Read();
             _lookAheadCharacter = (char)_lookAheadCharacterCode;
             _previousCharacter = ' ';
-            _ignoreNextWhitespace = true;
+            _ignoreNextWhitespace = false;
             _nextToken = new StringBuilder(100);
             _nextTokenType = HtmlTokenType.Text;
             // read the first character so we have some value for the NextCharacter property
@@ -132,25 +132,7 @@ namespace HtmlToXaml
                     }
                     else
                     {
-                        if (this.NextCharacter <= ' ')
-                        {
-                            //  Respect xml:preserve or its equivalents for whitespace processing
-                            if (_ignoreNextWhitespace)
-                            {
-                                // Ignore repeated whitespaces
-                            }
-                            else
-                            {
-                                // Treat any control character sequence as one whitespace
-                                _nextToken.Append(' ');
-                            }
-                            _ignoreNextWhitespace = true; // and keep ignoring the following whitespaces
-                        }
-                        else
-                        {
-                            _nextToken.Append(this.NextCharacter);
-                            _ignoreNextWhitespace = false;
-                        }
+                        _nextToken.Append(this.NextCharacter);
                         this.GetNextCharacter();
                     }
                 }

@@ -62,6 +62,8 @@ namespace HtmlToXaml
             XmlDocument xamlTree = new XmlDocument();
             XmlElement xamlFlowDocumentElement = xamlTree.CreateElement(null, rootElementName, _xamlNamespace);
 
+            xamlFlowDocumentElement.SetAttribute("LineHeight", "4");
+
             // Extract style definitions from all STYLE elements in the document
             CssStylesheet stylesheet = new CssStylesheet(htmlElement);
 
@@ -598,6 +600,7 @@ namespace HtmlToXaml
         // Adds a text run to a xaml tree
         private static void AddTextRun(XmlElement xamlElement, string textData)
         {
+            /*
             // Remove control characters
             for (int i = 0; i < textData.Length; i++)
             {
@@ -606,14 +609,18 @@ namespace HtmlToXaml
                     textData = textData.Remove(i--, 1);  // decrement i to compensate for character removal
                 }
             }
-
-            // Replace No-Breaks by spaces (160 is a code of &nbsp; entity in html)
-            //  This is a work around the bug in Avalon which does not render nbsp.
-            textData = textData.Replace((char)160, ' ');
+            */
 
             if (textData.Length > 0)
             {
-                xamlElement.AppendChild(xamlElement.OwnerDocument.CreateTextNode(textData));
+                if (xamlElement.LocalName == Xaml_Run)
+                {
+                    xamlElement.SetAttribute("Text", textData);
+                }
+                else
+                {
+                    xamlElement.AppendChild(xamlElement.OwnerDocument.CreateTextNode(textData));
+                }
             }
         }
 
@@ -782,7 +789,7 @@ namespace HtmlToXaml
 
             // Create Xaml List element
             XmlElement xamlListElement = xamlParentElement.OwnerDocument.CreateElement(null, Xaml_List, _xamlNamespace);
-
+            xamlListElement.SetAttribute(HtmlToXamlConverter.Xaml_Margin, "10,0,0,0");
             // Set default list markers
             if (htmlListElementName == "ol")
             {
@@ -2098,6 +2105,9 @@ namespace HtmlToXaml
                         //  Decide what to do with width and height propeties
                         break;
 
+                    case "margin":
+                        xamlElement.SetAttribute(Xaml_Margin, (string?)propertyEnumerator.Value);
+                        break;
                     case "margin-top":
                         marginSet = true;
                         marginTop = (string)propertyEnumerator.Value;
@@ -2115,6 +2125,9 @@ namespace HtmlToXaml
                         marginLeft = (string)propertyEnumerator.Value;
                         break;
 
+                    case "padding":
+                        xamlElement.SetAttribute(Xaml_Padding, (string?)propertyEnumerator.Value);
+                        break;
                     case "padding-top":
                         paddingSet = true;
                         paddingTop = (string)propertyEnumerator.Value;
@@ -2413,30 +2426,58 @@ namespace HtmlToXaml
                     //  Set default div properties
                     break;
                 case "pre":
-                    localProperties["font-family"] = "Courier New"; // renders text in a fixed-width font
+                    localProperties["background-color"] = "#f3f3f3";
                     localProperties["font-size"] = Xaml_FontSize_XXSmall;
                     localProperties["text-align"] = "Left";
+                    localProperties["padding"] = "9.5";
+                    break;
+                case "code":
+                    if (htmlElement.ParentNode?.LocalName == "pre")
+                    {
+                        localProperties["background-color"] = "#f3f3f3";
+                        localProperties["color"] = "#444444";
+                    }
+                    else
+                    {
+                        localProperties["background-color"] = "#f9f2f4";
+                        localProperties["font-size"] = "14.4";
+                        localProperties["color"] = "#c7254e";
+                        htmlElement.InnerText = " " + htmlElement.InnerText + " ";
+                    }
                     break;
                 case "blockquote":
-                    localProperties["margin-left"] = "16";
+                    localProperties["padding"] = "20,5,0,5";
+                    localProperties["font-size"] = "12";
                     break;
 
                 case "h1":
+                    localProperties["margin"] = "0,10,0,5";
+                    localProperties["font-weight"] = "bold";
                     localProperties["font-size"] = Xaml_FontSize_XXLarge;
                     break;
                 case "h2":
+                    localProperties["margin"] = "0,10,0,5";
+                    localProperties["font-weight"] = "bold";
                     localProperties["font-size"] = Xaml_FontSize_XLarge;
                     break;
                 case "h3":
+                    localProperties["margin"] = "0,10,0,5";
+                    localProperties["font-weight"] = "bold";
                     localProperties["font-size"] = Xaml_FontSize_Large;
                     break;
                 case "h4":
+                    localProperties["margin"] = "0,10,0,5";
+                    localProperties["font-weight"] = "bold";
                     localProperties["font-size"] = Xaml_FontSize_Medium;
                     break;
                 case "h5":
+                    localProperties["margin"] = "0,10,0,5";
+                    localProperties["font-weight"] = "bold";
                     localProperties["font-size"] = Xaml_FontSize_Small;
                     break;
                 case "h6":
+                    localProperties["margin"] = "0,10,0,5";
+                    localProperties["font-weight"] = "bold";
                     localProperties["font-size"] = Xaml_FontSize_XSmall;
                     break;
                 // List properties
