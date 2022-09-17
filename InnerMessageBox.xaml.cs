@@ -32,8 +32,7 @@ namespace GraphicalMirai
     /// </summary>
     public partial class InnerMessageBox : UserControl
     {
-        AutoResetEvent notice = new(false);
-        MessageBoxResult result = MessageBoxResult.None;
+        TaskCompletionSource<MessageBoxResult>? task;
         DoubleAnimation AniOptFadeIn = new()
         {
             From = 0,
@@ -150,9 +149,9 @@ namespace GraphicalMirai
                 }
             });
             ShowMessageBg();
+            task = new TaskCompletionSource<MessageBoxResult>();
             // 等待响应
-            await Task.Run(() => notice.WaitOne());
-            notice.Reset();
+            MessageBoxResult result = await task.Task;
             HideMessageBg();
             return result;
         }
@@ -175,9 +174,9 @@ namespace GraphicalMirai
                 }
             });
             ShowMessageBg();
+            task = new TaskCompletionSource<MessageBoxResult>();
             // 等待响应
-            await Task.Run(() => notice.WaitOne());
-            notice.Reset();
+            MessageBoxResult result = await task.Task;
             HideMessageBg();
             return result;
         }
@@ -204,29 +203,25 @@ namespace GraphicalMirai
         private void BtnOK_Click(object sender, RoutedEventArgs e)
         {
             StackButton.IsEnabled = false;
-            result = MessageBoxResult.OK;
-            notice.Set();
+            task?.SetResult(MessageBoxResult.OK);
         }
 
         private void BtnYes_Click(object sender, RoutedEventArgs e)
         {
             StackButton.IsEnabled = false;
-            result = MessageBoxResult.Yes;
-            notice.Set();
+            task?.SetResult(MessageBoxResult.Yes);
         }
 
         private void BtnNo_Click(object sender, RoutedEventArgs e)
         {
             StackButton.IsEnabled = false;
-            result = MessageBoxResult.No;
-            notice.Set();
+            task?.SetResult(MessageBoxResult.No);
         }
 
         private void BtnCancel_Click(object sender, RoutedEventArgs e)
         {
             StackButton.IsEnabled = false;
-            result = MessageBoxResult.Cancel;
-            notice.Set();
+            task?.SetResult(MessageBoxResult.Cancel);
         }
     }
 }
