@@ -130,33 +130,16 @@ namespace GraphicalMirai
             SetButton(BtnNo, yesno);
         }
 
-        public async Task<MessageBoxResult> ShowAsync(string content, string title, MessageBoxButton button = MessageBoxButton.OK)
+        public Task<MessageBoxResult> ShowAsync(string content, string title, MessageBoxButton button = MessageBoxButton.OK)
         {
-            Dispatcher.Invoke(() =>
-            {
-                Visibility = Visibility.Visible;
-                SetButton(button);
-                MsgTitle.Text = title;
-                MsgContent.Inlines.Clear();
-                MsgContent.Inlines.Add(content);
-            });
-            await Task.Run(async () => {
-                // 似乎在窗口 Loading 期间不能计算高度，这时执行动画会错位
-                // 故等待到高度不为 0 时再执行动画
-                while (BgMsgBoxInner.ActualHeight == 0)
-                {
-                    await Task.Delay(200);
-                }
-            });
-            ShowMessageBg();
-            task = new TaskCompletionSource<MessageBoxResult>();
-            // 等待响应
-            MessageBoxResult result = await task.Task;
-            HideMessageBg();
-            return result;
+            return ShowAsync(new[] { new Run(content) }, title, button);
         }
         public async Task<MessageBoxResult> ShowAsync(Inline[] content, string title, MessageBoxButton button = MessageBoxButton.OK)
         {
+            if (!task?.Task.IsCompleted ?? false)
+            {
+                task?.SetResult(MessageBoxResult.None);
+            }
             Dispatcher.Invoke(() =>
             {
                 Visibility = Visibility.Visible;
