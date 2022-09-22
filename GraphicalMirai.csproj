@@ -21,6 +21,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="LoginSolver\**" />
+    <EmbeddedResource Remove="LoginSolver\**" />
+    <None Remove="LoginSolver\**" />
+    <Page Remove="LoginSolver\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="font\SourceHanSansHWSC-Bold.otf" />
     <None Remove="font\SourceHanSansHWSC-Regular.otf" />
     <None Remove="Pages\mirai_card_bg.jpg" />

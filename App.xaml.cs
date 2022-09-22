@@ -1,4 +1,5 @@
-﻿using GraphicalMirai.Pages;
+﻿using GraphicalMirai.LoginSolver;
+using GraphicalMirai.Pages;
 using System;
 using System.IO;
 using System.Text;
@@ -21,6 +22,8 @@ namespace GraphicalMirai
 
         public App() {
            
+            // 初始化登录处理器
+            LoginSolverSetup.Instance.Setup();
         }
 
         // 储存一些单例页面实例。
