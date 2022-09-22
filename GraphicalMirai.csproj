@@ -17,6 +17,7 @@
     <PackageReadmeFile>READE.md</PackageReadmeFile>
     <Description>mirai-console 的下载器/启动器/插件中心</Description>
     <Copyright>©MrXiaoM 2022 保留所有权利</Copyright>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>
@@ -33,12 +34,17 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="JNet" Version="0.0.3" />
     <PackageReference Include="Markdig" Version="0.30.3" />
     <PackageReference Include="MaterialDesignThemes" Version="4.5.0" />
     <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.9" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
     <PackageReference Include="YamlDotNet" Version="12.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="LoginSolver\LoginSolver.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -50,10 +56,6 @@
     <Page Update="Pages\PluginCenter\SingleRelease.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
     </Page>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="HtmlToXaml\" />
   </ItemGroup>
 
 </Project>
