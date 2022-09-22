@@ -22,9 +22,13 @@
 
   <ItemGroup>
     <Compile Remove="LoginSolver\**" />
+    <Compile Remove="NativeBridge\**" />
     <EmbeddedResource Remove="LoginSolver\**" />
+    <EmbeddedResource Remove="NativeBridge\**" />
     <None Remove="LoginSolver\**" />
+    <None Remove="NativeBridge\**" />
     <Page Remove="LoginSolver\**" />
+    <Page Remove="NativeBridge\**" />
   </ItemGroup>
 
   <ItemGroup>
