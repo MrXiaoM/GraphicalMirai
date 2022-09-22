@@ -14,10 +14,10 @@
      Background="{DynamicResource MaterialDesignPaper}"
      FontFamily="{DynamicResource SourceHanSans}"
         WindowStartupLocation="CenterScreen"
-        Width="800" Height="450" MinWidth="800" MinHeight="450"
+        SizeToContent="WidthAndHeight"
         Title="GraphicalMirai" Loaded="Window_Loaded" Closing="Window_Closing" Icon="/mirai.ico">
-    <Grid x:Name="grid">
-        <Frame x:Name="frame" NavigationUIVisibility="Hidden" Navigated="frame_Navigated"/>
+    <Grid x:Name="grid" MinWidth="800" MinHeight="450">
+        <Frame x:Name="frame"  NavigationUIVisibility="Hidden" Navigated="frame_Navigated"/>
         <local:InnerMessageBox x:Name="msgBox"/>
     </Grid>
 </Window>

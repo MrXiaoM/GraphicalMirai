@@ -43,12 +43,14 @@ namespace GraphicalMirai
             }
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            MinWidth = MinWidth + MinWidth - grid.ActualWidth;
-            MinHeight = MinHeight + MinHeight - grid.ActualHeight;
+            MinWidth = ActualWidth;
+            MinHeight = ActualHeight;
+            SizeToContent = SizeToContent.Manual;
             this.Activate();
         }
+
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
