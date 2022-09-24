@@ -17,25 +17,29 @@
     <PackageReadmeFile>READE.md</PackageReadmeFile>
     <Description>mirai-console 的下载器/启动器/插件中心</Description>
     <Copyright>©MrXiaoM 2022 保留所有权利</Copyright>
-    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="bridge-plugin\**" />
     <Compile Remove="LoginSolver\**" />
-    <Compile Remove="NativeBridge\**" />
+    <EmbeddedResource Remove="bridge-plugin\**" />
     <EmbeddedResource Remove="LoginSolver\**" />
-    <EmbeddedResource Remove="NativeBridge\**" />
+    <None Remove="bridge-plugin\**" />
     <None Remove="LoginSolver\**" />
-    <None Remove="NativeBridge\**" />
+    <Page Remove="bridge-plugin\**" />
     <Page Remove="LoginSolver\**" />
-    <Page Remove="NativeBridge\**" />
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="bridge.jar" />
     <None Remove="font\SourceHanSansHWSC-Bold.otf" />
     <None Remove="font\SourceHanSansHWSC-Regular.otf" />
     <None Remove="Pages\mirai_card_bg.jpg" />
     <None Remove="sample.webp" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="bridge.jar" />
   </ItemGroup>
 
   <ItemGroup>
