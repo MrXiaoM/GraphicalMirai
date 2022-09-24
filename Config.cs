@@ -43,18 +43,7 @@ namespace GraphicalMirai
             if (instance == null) instance = new Config();
             File.WriteAllText(ConfigPath, SERIALIZER.Serialize(instance));
         }
-        [YamlMember(Alias = "repositories", Description = "下载依赖/插件时使用的 Maven 仓库")]
-        public Dictionary<string, string> repositories { get; set; } = new()
-        {
-            { "https://maven.aliyun.com/repository/central", "阿里云 Maven 镜像" },
-            { "https://repo1.maven.org/maven2", "Maven Central" },
-        };
 
-        [YamlMember(Alias = "selected-mirai-version", Description = "指定要启动的 mirai 版本")]
-        public string? selectedMiraiVersion { get; set; }
-
-        [YamlIgnore]
-        public Version? SelectedMiraiVersion { get { return Version.Parse(selectedMiraiVersion); } }
 
         [YamlMember(Alias = "main-class", Description = "指定启动时 mirai 的主类")]
         public string mainClass { get; set; } = "net.mamoe.mirai.console.terminal.MiraiConsoleTerminalLoader";

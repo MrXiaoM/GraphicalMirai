@@ -47,7 +47,7 @@ namespace GraphicalMirai.Pages.PluginCenter
             }
             if (ComboAssets.Items.Count > 0)
             {
-                string suffix = Config.Instance.SelectedMiraiVersion >= Version.MIRAI_2 ? ".mirai2.jar" : ".mirai.jar";
+                string suffix = PackagesData.Instance.SelectedMiraiVersion >= Version.MIRAI_2 ? ".mirai2.jar" : ".mirai.jar";
                 // 按照当前 mirai 版本选择文件，或选择第一个文件
                 ComboAssets.SelectedItem = ComboAssets.Items.OfType<ComboBoxItem>()
                     .FirstOrDefault(i => ((string)((ComboBoxItem)i).Content).EndsWith(suffix), ComboAssets.Items[0]);

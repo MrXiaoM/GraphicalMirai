@@ -28,7 +28,8 @@ namespace GraphicalMirai
         {
             App.mkdir("mirai/plugins");
             Config config = Config.Instance;
-            foreach ((string url, string name) in config.repositories)
+            PackagesData packages = PackagesData.Instance;
+            foreach ((string url, string name) in packages.Repositories)
             {
                 ComboBoxItem item = new ComboBoxItem();
                 item.Content = name;
@@ -178,11 +179,12 @@ namespace GraphicalMirai
 
         private void UpdateInfo()
         {
-            string miraiVer = Config.Instance.selectedMiraiVersion ?? "未安装";
+            PackagesData packages = PackagesData.Instance;
+            string miraiVer = packages.selectedMiraiVersion ?? "未安装";
             int plugins = new DirectoryInfo(App.path("mirai/plugins")).GetFiles("*.jar").Length;
 
             TextInfo.Text = "已安装插件数量: $plugins\n已选择 mirai 版本: $mirai".Replace("$mirai", miraiVer).Replace("$plugins", plugins.ToString());
-            BtnStart.IsEnabled = Config.Instance.selectedMiraiVersion != null;
+            BtnStart.IsEnabled = packages.selectedMiraiVersion != null;
         }
 
         private string? GetRepoUrl()
@@ -313,8 +315,8 @@ namespace GraphicalMirai
                 // 同步
                 Dispatcher.Invoke(() =>
                 {
-                    Config.Instance.selectedMiraiVersion = (string)sel;
-                    Config.Save();
+                    PackagesData.Instance.selectedMiraiVersion = (string)sel;
+                    PackagesData.Save();
                     UpdateInfo();
                     downloadProcess.Width = 0;
                     downloadInfo.Text = "";
@@ -335,7 +337,8 @@ namespace GraphicalMirai
         {
             BtnStart.IsEnabled = false;
             Config config = Config.Instance;
-            string? ver = config.selectedMiraiVersion;
+            PackagesData packages = PackagesData.Instance;
+            string? ver = packages.selectedMiraiVersion;
             if (ver == null)
             {
                 MessageBox.Show("你没有指定启动版本");
