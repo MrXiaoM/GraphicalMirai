@@ -61,7 +61,5 @@
             <Button x:Name="BtnOptions" Content="选项" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="288" Height="30" Margin="79,0,0,70" Click="BtnOptions_Click" Cursor="Hand"/>
             <TextBlock x:Name="TextInfo" TextAlignment="Right" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="5,0,5,10" FontSize="16" Margin="79,0,0,177" Width="288"><Run Text="已安装插件数量: 0"/><LineBreak/><Run Text="已选择 mirai 版本: 未安装"/></TextBlock>
         </Grid>
-        <Rectangle x:Name="downloadProcess" HorizontalAlignment="Left" VerticalAlignment="Bottom" Height="10" Fill="#673AB7" />
-        <TextBlock x:Name="downloadInfo" HorizontalAlignment="Right" VerticalAlignment="Bottom" TextAlignment="Right" Margin="0,0,10,15" Foreground="#673AB7"/>
     </Grid>
 </Page>

@@ -78,93 +78,34 @@ namespace GraphicalMirai
             }
         }
 
-        private async void DownloadWebpCodec()
+        private void DownloadWebpCodec()
         {
             Dispatcher.Invoke(() =>
             {
                 BtnUpdate.IsEnabled = BtnInstall.IsEnabled = ComboMiraiVer.IsEnabled = ComboRepo.IsEnabled = false;
             });
-            HttpClientHandler handler = new HttpClientHandler();
-            ProgressMessageHandler processHandler = new ProgressMessageHandler(handler);
-            HttpClient httpClient = new HttpClient(processHandler);
-
-            string nowFile = "正在准备";
-
-            // 回调进度
-            processHandler.HttpReceiveProgress += (sender, e) =>
+            MainWindow.Instance.download.StartDownload(async (httpClient, s) =>
             {
-                Dispatcher.Invoke(() =>
-                {
-                    double received = e.BytesTransferred;
-                    double? total = e.TotalBytes;
-                    string percent = total == null ? "未知进度" : string.Format("{0:N2}%", received / total * 100d);
-                    downloadProcess.Width = this.ActualWidth * received / (total ?? received);
-                    downloadInfo.Text = "正在下载 " + nowFile + " | " + App.FormatSize(received) + "/" + App.FormatSize(total) + " | " + percent;
-                });
-            };
-
-            // 正式下载
-            nowFile = "WebpCodecSetup.exe";
-            byte[] codec = await httpClient.GetByteArrayAsync("https://storage.googleapis.com/downloads.webmproject.org/releases/webp/WebpCodecSetup.exe");
-            string exepath = App.path("WebpCodecSetup.exe");
-            File.WriteAllBytes(exepath, codec);
-            Process proc = new Process();
-            proc.StartInfo.FileName = exepath;
-            proc.Start();
-            MainWindow.Msg?.ShowAsync("已为你打开安装包，请手动安装 Google Webp Codec\n安装后重启 GraphicalMirai 生效", "下载完成");
-            // 已知使用提取的 msi 来安装不会注册到 WIC，导致还是无法查看 webp 图片，故移除该功能
-            /*
-            string msipath = App.path("WebpCodecSetup.msi");
-            string msihead = "D0 CF 11 E0 A1 B1 1A E1 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 3E 00 04 00 FE FF 0C 00 06 00 00 00 00 00 00 00 02 00 00 00 01 00 00 00 01 00 00 00 00 00 00 00 00 10 00 00 02 00 00 00 01 00 00 00 FE FF FF FF 00 00 00 00 00 00 00 00";
-            
-
-            // byte[] 转 16 进制字符串
-            string bytes = string.Join(" ", codec.Select(b => hex(b)).ToArray()).ToUpper();
-            
-            void done()
-            {
-            /**/
-            Dispatcher.Invoke(() =>
-                {
-                    downloadProcess.Width = 0;
-                    downloadInfo.Text = "";
-                    BtnUpdate.IsEnabled = BtnInstall.IsEnabled = ComboMiraiVer.IsEnabled = ComboRepo.IsEnabled = true;
-                });
-            /*
-            }
-            void err(string s)
-            {
+                // 正式下载
+                s.Invoke("WebpCodecSetup.exe");
+                byte[] codec = await httpClient.GetByteArrayAsync("https://storage.googleapis.com/downloads.webmproject.org/releases/webp/WebpCodecSetup.exe");
+                string exepath = App.path("WebpCodecSetup.exe");
                 File.WriteAllBytes(exepath, codec);
-                MessageBox.Show("错误: ");
                 Process proc = new Process();
                 proc.StartInfo.FileName = exepath;
                 proc.Start();
-                done();
-            }
-
-            // 16 进制字符串转 byte[]
-            string[] msi = bytes.Substring(msistart, msiend - 1).Split(" ");
-            byte[] msifinal = msi.Select(s => hex(s)).ToArray();
-            File.WriteAllBytes(msipath, msifinal);
-
-            Process p = new Process();
-            p.StartInfo.FileName = "msiexec";
-            p.StartInfo.Arguments = "-qn -i WebpCodecSetup.msi";
-            p.StartInfo.WorkingDirectory = Environment.CurrentDirectory;
-            p.Start();
-            await p.WaitForExitAsync();
-            if (p.ExitCode == 0)
-            {
-                if (File.Exists(msipath)) File.Delete(msipath);
-                MessageBox.Show("安装完成，重启 GraphicalMirai 生效");
-            }
-            else
-            {
-                File.WriteAllBytes(exepath, codec);
-                MessageBox.Show("安装可能出现错误，退出码为 " + p.ExitCode + "\n为便于诊断问题，exe 安装包和导出的 MSI 安装包已保留在 GraphicalMirai 所在目录");
-            }
-            done();
-            */
+            },
+            // 回调进度
+            (e, s) => { },
+            // 下载完成
+            () => Dispatcher.Invoke(() =>
+                {
+                    //downloadProcess.Width = 0;
+                    //downloadInfo.Text = "";
+                    BtnUpdate.IsEnabled = BtnInstall.IsEnabled = ComboMiraiVer.IsEnabled = ComboRepo.IsEnabled = true;
+                    MainWindow.Msg?.ShowAsync("已为你打开安装包，请手动安装 Google Webp Codec\n安装后重启 GraphicalMirai 生效", "下载完成");
+                })
+            );
         }
 
         private byte hex(string s)
@@ -180,11 +121,12 @@ namespace GraphicalMirai
         private void UpdateInfo()
         {
             PackagesData packages = PackagesData.Instance;
-            string miraiVer = packages.selectedMiraiVersion ?? "未安装";
+            BtnStart.IsEnabled = packages.selectedMiraiVersion != null && packages.SelectedMiraiVersion != null;
+            string miraiVer = BtnStart.IsEnabled ? (packages.selectedMiraiVersion ?? "") : "未安装";
             int plugins = new DirectoryInfo(App.path("mirai/plugins")).GetFiles("*.jar").Length;
 
             TextInfo.Text = "已安装插件数量: $plugins\n已选择 mirai 版本: $mirai".Replace("$mirai", miraiVer).Replace("$plugins", plugins.ToString());
-            BtnStart.IsEnabled = packages.selectedMiraiVersion != null;
+            ;
         }
 
         private string? GetRepoUrl()
@@ -242,10 +184,10 @@ namespace GraphicalMirai
 
         private void BtnOptions_Click(object sender, RoutedEventArgs e)
         {
-            MainWindow.Msg?.ShowAsync("WIP", "");
+            MainWindow.Msg.ShowAsync("WIP", "");
         }
 
-        private void BtnInstall_Click(object sender, RoutedEventArgs e)
+        private async void BtnInstall_Click(object sender, RoutedEventArgs e)
         {
             string? repo = GetRepoUrl();
             if (repo == null)
@@ -253,80 +195,64 @@ namespace GraphicalMirai
                 MessageBox.Show("请选择一个下载源");
                 return;
             }
-            object sel = ComboMiraiVer.SelectedItem;
+            var sel = ComboMiraiVer.SelectedItem;
             if (sel == null)
             {
                 MessageBox.Show("请选择一个版本");
                 return;
             }
-            if (MessageBox.Show("安装 mirai 之前会清空 ./mirai/content 文件夹，确定要安装吗?", "", MessageBoxButton.YesNo) != MessageBoxResult.Yes) return;
+            if (await MainWindow.Msg.ShowAsync("安装 mirai 之前会清空 ./mirai/content 文件夹，确定要安装吗?", "警告", MessageBoxButton.YesNo) != MessageBoxResult.Yes) return;
             App.resetDir("mirai/content");
             BtnUpdate.IsEnabled = false;
             BtnInstall.IsEnabled = false;
             BtnInstall.Content = "正在下载并安装...";
             ComboMiraiVer.IsEnabled = false;
             ComboRepo.IsEnabled = false;
-            // 异步
-            new Task(async () =>
+
+            MainWindow.Instance.download.StartDownload(async (httpClient, s) =>
             {
-                HttpClientHandler handler = new HttpClientHandler();
-                ProgressMessageHandler processHandler = new ProgressMessageHandler(handler);
-                HttpClient httpClient = new HttpClient(processHandler);
                 httpClient.BaseAddress = new Uri(repo);
-
-                string nowFile = "正在准备";
-
+                #region 下载文件
                 // 获取 bcprov-jdk15on 的版本
+                s.Invoke("[bcprov-jdk15on] maven-metadata.xml");
                 string xml = await httpClient.GetStringAsync("org/bouncycastle/bcprov-jdk15on/maven-metadata.xml");
                 XmlDocument objDoc = new XmlDocument();
                 objDoc.LoadXml(xml);
                 string bcprovVer = objDoc["metadata"]?["versioning"]?["release"]?.InnerText ?? "1.70";
 
-                // 回调进度
-                processHandler.HttpReceiveProgress += (sender, e) =>
-                {
-                    Dispatcher.Invoke(() =>
-                    {
-                        double received = e.BytesTransferred;
-                        double? total = e.TotalBytes;
-                        string percent = total == null ? "未知进度" : string.Format("{0:N2}%", received / total * 100d);
-                        downloadProcess.Width = this.ActualWidth * received / (total ?? received);
-                        downloadInfo.Text = "正在下载 " + nowFile + " | " + App.FormatSize(received) + "/" + App.FormatSize(total) + " | " + percent;
-                    });
-                };
-
                 // 正式下载
-                nowFile = "bcprov-jdk15on-" + sel + ".jar (1/4)";
+                s.Invoke("bcprov-jdk15on-" + sel + ".jar (1/4)");
                 byte[] bcprov = await httpClient.GetByteArrayAsync("org/bouncycastle/bcprov-jdk15on/" + bcprovVer + "/bcprov-jdk15on-" + bcprovVer + ".jar");
                 File.WriteAllBytes(App.path("mirai/content/bcprov-jdk15on-" + bcprovVer + ".jar"), bcprov);
 
-                nowFile = "mirai-core-all-" + sel + "-all.jar (2/4)";
+                s.Invoke("mirai-core-all-" + sel + "-all.jar (2/4)");
                 byte[] core = await httpClient.GetByteArrayAsync("net/mamoe/mirai-core-all/" + sel + "/mirai-core-all-" + sel + "-all.jar");
                 File.WriteAllBytes(App.path("mirai/content/mirai-core-all-" + sel + "-all.jar"), core);
 
-                nowFile = "mirai-console-" + sel + "-all.jar (3/4)";
+                s.Invoke("mirai-console-" + sel + "-all.jar (3/4)");
                 byte[] console = await httpClient.GetByteArrayAsync("net/mamoe/mirai-console/" + sel + "/mirai-console-" + sel + "-all.jar");
                 File.WriteAllBytes(App.path("mirai/content/mirai-console-" + sel + "-all.jar"), console);
 
-                nowFile = "mirai-console-terminal-" + sel + "-all.jar (4/4)";
+                s.Invoke("mirai-console-terminal-" + sel + "-all.jar (4/4)");
                 byte[] terminal = await httpClient.GetByteArrayAsync("net/mamoe/mirai-console-terminal/" + sel + "/mirai-console-terminal-" + sel + "-all.jar");
                 File.WriteAllBytes(App.path("mirai/content/mirai-console-terminal-" + sel + "-all.jar"), terminal);
-
-                // 同步
-                Dispatcher.Invoke(() =>
+                #endregion
+            },
+            // 进度回调
+            (e, s) => { },
+            // 下载完成
+            () => Dispatcher.Invoke(() =>
                 {
                     PackagesData.Instance.selectedMiraiVersion = (string)sel;
                     PackagesData.Save();
                     UpdateInfo();
-                    downloadProcess.Width = 0;
-                    downloadInfo.Text = "";
                     BtnInstall.Content = "安装";
                     BtnUpdate.IsEnabled = true;
                     BtnInstall.IsEnabled = true;
                     ComboMiraiVer.IsEnabled = true;
                     ComboRepo.IsEnabled = true;
-                });
-            }).Start();
+                })
+            );
         }
         private void BtnUpdate_Click(object sender, RoutedEventArgs e)
         {
