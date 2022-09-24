@@ -127,6 +127,7 @@ namespace GraphicalMirai.Pages
             {
                 StackPluginList.IsEnabled = ForumComboSort.IsEnabled = ForumComboPages.IsEnabled = ForumRefresh.IsEnabled = true;
                 StackPluginList.Opacity = 1.0;
+                StackPluginListViewer.ScrollToTop();
             });
 
         }

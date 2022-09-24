@@ -32,10 +32,10 @@
             </TabItem>
             <TabItem Header="论坛插件">
                 <Grid ClipToBounds="True">
-                    <ScrollViewer VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled" Margin="0,80,0,0" Background="#F4F4F4">
-                    <StackPanel Name="StackPluginList" VerticalAlignment="Top" Orientation="Vertical">
-                        <TextBlock Text="按下「刷新」开始探索吧!" TextAlignment="Center" Padding="50"/>
-                    </StackPanel>
+                    <ScrollViewer Name="StackPluginListViewer" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled" Margin="0,80,0,0" Background="#F4F4F4">
+                        <StackPanel Name="StackPluginList" VerticalAlignment="Top" Orientation="Vertical">
+                            <TextBlock Text="按下「刷新」开始探索吧!" TextAlignment="Center" Padding="50"/>
+                        </StackPanel>
                     </ScrollViewer>
                     <materialDesign:Card Height="80" VerticalAlignment="Top">
                         <Grid>
