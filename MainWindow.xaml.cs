@@ -10,27 +10,28 @@ namespace GraphicalMirai
     /// </summary>
     public partial class MainWindow : Window
     {
-        private static MainWindow? instance;
-        public static MainWindow? Instance => instance;
+#pragma warning disable CS8618
+        public static MainWindow Instance { get; private set; }
+#pragma warning restore CS8618
         public static void Navigate(object content)
         {
-            instance?.frame.Navigate(content);
+            Instance?.frame.Navigate(content);
         }
         public static void SetTitle(string title)
         {
-            if (instance != null)
+            if (Instance != null)
             {
-                instance.Title = title;
+                Instance.Title = title;
             }
         }
-        public static InnerMessageBox? Msg
+        public static InnerMessageBox Msg
         {
-            get { return instance?.msgBox; }
+            get { return Instance.msgBox; }
         }
         public MainWindow()
         {
             InitializeComponent();
-            instance = this;
+            Instance = this;
             frame.Navigate(App.PageInit);
         }
 
