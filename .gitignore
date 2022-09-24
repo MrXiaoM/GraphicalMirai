@@ -80,15 +80,3 @@ ModelManifest.xml
 
 #SourceHanSans font
 font/*.otf
-
-# Gradle
-**/build/*
-**/.gradle
-**/.gradle/*
-**/logs/*
-
-local.properties
-
-# IntelliJ IDEA
-**/.idea
-**/.iml
