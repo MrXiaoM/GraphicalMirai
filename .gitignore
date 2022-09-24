@@ -80,3 +80,6 @@ ModelManifest.xml
 
 #SourceHanSans font
 font/*.otf
+
+# Built bridge.jar
+/bridge.jar

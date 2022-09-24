@@ -4,8 +4,6 @@ GraphicalMirai 通信桥是 GraphicalMirai 与 mirai 间通信以实现多聊天
 
 通信桥 `.jar` 插件会内嵌到 GraphicalMirai 内，在启动 mirai 之前自动安装。通信桥版本将与 GraphicalMirai 版本保持一致。
 
-通信桥将尽可能多地兼容旧版本 mirai。在 Mamoe Technologies 宣布 v1 插件完全不被兼容之前，如需将通信桥使用的 mirai-console 版本升级到 2.11.0 或以上，请不要用 `buildPlugin` 任务构建 v2 版本的插件，请使用 `buildPluginLegacy` 构建 v1 版本的插件`，除非你想多写一层版本判定，多打包一个 v2 插件到 exe 中。
-
 ## 工作机理
 
 读取 `-Dgraphicalmirai.bridge.port` 提供的端口连接到 GraphicalMirai，进行进程间通信。暂定为使用 TCP Socket 通信。
