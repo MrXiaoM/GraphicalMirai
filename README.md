@@ -12,7 +12,7 @@
 - [x] 启动 mirai
 - [x] 控制台着色
 - [ ] ~~调用 JNI 实现与 mirai 通信，打通实现其他功能的道路 (实在不行的话就用 MAH 算了)~~
-- [ ] 使用 DDE 实现 GraphicalMirai 与 mirai 通信
+- [ ] 使用 Socket 实现 GraphicalMirai 与 mirai 通信，不强制安装 MAH 但强制安装 GraphicalMirai 通信桥
 - [ ] 登录UI
 - [ ] 管理自动登录
 - [ ] 辅助处理滑块验证
@@ -23,6 +23,10 @@
 - [ ] 获取 mirai-repo 上的插件
 - [ ] 下载 mirai-repo 上的插件
 - [ ] 包管理器
+
+## OS 支持
+
+我们为 Windows 7 及以上的操作系统提供兼容支持，对于其他非 Windows 操作系统，GraphicalMirai 将提供一个「导出」按钮将当前 mirai 打包，在相应系统执行预设的脚本即可启动 mirai。
 
 ## 使用字体
 

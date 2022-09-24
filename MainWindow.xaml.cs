@@ -57,10 +57,10 @@ namespace GraphicalMirai
             if (!stopping) stop();
         }
         bool stopping = false;
-        private async void stop()
+        private void stop()
         {
             stopping = true;
-            await App.mirai.Stop();
+            App.mirai.Stop();
         }
     }
 }

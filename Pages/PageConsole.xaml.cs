@@ -13,7 +13,7 @@ namespace GraphicalMirai.Pages
         public PageConsole()
         {
             InitializeComponent();
-
+            InitConsole(App.mirai);
         }
 
         public void InitConsole(Mirai mirai)

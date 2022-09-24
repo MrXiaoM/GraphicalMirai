@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media.Media3D;
 
 namespace GraphicalMirai
 {
@@ -18,7 +21,7 @@ namespace GraphicalMirai
         public List<string> Libraries { get; private set; } = new List<string>();
         public Process Process { get; private set; } = new Process();
         public string? WorkingDir { get; private set; }
-        public string? JavaPath { get; private set; }
+        public string? JavaHome { get; private set; }
         public string? MainClass { get; private set; }
         public Task? task;
         public Mirai()
@@ -35,16 +38,16 @@ namespace GraphicalMirai
                 onDataReceived("\u001b[91mmirai-console 已停止运行\u001b[0m");
             };
         }
-        public bool InitMirai(string javaPath, string workingDir, List<string> libraries, string mainClass, string extArgs = "")
+        public bool InitMirai(string javaHome, string workingDir, List<string> libraries, string mainClass, string extArgs = "")
         {
-            if (IsRunning || !Process.HasExited) return false;
-            JavaPath = javaPath;
+            if (IsRunning && !Process.HasExited) return false;
+            JavaHome = javaHome;
             WorkingDir = workingDir;
             Libraries = libraries;
             MainClass = mainClass;
 
             Process = new Process();
-            ProcessStartInfo psi = new ProcessStartInfo(JavaPath);
+            ProcessStartInfo psi = new ProcessStartInfo(JavaHome);
             psi.WorkingDirectory = WorkingDir;
             psi.UseShellExecute = false;
             psi.RedirectStandardOutput = true;
@@ -87,7 +90,7 @@ namespace GraphicalMirai
             task.Start();
         }
 
-        public async Task Stop()
+        public async void Stop()
         {
             if (!IsRunning || Process.HasExited) return;
             IsRunning = false;
