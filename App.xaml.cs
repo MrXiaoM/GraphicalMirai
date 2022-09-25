@@ -20,7 +20,7 @@ namespace GraphicalMirai
         private static Lazy<Mirai> miraiLazy = new();
         public static Mirai mirai => miraiLazy.Value;
 
-        public App() 
+        public App()
         {
             // 初始化登录处理器
             LoginSolverSetup.Instance.Setup();

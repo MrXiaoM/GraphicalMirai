@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace GraphicalMirai.LoginSolver
+﻿namespace GraphicalMirai.LoginSolver
 {
     public interface ILoginSolver
     {
         private static ILoginSolver? instance;
-        public static ILoginSolver? Instance {
+        public static ILoginSolver? Instance
+        {
             get => instance;
             set
             {

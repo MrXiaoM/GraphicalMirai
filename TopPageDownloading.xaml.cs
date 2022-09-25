@@ -1,25 +1,10 @@
-﻿using GraphicalMirai.Pages.PluginCenter;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Handlers;
+﻿using System;
 using System.Net.Http;
-using System.Text;
+using System.Net.Http.Handlers;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Xml;
-using System.IO;
 using System.Windows.Media.Animation;
-using System.Threading;
-using System.Windows.Shell;
 
 namespace GraphicalMirai
 {
@@ -85,7 +70,7 @@ namespace GraphicalMirai
                 });
 
                 await actionDownload.Invoke(httpClient, (s) => nowFile = s);
-                
+
                 Dispatcher.Invoke(() =>
                 {
                     BeginStoryboard(AniOptFadeOut);

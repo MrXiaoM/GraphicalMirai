@@ -1,6 +1,4 @@
-﻿using GraphicalMirai;
-
-namespace GraphicalMirai.LoginSolver
+﻿namespace GraphicalMirai.LoginSolver
 {
     public class LoginSolverSetup
     {

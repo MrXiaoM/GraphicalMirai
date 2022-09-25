@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Globalization;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -96,7 +95,7 @@ namespace GraphicalMirai
                 Storyboard.SetTargetProperty(aniOut, new("Height"));
                 storyboard.Children.Add(AniOptFadeOut);
                 storyboard.Children.Add(aniOut);
-                storyboard.Completed += delegate { Visibility = Visibility.Hidden;BgMsgBox.Height = double.NaN; };
+                storyboard.Completed += delegate { Visibility = Visibility.Hidden; BgMsgBox.Height = double.NaN; };
                 return storyboard;
             }
         }
@@ -148,7 +147,8 @@ namespace GraphicalMirai
                 MsgContent.Inlines.Clear();
                 MsgContent.Inlines.AddRange(content);
             });
-            await Task.Run(async () => {
+            await Task.Run(async () =>
+            {
                 // 似乎在窗口 Loading 期间不能计算高度，这时执行动画会错位
                 // 故等待到高度不为 0 时再执行动画
                 while (BgMsgBoxInner.ActualHeight == 0)

@@ -27,7 +27,7 @@ namespace GraphicalMirai.Pages.PluginCenter
         {
             InitializeComponent();
             AuthorTag.Visibility = Visibility.Hidden;
-            
+
             Dispatcher.BeginInvoke(Load, tid);
         }
 
@@ -55,7 +55,7 @@ namespace GraphicalMirai.Pages.PluginCenter
             }));
 
             string xaml = HtmlToXaml.HtmlToXamlConverter.ConvertHtmlToXaml(content, true);
-            
+
             FlowDocument doc = (FlowDocument)XamlReader.Parse(xaml);
             doc.PagePadding = new Thickness(10);
             doc.FontFamily = FontFamily;
@@ -117,7 +117,7 @@ namespace GraphicalMirai.Pages.PluginCenter
                         AuthorTag.Visibility = Visibility.Visible;
                     }
                 }
-               
+
                 temp.Text += "\n\n额外调试信息:\n  Github/Gitee 链接列表:\n    " + string.Join("\n    ", topic.posts[0].repo().Select(r => r.ToString()).ToArray());
             });
             await refreshDownloadList();
