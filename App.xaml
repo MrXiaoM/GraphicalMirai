@@ -11,8 +11,6 @@
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.DeepPurple.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.Lime.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            <FontFamily x:Key="SourceHanSans">pack://application:,,,/font/#思源黑体</FontFamily>
-
             <Style x:Key="HoverDark" TargetType="Grid">
                 <Setter Property="Background">
                     <Setter.Value>

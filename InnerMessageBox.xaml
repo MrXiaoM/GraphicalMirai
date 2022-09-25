@@ -12,7 +12,7 @@
      TextOptions.TextFormattingMode="Ideal"
      TextOptions.TextRenderingMode="Auto"
      Background="Transparent"
-     FontFamily="{DynamicResource SourceHanSans}"
+     FontFamily="{DynamicResource MaterialDesignFont}"
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <Style x:Key="MsgBtn" TargetType="Button" BasedOn="{StaticResource MaterialDesignRaisedButton}">

@@ -28,10 +28,6 @@
 
 我们为 Windows 7 及以上的操作系统提供兼容支持，对于其他非 Windows 操作系统，GraphicalMirai 将提供一个「导出」按钮将当前 mirai 打包，在相应系统执行预设的脚本即可启动 mirai。
 
-## 使用字体
-
-详见 [font/README.md](font)
-
 ## 图像解码器
 
 由于论坛的图片均使用了 webp 压缩，若想在插件中心可查看用户头像，请到

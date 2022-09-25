@@ -32,8 +32,6 @@
 
   <ItemGroup>
     <None Remove="bridge.jar" />
-    <None Remove="font\SourceHanSansHWSC-Bold.otf" />
-    <None Remove="font\SourceHanSansHWSC-Regular.otf" />
     <None Remove="Pages\mirai_card_bg.jpg" />
     <None Remove="sample.webp" />
   </ItemGroup>
@@ -43,8 +41,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="font\SourceHanSansHWSC-Bold.otf" />
-    <Resource Include="font\SourceHanSansHWSC-Regular.otf" />
     <Resource Include="mirai.ico" />
   </ItemGroup>
 

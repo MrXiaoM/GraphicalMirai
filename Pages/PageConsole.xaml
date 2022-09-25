@@ -9,7 +9,7 @@
      TextOptions.TextFormattingMode="Ideal"
      TextOptions.TextRenderingMode="Auto"
      Background="#3D3D3D"
-     FontFamily="{DynamicResource SourceHanSans}"
+     FontFamily="{DynamicResource MaterialDesignFont}"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="650"
       Title="PageConsole" Cursor="Arrow">

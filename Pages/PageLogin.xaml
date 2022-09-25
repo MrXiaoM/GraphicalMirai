@@ -9,7 +9,7 @@
      TextOptions.TextFormattingMode="Ideal"
      TextOptions.TextRenderingMode="Auto"
      Background="#8F8F8F"
-     FontFamily="{DynamicResource SourceHanSans}"
+     FontFamily="{DynamicResource MaterialDesignFont}"
       xmlns:local="clr-namespace:GraphicalMirai.Pages"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="650"
