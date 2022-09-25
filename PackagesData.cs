@@ -5,21 +5,23 @@ using System.Linq;
 using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
+using YamlDotNet.Core;
+using YamlDotNet.RepresentationModel;
 using YamlDotNet.Serialization;
 
 namespace GraphicalMirai
 {
     public class Package
     {
-        [YamlMember(Alias = "group")]
+        [YamlMember(Alias = "group", ScalarStyle = ScalarStyle.SingleQuoted)]
         public string Group { get; set; } = "";
-        [YamlMember(Alias = "name")]
+        [YamlMember(Alias = "name", ScalarStyle = ScalarStyle.SingleQuoted)]
         public string Name { get; set; } = "";
-        [YamlMember(Alias = "version")]
+        [YamlMember(Alias = "version", ScalarStyle = ScalarStyle.SingleQuoted)]
         public string Version { get; set; } = "";
-        [YamlMember(Alias = "classifier")]
+        [YamlMember(Alias = "classifier", ScalarStyle = ScalarStyle.SingleQuoted)]
         public string Classifier { get; set; } = "";
-        [YamlMember(Alias = "is-plugin")]
+        [YamlMember(Alias = "is-plugin", ScalarStyle = ScalarStyle.SingleQuoted)]
         public bool IsPlugin { get; set; } = false;
 
         public Package() { }
@@ -81,11 +83,13 @@ namespace GraphicalMirai
         [YamlIgnore]
         private static readonly ISerializer SERIALIZER = new SerializerBuilder()
             .EnsureRoundtrip()
+            .WithTagMapping("!PackagesData", typeof(PackagesData))
             .Build();
         [YamlIgnore]
         private static readonly IDeserializer DESERIALIZER = new DeserializerBuilder()
-                .IgnoreUnmatchedProperties()
-                .Build();
+            .IgnoreUnmatchedProperties()
+            .WithTagMapping("!PackagesData", typeof(PackagesData))
+            .Build();
         [YamlIgnore]
         public static string ConfigPath => App.path("packages.yml");
         [YamlIgnore]
@@ -112,26 +116,26 @@ namespace GraphicalMirai
         public static void Save()
         {
             if (instance == null) instance = new PackagesData();
-            File.WriteAllText(ConfigPath, SERIALIZER.Serialize(instance));
+            File.WriteAllText(ConfigPath, SERIALIZER.Serialize(Instance));
         }
 
 
-        [YamlMember(Alias = "mirai-repo", Description = "mirai-repo 地址")]
+        [YamlMember(Alias = "mirai-repo", Description = "mirai-repo 地址", ScalarStyle = ScalarStyle.SingleQuoted)]
         public string MiraiRepoUrl { get; set; } = "https://mirai.mamoe.net/assets/mcl/";
 
-        [YamlMember(Alias = "repositories", Description = "下载依赖/插件时使用的 Maven 仓库")]
+        [YamlMember(Alias = "repositories", Description = "下载依赖/插件时使用的 Maven 仓库", ScalarStyle = ScalarStyle.SingleQuoted)]
         public Dictionary<string, string> Repositories { get; set; } = new()
         {
             { "https://maven.aliyun.com/repository/central", "阿里云 Maven 镜像" },
             { "https://repo1.maven.org/maven2", "Maven Central" },
         };
 
-        [YamlMember(Alias = "selected-mirai-version", Description = "指定要下载/启动的 mirai 版本")]
+        [YamlMember(Alias = "selected-mirai-version", Description = "指定要下载/启动的 mirai 版本", ScalarStyle = ScalarStyle.SingleQuoted)]
         public string? selectedMiraiVersion { get; set; }
 
         [YamlIgnore]
         public Version? SelectedMiraiVersion { get { return Version.Parse(selectedMiraiVersion); } }
-        [YamlMember(Alias = "packages", Description = "启动 mirai 时自动下载的包")]
+        [YamlMember(Alias = "packages", Description = "启动 mirai 时自动下载的包", ScalarStyle = ScalarStyle.SingleQuoted)]
         public List<Package> Packages { get; set; } = new List<Package>()
         {
             new("org.bouncycastle", "bcprov-jdk15on", "1.70"),
