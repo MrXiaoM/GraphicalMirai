@@ -110,8 +110,8 @@ namespace GraphicalMirai
 
         public static void openUrl(string s)
         {
-            if (s.StartsWith("https://") || s.StartsWith("http://"))
-                System.Diagnostics.Process.Start("explorer", s);
+            if (s.StartsWith("https://") || s.StartsWith("http://") || s.Substring(1).StartsWith(":\\"))
+                System.Diagnostics.Process.Start("explorer", "/e," + s);
         }
 
         public static bool exists(string path) { return exists(new string[] { path }); }
