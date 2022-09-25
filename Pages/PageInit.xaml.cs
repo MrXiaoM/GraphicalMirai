@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Media.Imaging;
 using System.Xml;
 
@@ -87,12 +88,21 @@ namespace GraphicalMirai
             {
                 // 正式下载
                 s.Invoke("WebpCodecSetup.exe");
-                byte[] codec = await httpClient.GetByteArrayAsync("https://storage.googleapis.com/downloads.webmproject.org/releases/webp/WebpCodecSetup.exe");
-                string exepath = App.path("WebpCodecSetup.exe");
-                File.WriteAllBytes(exepath, codec);
-                Process proc = new Process();
-                proc.StartInfo.FileName = exepath;
-                proc.Start();
+                await httpClient.GetByteArrayAsync(
+                    "https://storage.googleapis.com/downloads.webmproject.org/releases/webp/WebpCodecSetup.exe",
+                    bytes => 
+                    {
+                        string exepath = App.path("WebpCodecSetup.exe");
+                        File.WriteAllBytes(exepath, bytes);
+                        Process proc = new Process();
+                        proc.StartInfo.FileName = exepath;
+                        proc.Start();
+                    },
+                    ex => 
+                    {
+                        MainWindow.Msg.ShowAsync("WebpCodecSetup.exe 下载错误!\n" + ex.GetType().FullName + "\n" + ex.Message, "下载错误");
+                    }
+                );
             },
             // 回调进度
             (e, s) => { },
@@ -219,23 +229,64 @@ namespace GraphicalMirai
                 objDoc.LoadXml(xml);
                 string bcprovVer = objDoc["metadata"]?["versioning"]?["release"]?.InnerText ?? "1.70";
 
+                bool hasFailedItems = false;
+                List<string> downloadFailed = new List<string>();
+
+                // TODO: 将下载 mirai 部分移到包管理器
+
                 // 正式下载
                 s.Invoke("bcprov-jdk15on-" + sel + ".jar (1/4)");
-                byte[] bcprov = await httpClient.GetByteArrayAsync("org/bouncycastle/bcprov-jdk15on/" + bcprovVer + "/bcprov-jdk15on-" + bcprovVer + ".jar");
-                File.WriteAllBytes(App.path("mirai/content/bcprov-jdk15on-" + bcprovVer + ".jar"), bcprov);
+                await httpClient.GetByteArrayAsync(
+                    "org/bouncycastle/bcprov-jdk15on/" + bcprovVer + "/bcprov-jdk15on-" + bcprovVer + ".jar",
+                    bytes => {
+                        File.WriteAllBytes(App.path("mirai/content/bcprov-jdk15on-" + bcprovVer + ".jar"), bytes);
+                    },
+                    ex =>
+                    {
+                        downloadFailed.Add("bcprov-jdk15on-" + bcprovVer + ".jar\n  " + ex.Message);
+                    });
 
                 s.Invoke("mirai-core-all-" + sel + "-all.jar (2/4)");
-                byte[] core = await httpClient.GetByteArrayAsync("net/mamoe/mirai-core-all/" + sel + "/mirai-core-all-" + sel + "-all.jar");
-                File.WriteAllBytes(App.path("mirai/content/mirai-core-all-" + sel + "-all.jar"), core);
+                await httpClient.GetByteArrayAsync(
+                    "net/mamoe/mirai-core-all/" + sel + "/mirai-core-all-" + sel + "-all.jar",
+                    bytes =>
+                    {
+                        File.WriteAllBytes(App.path("mirai/content/mirai-core-all-" + sel + "-all.jar"), bytes);
+                    },
+                    ex =>
+                    {
+                        downloadFailed.Add("mirai-core-all-" + sel + "-all.jar\n  " + ex.Message);
+                    });
 
                 s.Invoke("mirai-console-" + sel + "-all.jar (3/4)");
-                byte[] console = await httpClient.GetByteArrayAsync("net/mamoe/mirai-console/" + sel + "/mirai-console-" + sel + "-all.jar");
-                File.WriteAllBytes(App.path("mirai/content/mirai-console-" + sel + "-all.jar"), console);
+                await httpClient.GetByteArrayAsync(
+                    "net/mamoe/mirai-console/" + sel + "/mirai-console-" + sel + "-all.jar",
+                    bytes =>
+                    {
+                        File.WriteAllBytes(App.path("mirai/content/mirai-console-" + sel + "-all.jar"), bytes);
+                    },
+                    ex =>
+                    {
+                        downloadFailed.Add("mirai-console-" + sel + "-all.jar\n  " + ex.Message);
+                    });
 
                 s.Invoke("mirai-console-terminal-" + sel + "-all.jar (4/4)");
-                byte[] terminal = await httpClient.GetByteArrayAsync("net/mamoe/mirai-console-terminal/" + sel + "/mirai-console-terminal-" + sel + "-all.jar");
-                File.WriteAllBytes(App.path("mirai/content/mirai-console-terminal-" + sel + "-all.jar"), terminal);
+                await httpClient.GetByteArrayAsync(
+                    "net/mamoe/mirai-console-terminal/" + sel + "/mirai-console-terminal-" + sel + "-all.jar",
+                    bytes =>
+                    {
+                        File.WriteAllBytes(App.path("mirai/content/mirai-console-terminal-" + sel + "-all.jar"), bytes);
+                    },
+                    ex =>
+                    {
+                        downloadFailed.Add("mirai-console-terminal-" + sel + "-all.jar\n  " + ex.Message);
+                    });
                 #endregion
+
+                if (downloadFailed.Count > 0)
+                {
+                    MainWindow.Msg.ShowAsync("部分文件下载失败，下载失败的文件及其原因如下\n" + string.Join('\n', downloadFailed), "下载失败").Start();
+                }
             },
             // 进度回调
             (e, s) => { },

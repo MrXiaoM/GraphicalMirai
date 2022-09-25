@@ -2,7 +2,9 @@
 using GraphicalMirai.Pages;
 using System;
 using System.IO;
+using System.Net.Http;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Markup;
 using System.Windows.Media;
@@ -188,6 +190,24 @@ namespace GraphicalMirai
             XmlWriter xmlWriter = XmlWriter.Create(sb, settings);
             XamlWriter.Save(XamlReader.Parse(xaml), xmlWriter);
             return sb.ToString();
+        }
+    }
+
+    public static class HttpClientExt
+    {
+        public static async Task<bool> GetByteArrayAsync(this HttpClient httpClient, string url, Action<byte[]> success, Action<HttpRequestException> fail)
+        {
+            try
+            {
+                byte[] bytes = await httpClient.GetByteArrayAsync(url);
+                success(bytes);
+                return true;
+            }
+            catch (HttpRequestException e)
+            {
+                fail(e);
+                return false;
+            }
         }
     }
 }
