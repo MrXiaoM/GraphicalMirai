@@ -209,5 +209,19 @@ namespace GraphicalMirai
                 return false;
             }
         }
+        public static async Task<bool> GetStringAsync(this HttpClient httpClient, string url, Action<string> success, Action<HttpRequestException> fail)
+        {
+            try
+            {
+                string s = await httpClient.GetStringAsync(url);
+                success(s);
+                return true;
+            }
+            catch (HttpRequestException e)
+            {
+                fail(e);
+                return false;
+            }
+        }
     }
 }

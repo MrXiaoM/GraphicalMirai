@@ -166,23 +166,34 @@ namespace GraphicalMirai
             {
                 HttpClient httpClient = new HttpClient();
                 httpClient.BaseAddress = new Uri(repo);
-                string xml = await httpClient.GetStringAsync("net/mamoe/mirai-bom/maven-metadata.xml");
-                XmlDocument objDoc = new XmlDocument();
-                objDoc.LoadXml(xml);
-                XmlNodeList? versions = objDoc?["metadata"]?["versioning"]?["versions"]?.ChildNodes;
-                // 同步
+                await httpClient.GetStringAsync(
+                    "net/mamoe/mirai-bom/maven-metadata.xml",
+                    xml =>
+                    {
+                        XmlDocument objDoc = new XmlDocument();
+                        objDoc.LoadXml(xml);
+                        XmlNodeList? versions = objDoc?["metadata"]?["versioning"]?["versions"]?.ChildNodes;
+                        // 同步
+                        Dispatcher.Invoke(() =>
+                        {
+                            if (versions != null)
+                            {
+                                // 反转列表，使最新版在最上面
+                                string[] nodes = versions.OfType<XmlNode>().Reverse().Select(node => node.InnerText).ToArray();
+                                foreach (string ver in nodes)
+                                {
+                                    ComboMiraiVer.Items.Add(ver);
+                                }
+                            }
+                            if (ComboMiraiVer.Items.Count > 0) ComboMiraiVer.SelectedIndex = 0;
+                        });
+                    },
+                    ex => 
+                    {
+                        MainWindow.Msg.ShowAsync("获取版本时出现错误\n" + ex.GetType().FullName + "\n" + ex.Message, "错误");
+                    });
                 Dispatcher.Invoke(() =>
                 {
-                    if (versions != null)
-                    {
-                        // 反转列表，使最新版在最上面
-                        string[] nodes = versions.OfType<XmlNode>().Reverse().Select(node => node.InnerText).ToArray();
-                        foreach (string ver in nodes)
-                        {
-                            ComboMiraiVer.Items.Add(ver);
-                        }
-                    }
-                    if (ComboMiraiVer.Items.Count > 0) ComboMiraiVer.SelectedIndex = 0;
                     BtnUpdate.IsEnabled = true;
                     BtnInstall.IsEnabled = true;
                     ComboMiraiVer.IsEnabled = true;
@@ -221,18 +232,24 @@ namespace GraphicalMirai
             MainWindow.Instance.download.StartDownload(async (httpClient, s) =>
             {
                 httpClient.BaseAddress = new Uri(repo);
-                #region 下载文件
-                // 获取 bcprov-jdk15on 的版本
-                s.Invoke("[bcprov-jdk15on] maven-metadata.xml");
-                string xml = await httpClient.GetStringAsync("org/bouncycastle/bcprov-jdk15on/maven-metadata.xml");
-                XmlDocument objDoc = new XmlDocument();
-                objDoc.LoadXml(xml);
-                string bcprovVer = objDoc["metadata"]?["versioning"]?["release"]?.InnerText ?? "1.70";
-
-                bool hasFailedItems = false;
                 List<string> downloadFailed = new List<string>();
 
                 // TODO: 将下载 mirai 部分移到包管理器
+                #region 下载文件
+                // 获取 bcprov-jdk15on 的版本
+                s.Invoke("[bcprov-jdk15on] maven-metadata.xml");
+                string bcprovVer = "1.70";
+                await httpClient.GetStringAsync(
+                    "org/bouncycastle/bcprov-jdk15on/maven-metadata.xml", xml =>
+                    {
+                        XmlDocument objDoc = new XmlDocument();
+                        objDoc.LoadXml(xml);
+                        string bcprovVer = objDoc["metadata"]?["versioning"]?["release"]?.InnerText ?? "1.70";
+                    },
+                    ex =>
+                    {
+                        downloadFailed.Add("[bcprov-jdk15on] maven-metadata.xml\n  (use bvprov default version 1.70)\n  " + ex.Message);
+                    });
 
                 // 正式下载
                 s.Invoke("bcprov-jdk15on-" + sel + ".jar (1/4)");
@@ -285,7 +302,7 @@ namespace GraphicalMirai
 
                 if (downloadFailed.Count > 0)
                 {
-                    MainWindow.Msg.ShowAsync("部分文件下载失败，下载失败的文件及其原因如下\n" + string.Join('\n', downloadFailed), "下载失败").Start();
+                    MainWindow.Msg.ShowAsync("部分文件下载失败，下载失败的文件及其原因如下\n" + string.Join('\n', downloadFailed), "下载失败");
                 }
             },
             // 进度回调

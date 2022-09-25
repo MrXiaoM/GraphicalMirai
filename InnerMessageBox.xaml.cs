@@ -131,9 +131,9 @@ namespace GraphicalMirai
 
         public Task<MessageBoxResult> ShowAsync(string content, string title, MessageBoxButton button = MessageBoxButton.OK)
         {
-            return ShowAsync(new[] { new Run(content) }, title, button);
+            return ShowAsync(() => new[] { new Run(content) }, title, button);
         }
-        public async Task<MessageBoxResult> ShowAsync(Inline[] content, string title, MessageBoxButton button = MessageBoxButton.OK)
+        public async Task<MessageBoxResult> ShowAsync(Func<Inline[]> content, string title, MessageBoxButton button = MessageBoxButton.OK)
         {
             if (!task?.Task.IsCompleted ?? false)
             {
@@ -145,7 +145,7 @@ namespace GraphicalMirai
                 SetButton(button);
                 MsgTitle.Text = title;
                 MsgContent.Inlines.Clear();
-                MsgContent.Inlines.AddRange(content);
+                MsgContent.Inlines.AddRange(content.Invoke());
             });
             await Task.Run(async () =>
             {
