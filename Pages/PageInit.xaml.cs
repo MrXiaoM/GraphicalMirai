@@ -183,7 +183,7 @@ namespace GraphicalMirai
 
         private void BtnOptions_Click(object sender, RoutedEventArgs e)
         {
-            MainWindow.Msg.ShowAsync("WIP", "");
+            MainWindow.Navigate(App.PageOptions);
         }
 
         private async void BtnInstall_Click(object sender, RoutedEventArgs e)

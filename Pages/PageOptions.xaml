@@ -16,18 +16,32 @@
       Title="PageOptions">
 
     <Grid>
-        <materialDesign:Card VerticalAlignment="Top" Height="80" Background="#24ACF2" Foreground="#EEE">
-            <Grid>
-                <TextBlock Text="选项" Margin="60,10,10,10" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="36" FontWeight="Bold"/>
-                <Button x:Name="BtnBack" Content="返回" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0" Style="{DynamicResource MaterialDesignFloatingActionMiniButton}" Background="#EEE" BorderBrush="#EEE" Foreground="#222"/>
-                
-            </Grid>
-        </materialDesign:Card>
-        <ScrollViewer Margin="0,80,0,0" Padding="10">
-            <StackPanel  VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,20">
-                <Rectangle Height="5"/>
-                <CheckBox x:Name="CheckUseFastGit" Content="是否使用 FastGit 进行访问加速" IsChecked="True"/>
-            </StackPanel>
-        </ScrollViewer>
+        <TabControl Style="{DynamicResource MaterialDesignNavigatilRailTabControl}">
+
+            <TabItem Header="选项">
+                <Grid>
+                    <materialDesign:Card VerticalAlignment="Top" Height="80" Foreground="#111">
+                        <Grid>
+                            <TextBlock Text="选项" Margin="10,10,10,10" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="36" FontWeight="Bold"/>
+                            <TextBlock Text="配置项均为即改即保存" Margin="10,52,10,10" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="14"/>
+                        </Grid>
+                    </materialDesign:Card>
+                    <ScrollViewer Margin="0,80,0,0" Padding="10">
+                        <StackPanel  VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,20">
+                            <CheckBox x:Name="CheckUseGhProxy" Content="是否使用 ghproxy.com 进行 Github 访问加速" IsChecked="True"/>
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
+            </TabItem>
+            <TabItem Header="包管理">
+                <materialDesign:Card VerticalAlignment="Top" Height="80" Foreground="#111">
+                    <Grid>
+                        <TextBlock Text="Maven 包管理器" Margin="10,10,10,10" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="36" FontWeight="Bold"/>
+                        <TextBlock Text="正在编写中，敬请期待" Margin="10,52,10,10" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="14"/>
+                    </Grid>
+                </materialDesign:Card>
+            </TabItem>
+        </TabControl>
+        <Button Content="返回" Margin="7,0,0,7" HorizontalAlignment="Left" VerticalAlignment="Bottom" Style="{DynamicResource MaterialDesignFloatingActionButton}" Click="Button_Click"/>
     </Grid>
 </Page>

@@ -64,9 +64,12 @@ namespace GraphicalMirai.Pages.PluginCenter
 
         private async void BtnDownload_Click(object sender, RoutedEventArgs e)
         {
-            // TODO 添加到下载任务
             string fileName = selectedAsset.Name;
             string fileUrl = selectedAsset.DownloadUrl;
+            if (Config.Instance.useGhProxy && fileUrl.StartsWith("https://github.com/"))
+            {
+                fileUrl = "https://ghproxy.com/" + fileUrl;
+            }
             int i = selectedAsset.Name.LastIndexOf('-');
             string prefix = i > 0 ? selectedAsset.Name.Substring(0, i) : selectedAsset.Name;
             var existPlugins = new DirectoryInfo(App.path("mirai/plugins")).GetFiles().TakeWhile(f => f.Name.ToLower().StartsWith(prefix.ToLower()));

@@ -52,7 +52,11 @@ namespace GraphicalMirai
         {
             get { return pagePluginCenter.Value; }
         }
-
+        private static Lazy<PageOptions> pageOptions = new();
+        public static PageOptions PageOptions
+        {
+            get { return pageOptions.Value; }
+        }
         public static long NowTimestamp { get { return ToTimestamp(DateTime.UtcNow); } }
         public static DateTime FromTimestamp(long time)
         {

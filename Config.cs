@@ -65,6 +65,9 @@ namespace GraphicalMirai
 
         [YamlMember(Alias = "webp-codec-check", Description = "是否在启动时检查程序是否可加载 webp 图片")]
         public bool webp_codec_check { get; set; } = true;
+
+        [YamlMember(Alias = "use-ghproxy", Description = "是否使用 ghproxy.com 进行 Github 访问加速")]
+        public bool useGhProxy { get; set; } = true;
     }
 
     public class Version
