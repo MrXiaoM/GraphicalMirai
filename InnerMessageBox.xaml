@@ -38,7 +38,7 @@
                         </TextBlock>
                     </ScrollViewer>
                 </Grid>
-                <StackPanel x:Name="StackButton" Orientation="Horizontal" VerticalAlignment="Bottom">
+                <StackPanel x:Name="StackButton" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom">
                     <Button x:Name="BtnOK" Content="确定" Style="{StaticResource MsgBtn}" Click="BtnOK_Click"/>
                     <Button x:Name="BtnYes" Content="是" Style="{StaticResource MsgBtn}" Click="BtnYes_Click"/>
                     <Button x:Name="BtnNo" Content="否" Style="{StaticResource MsgBtn}" Click="BtnNo_Click"/>
