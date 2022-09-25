@@ -20,8 +20,8 @@ namespace GraphicalMirai
         private static Lazy<Mirai> miraiLazy = new();
         public static Mirai mirai => miraiLazy.Value;
 
-        public App() {
-           
+        public App() 
+        {
             // 初始化登录处理器
             LoginSolverSetup.Instance.Setup();
         }
@@ -146,6 +146,15 @@ namespace GraphicalMirai
             {
                 Directory.CreateDirectory(path);
             }
+        }
+
+        public static void copy(string data)
+        {
+            Clipboard.SetText(data);
+        }
+        public static string pasteText()
+        {
+            return Clipboard.GetText();
         }
 
         public static SolidColorBrush hexBrush(string s)
