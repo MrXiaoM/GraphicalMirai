@@ -78,8 +78,5 @@ ModelManifest.xml
 #Backup file  
 *.bak
 
-#SourceHanSans font
-font/*.otf
-
 # Built bridge.jar
 /bridge.jar

@@ -31,7 +31,7 @@ namespace GraphicalMirai.Pages
         
         private void Button_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            MainWindow.Navigate(App.mirai == null ? App.PageInit : App.PageMain);
+            MainWindow.Navigate(!App.mirai.IsRunning ? App.PageInit : App.PageMain);
         }
     }
 }

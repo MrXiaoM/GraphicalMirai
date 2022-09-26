@@ -19,8 +19,8 @@
             <RowDefinition Height="30"/>
         </Grid.RowDefinitions>
         <ScrollViewer x:Name="scroll" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Visible" Style="{StaticResource MaterialDesignScrollViewer}">
-            <FlowDocumentScrollViewer x:Name="flow" Foreground="#EEE" FontFamily="{StaticResource SourceHanSans}" FontSize="14" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Disabled" VerticalAlignment="Top">
-                <FlowDocument TextAlignment="Left" x:Name="doc" LineHeight="1" PageWidth="{Binding ElementName=flow,Path=ActualWidth}" PagePadding="10" FontFamily="{StaticResource SourceHanSans}">
+            <FlowDocumentScrollViewer x:Name="flow" Foreground="#EEE" FontFamily="{StaticResource MaterialDesignFont}" FontSize="14" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Disabled" VerticalAlignment="Top">
+                <FlowDocument TextAlignment="Left" x:Name="doc" LineHeight="1" PageWidth="{Binding ElementName=flow,Path=ActualWidth}" PagePadding="10" FontFamily="{StaticResource MaterialDesignFont}">
                     
                 </FlowDocument>
             </FlowDocumentScrollViewer>

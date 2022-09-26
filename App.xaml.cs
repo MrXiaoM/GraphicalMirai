@@ -107,9 +107,9 @@ namespace GraphicalMirai
             while (number >= 1000)
             {
                 i++;
-                if (i >= SIZE_UNITS.Length) break;
+                if (i >= NUMBER_UNITS.Length) break;
                 number /= 1000;
-                unit = SIZE_UNITS[i];
+                unit = NUMBER_UNITS[i];
             }
             return string.Format("{0:N" + point + "}", number) + unit;
         }
