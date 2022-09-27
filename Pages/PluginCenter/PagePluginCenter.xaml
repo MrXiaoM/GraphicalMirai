@@ -58,7 +58,6 @@
                 </Grid>
             </TabItem>
             <TabItem Header="仓库">
-
                 <Grid ClipToBounds="True">
                     <StackPanel Name="StackRepoPluginList" ScrollViewer.CanContentScroll="True" Margin="0,80,0,0" Background="#F4F4F4">
                         <TextBlock Text="按下「刷新」开始探索吧!" TextAlignment="Center" Padding="50"/>
@@ -72,6 +71,78 @@
                 </Grid>
             </TabItem>
 
+            <TabItem Header="Adoptium">
+                <Grid ClipToBounds="True">
+                    <StackPanel Margin="20,100,20,20">
+                        <Grid>
+                            <Grid.Resources>
+                                <Style x:Key="TextHead" TargetType="TextBlock">
+                                    <Setter Property="Padding" Value="5"/>
+                                    <Setter Property="FontSize" Value="16"/>
+                                    <Setter Property="FontWeight" Value="Bold"/>
+                                </Style>
+                            </Grid.Resources>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition Width="5"/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition Width="5"/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition Width="5"/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Grid.Row="0" Text="操作系统" Style="{StaticResource TextHead}"/>
+                            <ComboBox Grid.Column="0" Grid.Row="2" Padding="10,5,10,7" SelectedIndex="3" Style="{StaticResource MaterialDesignOutlinedComboBox}">
+                                <ComboBoxItem Content="Any"/>
+                                <ComboBoxItem Content="Linux"/>
+                                <ComboBoxItem Content="Alpine Linux"/>
+                                <ComboBoxItem Content="Windows"/>
+                                <ComboBoxItem Content="macOS"/>
+                                <ComboBoxItem Content="AIX"/>
+                                <ComboBoxItem Content="Solaris"/>
+                            </ComboBox>
+
+                            <TextBlock Grid.Column="2" Grid.Row="0" Text="硬件架构" Style="{StaticResource TextHead}"/>
+                            <ComboBox Grid.Column="2" Grid.Row="1" Padding="10,5,10,7" SelectedIndex="0" Style="{StaticResource MaterialDesignOutlinedComboBox}">
+                                <ComboBoxItem Content="Any"/>
+                                <ComboBoxItem Content="x64"/>
+                                <ComboBoxItem Content="x86"/>
+                                <ComboBoxItem Content="x32"/>
+                                <ComboBoxItem Content="ppc64"/>
+                                <ComboBoxItem Content="ppc641c"/>
+                                <ComboBoxItem Content="s390x"/>
+                                <ComboBoxItem Content="aarch64"/>
+                                <ComboBoxItem Content="arm"/>
+                                <ComboBoxItem Content="sparc9"/>
+                                <ComboBoxItem Content="riscv64"/>
+                            </ComboBox>
+
+                            <TextBlock Grid.Column="4" Grid.Row="0" Text="包类型" Style="{StaticResource TextHead}"/>
+                            <ComboBox Grid.Column="4" Grid.Row="1" Padding="10,5,10,7" SelectedIndex="0" Style="{StaticResource MaterialDesignOutlinedComboBox}">
+                                <ComboBoxItem Content="Any"/>
+                                <ComboBoxItem Content="JDK"/>
+                                <ComboBoxItem Content="JRE"/>
+                            </ComboBox>
+
+                            <TextBlock Grid.Column="6" Grid.Row="0" Text="版本" Style="{StaticResource TextHead}"/>
+                            <ComboBox Grid.Column="6" Grid.Row="1" Padding="10,5,10,7" SelectedIndex="0" Style="{StaticResource MaterialDesignOutlinedComboBox}">
+                                <ComboBoxItem Content="17"/>
+                            </ComboBox>
+                        </Grid>
+                        <CheckBox Content="添加 java 可执行文件路径到配置文件时使用相对路径 (推荐)" IsChecked="True" Margin="0,5,0,0" HorizontalAlignment="Right"/>
+                    </StackPanel>
+                    <materialDesign:Card Height="80" VerticalAlignment="Top">
+                        <Grid>
+                            <TextBlock Text="Adoptium JDK/JRE 下载" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="24" Margin="20,20,0,0"/>
+                            <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="16" Margin="21,50,0,0">一键下载并在 GraphicalMirai 使用该运行时环境</TextBlock>
+                        </Grid>
+                    </materialDesign:Card>
+                </Grid>
+            </TabItem>
         </TabControl>
         <Button Content="返回" Click="Button_Click" Margin="7,0,0,7" HorizontalAlignment="Left" VerticalAlignment="Bottom" Style="{DynamicResource MaterialDesignFloatingActionButton}"/>
 
