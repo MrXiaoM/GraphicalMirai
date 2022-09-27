@@ -16,6 +16,12 @@ namespace GraphicalMirai.Pages
             cb.Unchecked += delegate { action(false); action1(); };
         }
 
+        public static void ListenProperty(TextBox tb, Action<string> action) => ListenProperty(tb, action, saveConfig);
+        public static void ListenProperty(TextBox tb, Action<string> action, Action action1)
+        {
+            tb.LostFocus += delegate { action(tb.Text); action1(); };
+        }
+
         private static Config config => Config.Instance;
 
         public PageOptions()
@@ -26,7 +32,19 @@ namespace GraphicalMirai.Pages
 
         public void InitializePropertiesListenenr()
         {
+            // 先初始化值
+            CheckUseGhProxy.IsChecked = config.useGhProxy;
+            CheckSocketBridge.IsChecked = config.useBridge;
+            TextJavaPath.Text = config.javaPath;
+            TextJavaExtArgs.Text = config.extArgs;
+            TextJavaMainClass.Text = config.mainClass;
+
+            // 再注册监听器
             ListenProperty(CheckUseGhProxy, v => config.useGhProxy = v);
+            ListenProperty(CheckSocketBridge, v => config.useBridge = v);
+            ListenProperty(TextJavaPath, v => config.javaPath = v);
+            ListenProperty(TextJavaExtArgs, v => config.extArgs = v);
+            ListenProperty(TextJavaMainClass, v => config.mainClass = v);
         }
         
         private void Button_Click(object sender, System.Windows.RoutedEventArgs e)

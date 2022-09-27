@@ -68,6 +68,11 @@ namespace GraphicalMirai
 
         [YamlMember(Alias = "use-ghproxy", Description = "是否使用 ghproxy.com 进行 Github 访问加速")]
         public bool useGhProxy { get; set; } = true;
+        [YamlMember(Alias = "use-bridge", Description = "是否开启并自动安装 GraphicalMirai 通信桥及其相关功能\n" +
+            "GraphicalMirai 通信桥是连接 GraphicalMirai 和 mirai 的桥梁。\n" +
+            "开启后，你可以在控制台页面左侧边栏中操作已登录的机器人，比如\n" +
+            "管理好友、群聊，发送消息等等。")]
+        public bool useBridge { get; set; } = true;
     }
 
     public class Version

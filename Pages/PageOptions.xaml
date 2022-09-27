@@ -13,33 +13,69 @@
      FontFamily="{DynamicResource MaterialDesignFont}"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="PageOptions">
-
+      Title="GraphicalMirai | 选项">
+    <Page.Resources>
+        <Style x:Key="PropertyHead" TargetType="TextBlock">
+            <Setter Property="Padding" Value="2,10,0,3"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+        </Style>
+        <Style x:Key="PropertyCheck" TargetType="CheckBox" BasedOn="{StaticResource MaterialDesignCheckBox}">
+            <Setter Property="Margin" Value="0,0,0,5"/>
+            <Setter Property="FontSize" Value="14"/>
+        </Style>
+        <Style x:Key="PropertyTextBox" TargetType="TextBox" BasedOn="{StaticResource MaterialDesignOutlinedTextBox}">
+            <Setter Property="FontSize" Value="16"/>
+        </Style>
+    </Page.Resources>
     <Grid>
         <TabControl Style="{DynamicResource MaterialDesignNavigatilRailTabControl}">
 
             <TabItem Header="选项">
-                <Grid>
+                <Grid ClipToBounds="True">
                     <materialDesign:Card VerticalAlignment="Top" Height="80" Foreground="#111">
                         <Grid>
-                            <TextBlock Text="选项" Margin="10,10,10,10" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="36" FontWeight="Bold"/>
-                            <TextBlock Text="配置项均为即改即保存" Margin="10,52,10,10" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="14"/>
+                            <TextBlock Text="选项" Margin="20,10,10,10" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="36" FontWeight="Bold"/>
+                            <TextBlock Text="配置项均为即改即保存，请不要在 GraphicalMirai 开启的情况下在外部编辑配置文件" Margin="20,54,10,10" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="14"/>
                         </Grid>
                     </materialDesign:Card>
                     <ScrollViewer Margin="0,80,0,0" Padding="10">
-                        <StackPanel  VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,20">
-                            <CheckBox x:Name="CheckUseGhProxy" Content="是否使用 ghproxy.com 进行 Github 访问加速" IsChecked="True"/>
+                        <StackPanel  VerticalAlignment="Top" Margin="20,20">
+                            <CheckBox x:Name="CheckUseGhProxy" Content="是否使用 ghproxy.com 进行 Github 访问加速" IsChecked="True" Style="{StaticResource PropertyCheck}"/>
+                            <CheckBox x:Name="CheckSocketBridge" Content="是否开启并自动安装 GraphicalMirai 通信桥及其相关功能 (?)" IsChecked="True" Style="{StaticResource PropertyCheck}">
+                                <CheckBox.ToolTip>
+                                    <ToolTip xml:space="preserve">GraphicalMirai 通信桥是连接 GraphicalMirai 和 mirai 的桥梁。&#10;开启后，你可以在控制台页面左侧边栏中操作已登录的机器人，比如&#10;管理好友、群聊，发送消息等等。</ToolTip>
+                                </CheckBox.ToolTip>
+                            </CheckBox>
+                            <TextBlock Text="Java 路径" Style="{StaticResource PropertyHead}"/>
+                            <TextBox x:Name="TextJavaPath" Style="{StaticResource PropertyTextBox}"/>
+                            <TextBlock Text="额外 Jvm 参数" Style="{StaticResource PropertyHead}"/>
+                            <TextBox x:Name="TextJavaExtArgs" Style="{StaticResource PropertyTextBox}"/>
+                            <TextBlock Text="主类限定名" Style="{StaticResource PropertyHead}"/>
+                            <TextBox x:Name="TextJavaMainClass" Style="{StaticResource PropertyTextBox}"/>
                         </StackPanel>
                     </ScrollViewer>
                 </Grid>
             </TabItem>
             <TabItem Header="包管理">
-                <materialDesign:Card VerticalAlignment="Top" Height="80" Foreground="#111">
-                    <Grid>
-                        <TextBlock Text="Maven 包管理器" Margin="10,10,10,10" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="36" FontWeight="Bold"/>
-                        <TextBlock Text="正在编写中，敬请期待" Margin="10,52,10,10" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="14"/>
-                    </Grid>
-                </materialDesign:Card>
+                <Grid ClipToBounds="True">
+                    <materialDesign:Card VerticalAlignment="Top" Height="80" Foreground="#111">
+                        <Grid>
+                            <TextBlock Text="Maven 包管理器" Margin="20,10,10,10" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="36" FontWeight="Bold"/>
+                            <TextBlock Text="正在编写中，敬请期待" Margin="20,54,10,10" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="14"/>
+                        </Grid>
+                    </materialDesign:Card>
+                </Grid>
+            </TabItem>
+            <TabItem Header="关于">
+                <Grid ClipToBounds="True">
+                    <materialDesign:Card VerticalAlignment="Top" Height="80" Foreground="#111">
+                        <Grid>
+                            <TextBlock Text="关于 GraphicalMirai" Margin="20,10,10,10" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="36" FontWeight="Bold"/>
+                            <TextBlock Text="免费开源的 mirai-console 下载器/启动器/插件中心。" Margin="20,54,10,10" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="14"/>
+                        </Grid>
+                    </materialDesign:Card>
+                </Grid>
             </TabItem>
         </TabControl>
         <Button Content="返回" Margin="7,0,0,7" HorizontalAlignment="Left" VerticalAlignment="Bottom" Style="{DynamicResource MaterialDesignFloatingActionButton}" Click="Button_Click"/>
