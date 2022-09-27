@@ -48,11 +48,11 @@
                                 </CheckBox.ToolTip>
                             </CheckBox>
                             <TextBlock Text="Java 路径" Style="{StaticResource PropertyHead}"/>
-                            <TextBox x:Name="TextJavaPath" Style="{StaticResource PropertyTextBox}"/>
+                            <TextBox x:Name="TextJavaPath" Text="java" Style="{StaticResource PropertyTextBox}" Padding="10,5,10,7"/>
                             <TextBlock Text="额外 Jvm 参数" Style="{StaticResource PropertyHead}"/>
-                            <TextBox x:Name="TextJavaExtArgs" Style="{StaticResource PropertyTextBox}"/>
+                            <TextBox x:Name="TextJavaExtArgs" Style="{StaticResource PropertyTextBox}" Padding="10,5,10,7"/>
                             <TextBlock Text="主类限定名" Style="{StaticResource PropertyHead}"/>
-                            <TextBox x:Name="TextJavaMainClass" Style="{StaticResource PropertyTextBox}"/>
+                            <TextBox x:Name="TextJavaMainClass" Style="{StaticResource PropertyTextBox}" Padding="10,5,10,7"/>
                         </StackPanel>
                     </ScrollViewer>
                 </Grid>
