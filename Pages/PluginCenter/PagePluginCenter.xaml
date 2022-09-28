@@ -71,7 +71,7 @@
                 </Grid>
             </TabItem>
 
-            <TabItem Header="Adoptium">
+            <TabItem Header="Adoptium" GotFocus="AdoptiumTab_GotFocus">
                 <Grid ClipToBounds="True">
                     <StackPanel Margin="20,100,20,20">
                         <Grid>
@@ -96,41 +96,40 @@
                                 <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
                             <TextBlock Grid.Column="0" Grid.Row="0" Text="操作系统" Style="{StaticResource TextHead}"/>
-                            <ComboBox Grid.Column="0" Grid.Row="2" Padding="10,5,10,7" SelectedIndex="3" Style="{StaticResource MaterialDesignOutlinedComboBox}">
+                            <ComboBox x:Name="ComboAdoptiumOS" Grid.Column="0" Grid.Row="2" Padding="10,5,10,7" SelectedIndex="3" Style="{StaticResource MaterialDesignOutlinedComboBox}">
                                 <ComboBoxItem Content="Any"/>
-                                <ComboBoxItem Content="Linux"/>
-                                <ComboBoxItem Content="Alpine Linux"/>
-                                <ComboBoxItem Content="Windows"/>
-                                <ComboBoxItem Content="macOS"/>
-                                <ComboBoxItem Content="AIX"/>
-                                <ComboBoxItem Content="Solaris"/>
+                                <ComboBoxItem Content="Linux" Tag="linux"/>
+                                <ComboBoxItem Content="Alpine Linux" Tag="alpine_linux"/>
+                                <ComboBoxItem Content="Windows" Tag="windows"/>
+                                <ComboBoxItem Content="macOS" Tag="mac"/>
+                                <ComboBoxItem Content="AIX" Tag="aix"/>
+                                <ComboBoxItem Content="Solaris" Tag="solaris"/>
                             </ComboBox>
 
                             <TextBlock Grid.Column="2" Grid.Row="0" Text="硬件架构" Style="{StaticResource TextHead}"/>
-                            <ComboBox Grid.Column="2" Grid.Row="1" Padding="10,5,10,7" SelectedIndex="0" Style="{StaticResource MaterialDesignOutlinedComboBox}">
+                            <ComboBox x:Name="ComboAdoptiumArch" Grid.Column="2" Grid.Row="1" Padding="10,5,10,7" SelectedIndex="0" Style="{StaticResource MaterialDesignOutlinedComboBox}">
                                 <ComboBoxItem Content="Any"/>
-                                <ComboBoxItem Content="x64"/>
-                                <ComboBoxItem Content="x86"/>
-                                <ComboBoxItem Content="x32"/>
-                                <ComboBoxItem Content="ppc64"/>
-                                <ComboBoxItem Content="ppc641c"/>
-                                <ComboBoxItem Content="s390x"/>
-                                <ComboBoxItem Content="aarch64"/>
-                                <ComboBoxItem Content="arm"/>
-                                <ComboBoxItem Content="sparc9"/>
-                                <ComboBoxItem Content="riscv64"/>
+                                <ComboBoxItem Content="x64" Tag="x64"/>
+                                <ComboBoxItem Content="x86" Tag="x86"/>
+                                <ComboBoxItem Content="x32" Tag="x32"/>
+                                <ComboBoxItem Content="ppc64" Tag="ppc64"/>
+                                <ComboBoxItem Content="ppc641c" Tag="ppc641c"/>
+                                <ComboBoxItem Content="s390x" Tag="s390x"/>
+                                <ComboBoxItem Content="aarch64" Tag="aarch64"/>
+                                <ComboBoxItem Content="arm" Tag="arm"/>
+                                <ComboBoxItem Content="sparc9" Tag="sparc9"/>
+                                <ComboBoxItem Content="riscv64" Tag="riscv64"/>
                             </ComboBox>
 
                             <TextBlock Grid.Column="4" Grid.Row="0" Text="包类型" Style="{StaticResource TextHead}"/>
-                            <ComboBox Grid.Column="4" Grid.Row="1" Padding="10,5,10,7" SelectedIndex="0" Style="{StaticResource MaterialDesignOutlinedComboBox}">
+                            <ComboBox x:Name="ComboAdoptiumType" Grid.Column="4" Grid.Row="1" Padding="10,5,10,7" SelectedIndex="0" Style="{StaticResource MaterialDesignOutlinedComboBox}">
                                 <ComboBoxItem Content="Any"/>
-                                <ComboBoxItem Content="JDK"/>
-                                <ComboBoxItem Content="JRE"/>
+                                <ComboBoxItem Content="JDK" Tag="jdk"/>
+                                <ComboBoxItem Content="JRE" Tag="jre"/>
                             </ComboBox>
 
                             <TextBlock Grid.Column="6" Grid.Row="0" Text="版本" Style="{StaticResource TextHead}"/>
-                            <ComboBox Grid.Column="6" Grid.Row="1" Padding="10,5,10,7" SelectedIndex="0" Style="{StaticResource MaterialDesignOutlinedComboBox}">
-                                <ComboBoxItem Content="17"/>
+                            <ComboBox x:Name="ComboAdoptiumVer" Grid.Column="6" Grid.Row="1" Padding="10,5,10,7" Style="{StaticResource MaterialDesignOutlinedComboBox}">
                             </ComboBox>
                         </Grid>
                         <CheckBox Content="添加 java 可执行文件路径到配置文件时使用相对路径 (推荐)" IsChecked="True" Margin="0,5,0,0" HorizontalAlignment="Right"/>

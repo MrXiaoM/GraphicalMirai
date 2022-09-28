@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows;
@@ -164,10 +165,87 @@ namespace GraphicalMirai.Pages
             if (ForumRefresh != null && ForumComboSort != null && ForumComboPages != null && ForumPrevPage != null && ForumNextPage != null)
                 ForumRefresh.IsEnabled = ForumComboSort.IsEnabled = ForumComboPages.IsEnabled = ForumPrevPage.IsEnabled = ForumNextPage.IsEnabled = isEnabled;
         }
-
+        ReleaseVersionsParams adoptiumParams = new()
+        {
+            release_type = ReleaseVersionsParams.ReleaseType.ga,
+            lts = true
+        };
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
             ForumComboSort.IsEnabled = true;
+            var oss = EnumExt.valuesWithNames<ReleaseVersionsParams.OS>();
+            var archs = EnumExt.valuesWithNames<ReleaseVersionsParams.Architecture>();
+            var types = EnumExt.valuesWithNames<ReleaseVersionsParams.ImageType>();
+            foreach (ComboBoxItem item in ComboAdoptiumOS.Items)
+            {
+                ReleaseVersionsParams.OS? os = null;
+                if (oss.TryGetValue(item.Tag?.ToString() ?? "", out var s)) os = s;
+                item.Selected += delegate { Adoptium_SelectedOS(os);
+                    RefreshAdoptiumJavaList();
+                };
+            }
+            foreach (ComboBoxItem item in ComboAdoptiumArch.Items)
+            {
+                ReleaseVersionsParams.Architecture? arch = null;
+                if (archs.TryGetValue(item.Tag?.ToString() ?? "", out var s)) arch = s;
+                item.Selected += delegate { Adoptium_SelectedArchitecture(arch);
+                    RefreshAdoptiumJavaList();
+                };
+            }
+            foreach (ComboBoxItem item in ComboAdoptiumType.Items)
+            {
+                ReleaseVersionsParams.ImageType? type = null;
+                if (types.TryGetValue(item.Tag?.ToString() ?? "", out var s)) type = s;
+                item.Selected += delegate { Adoptium_SelectedType(type);
+                    RefreshAdoptiumJavaList();
+                };
+            }
+        }
+
+        private async void RefreshAdoptiumJavaVersions()
+        {
+            fetchingJava = true;
+            var available = await AdoptiumApi.GetAvailableReleases();
+            if (available == null) return;
+            ComboAdoptiumVer.Items.Clear();
+            foreach(int i in available.available_lts_releases)
+            {
+                int version = i;
+                ComboBoxItem item = new() { Content = i.ToString(), Tag = version };
+                item.Selected += delegate 
+                {
+                    Adoptium_SelectedVersion(version);
+                    RefreshAdoptiumJavaList();
+                };
+                ComboAdoptiumVer.Items.Add(item);
+                if (available.most_recent_lts == version) ComboAdoptiumVer.SelectedItem = item;
+            }
+            fetchingJava = false;
+        }
+
+        private async void RefreshAdoptiumJavaList()
+        {
+            var release = await AdoptiumApi.GetReleaseVersions(adoptiumParams);
+            List<ReleaseVersion> versions = release?.versions ?? new();
+            foreach(ReleaseVersion ver in versions)
+            {
+                
+            }
+            await MainWindow.Msg.ShowAsync("获取成功!\n" + string.Join('\n',versions.Select(v => v.semver)), "喜报");
+        }
+
+        private void Adoptium_SelectedOS(ReleaseVersionsParams.OS? os) => adoptiumParams.os = os;
+        private void Adoptium_SelectedArchitecture(ReleaseVersionsParams.Architecture? arch) => adoptiumParams.architecture = arch;
+        private void Adoptium_SelectedType(ReleaseVersionsParams.ImageType? type) => adoptiumParams.image_type = type;
+        private void Adoptium_SelectedVersion(int version) => adoptiumParams.version = $"[{version},{version+1})";
+        bool fetchingJava = false;
+
+        private void AdoptiumTab_GotFocus(object sender, RoutedEventArgs e)
+        {
+            if (!fetchingJava && ComboAdoptiumVer.Items.IsEmpty)
+            {
+                RefreshAdoptiumJavaVersions();
+            }
         }
     }
 }
