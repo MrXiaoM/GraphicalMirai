@@ -37,7 +37,7 @@ namespace GraphicalMirai
         }
         public enum ImageType
         {
-            jdk, jre, testimage, debugimage, staticlibs, sources, sbom
+            jdk, jre/*, testimage, debugimage, staticlibs, sources, sbom*/
         }
         public enum OS
         {
@@ -62,6 +62,7 @@ namespace GraphicalMirai
         public Architecture? architecture;
         public CLib? c_lib;
         public HeapSize? heap_size;
+        public ImageType? image_type;
         public bool lts = false;
         public OS? os;
         public int page = 0;
@@ -78,6 +79,7 @@ namespace GraphicalMirai
             if (architecture.HasValue) @params.Add("architecture", architecture.Value.ToString());
             if (c_lib.HasValue) @params.Add("c_lib", c_lib.Value.ToString());
             if (heap_size.HasValue) @params.Add("heap_size", heap_size.Value.ToString());
+            if (image_type.HasValue) @params.Add("image_type", image_type.Value.ToString());
             if (lts) @params.Add("lts", lts.ToString());
             if (os.HasValue) @params.Add("os", os.Value.ToString());
             if (page != 0) @params.Add("page", page.ToString());
