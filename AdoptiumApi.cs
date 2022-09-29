@@ -1,17 +1,10 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Security;
-using System.Security.Permissions;
-using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
-using YamlDotNet.Serialization.NodeTypeResolvers;
-using static System.Net.WebRequestMethods;
 
 namespace GraphicalMirai
 {
