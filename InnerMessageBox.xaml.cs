@@ -206,5 +206,12 @@ namespace GraphicalMirai
             StackButton.IsEnabled = false;
             task?.SetResult(MessageBoxResult.Cancel);
         }
+
+        public static Hyperlink hyperlink(string text, Action onClick)
+        {
+            var link = new Hyperlink(new Run(text) { Foreground = App.hexBrush("#FFF000") });
+            link.Click += delegate { onClick(); };
+            return link;
+        }
     }
 }

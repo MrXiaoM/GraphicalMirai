@@ -78,9 +78,7 @@ namespace GraphicalMirai.Pages.PluginCenter
                 var result = await MainWindow.Msg.ShowAsync(() => {
                     var content = new List<Inline>();
                     content.Add(new Run("GraphicalMirai 在你的 "));
-                    var linkPlugins = new Hyperlink(new Run("plugins 文件夹") { Foreground = App.hexBrush("#FFF000") });
-                    linkPlugins.Click += delegate { App.openUrl(App.path("mirai/plugins")); };
-                    content.Add(linkPlugins);
+                    content.Add(InnerMessageBox.hyperlink("plugins 文件夹", () => App.openUrl(App.path("mirai/plugins"))));
                     content.Add(new Run(" 下发现\n" +
                         "存在以下疑似同名插件。\n"));
 

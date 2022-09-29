@@ -1,7 +1,9 @@
 ﻿using GraphicalMirai.LoginSolver;
 using GraphicalMirai.Pages;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,10 +26,52 @@ namespace GraphicalMirai
 
         public App()
         {
+#if !DEBUG
+            DispatcherUnhandledException += App_DispatcherUnhandledException;
+#endif
             // 初始化登录处理器
             LoginSolverSetup.Instance.Setup();
         }
+#if !DEBUG
+        private void App_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        {
+            var ex = e.Exception;
+            if (!ex.StackTrace?.Contains("GraphicalMirai.InnerMessageBox") ?? false)
+            {
+                Task.Run(async () =>
+                {
+                    var result = await GraphicalMirai.MainWindow.Msg.ShowAsync(() =>
+                    {
+                        var error = $"{ex.GetType().Name}: {ex.Message}\n" +
+                            $"  Source:\n{ex.Source}\n" +
+                            $"  Stacktrace:\n{ex.StackTrace}\n";
 
+                        while(ex.InnerException != null)
+                        {
+                            ex = ex.InnerException;
+                            error += $"  InnerException: {ex.GetType().Name}: {ex.Message}\n" +
+                            $"  Source:\n{ex.Source}\n" +
+                            $"  Stacktrace:\n{ex.StackTrace}\n";
+                        }
+                        List<Inline> content = new();
+                        content.Add(new Run("GraphicalMirai 在运行时出现一个异常!\n请通过 "));
+                        content.Add(InnerMessageBox.hyperlink("Github Issues", () => openUrl("https://github.com/MrXiaoM/GraphicalMirai/issues/new/choose")));
+                        content.Add(new Run(" 将以下信息反馈给作者\n" +
+                            "「是」\t忽略异常继续使用\n" +
+                            "「否」\t退出程序\n("));
+                        content.Add(InnerMessageBox.hyperlink("点此复制", () => copy(error)));
+                        content.Add(new Run($"以下内容。)\n\n{error}"));
+                        return content.ToArray();
+                    }, "出现错误", MessageBoxButton.YesNo);
+                    if (result == MessageBoxResult.No)
+                    {
+                        Environment.Exit(-1);
+                    }
+                });
+                e.Handled = true;
+            }
+        }
+#endif
         // 储存一些单例页面实例。
         private static Lazy<PageInit> pageInit = new();
         public static PageInit PageInit
@@ -222,6 +266,26 @@ namespace GraphicalMirai
                 fail(e);
                 return false;
             }
+        }
+    }
+    public static class EnumExt
+    {
+        /// <summary>
+        /// 获取枚举所有的值
+        /// </summary>
+        /// <typeparam name="T">枚举类型</typeparam>
+        /// <returns></returns>
+        public static T[] values<T>() where T : Enum => typeof(T).GetEnumValues().OfType<T>().ToArray();
+
+        /// <summary>
+        /// 获取枚举所有的值以及名称
+        /// </summary>
+        /// <typeparam name="T">枚举类型</typeparam>
+        /// <returns></returns>
+        public static Dictionary<string, T> valuesWithNames<T>() where T : Enum
+        {
+            Type type = typeof(T);
+            return type.GetEnumValues().OfType<T>().ToDictionary(a => type.GetEnumName(a) ?? a.ToString());
         }
     }
 }
