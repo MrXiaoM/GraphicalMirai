@@ -168,7 +168,9 @@ namespace GraphicalMirai.Pages
         ReleaseVersionsParams adoptiumParams = new()
         {
             release_type = ReleaseVersionsParams.ReleaseType.ga,
-            lts = true
+            lts = true,
+            os = VersionsParams.OS.windows,
+            image_type = VersionsParams.ImageType.jre,
         };
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
@@ -176,11 +178,14 @@ namespace GraphicalMirai.Pages
             var oss = EnumExt.valuesWithNames<ReleaseVersionsParams.OS>();
             var archs = EnumExt.valuesWithNames<ReleaseVersionsParams.Architecture>();
             var types = EnumExt.valuesWithNames<ReleaseVersionsParams.ImageType>();
+            
             foreach (ComboBoxItem item in ComboAdoptiumOS.Items)
             {
                 ReleaseVersionsParams.OS? os = null;
                 if (oss.TryGetValue(item.Tag?.ToString() ?? "", out var s)) os = s;
-                item.Selected += delegate { Adoptium_SelectedOS(os);
+                item.Selected += delegate
+                {
+                    Adoptium_SelectedOS(os);
                     RefreshAdoptiumJavaList();
                 };
             }
@@ -188,7 +193,9 @@ namespace GraphicalMirai.Pages
             {
                 ReleaseVersionsParams.Architecture? arch = null;
                 if (archs.TryGetValue(item.Tag?.ToString() ?? "", out var s)) arch = s;
-                item.Selected += delegate { Adoptium_SelectedArchitecture(arch);
+                item.Selected += delegate
+                {
+                    Adoptium_SelectedArchitecture(arch);
                     RefreshAdoptiumJavaList();
                 };
             }
@@ -196,7 +203,9 @@ namespace GraphicalMirai.Pages
             {
                 ReleaseVersionsParams.ImageType? type = null;
                 if (types.TryGetValue(item.Tag?.ToString() ?? "", out var s)) type = s;
-                item.Selected += delegate { Adoptium_SelectedType(type);
+                item.Selected += delegate
+                {
+                    Adoptium_SelectedType(type);
                     RefreshAdoptiumJavaList();
                 };
             }
@@ -208,11 +217,11 @@ namespace GraphicalMirai.Pages
             var available = await AdoptiumApi.GetAvailableReleases();
             if (available == null) return;
             ComboAdoptiumVer.Items.Clear();
-            foreach(int i in available.available_lts_releases)
+            foreach (int i in available.available_lts_releases)
             {
                 int version = i;
                 ComboBoxItem item = new() { Content = i.ToString(), Tag = version };
-                item.Selected += delegate 
+                item.Selected += delegate
                 {
                     Adoptium_SelectedVersion(version);
                     RefreshAdoptiumJavaList();
@@ -227,17 +236,29 @@ namespace GraphicalMirai.Pages
         {
             var release = await AdoptiumApi.GetReleaseVersions(adoptiumParams);
             List<ReleaseVersion> versions = release?.versions ?? new();
-            foreach(ReleaseVersion ver in versions)
+            var ver = versions.FirstOrDefault();
+            if (ver == null) return;
+            var assetsParams = new AssetVersionsParams(ver.openjdk_version);
+            assetsParams.CopyFrom(adoptiumParams);
+            var assets = await AdoptiumApi.GetAssetVersions(assetsParams);
+            if (assets.Count == 0)
             {
-                
+                // 似乎像是 8 之类的版本是识别 semver 的
+                assetsParams.version = ver.semver;
+                assets = await AdoptiumApi.GetAssetVersions(assetsParams);
+                if (assets.Count == 0)
+                {
+                    await MainWindow.Msg.ShowAsync("无法找到该版本相应文件\nversion:" + (ver.major + "." + ver.minor + "." + ver.security + "." + ver.patch) + "\nopenjdk_version: " + ver.openjdk_version + "semver: " + ver.semver, "获取错误");
+                    return;
+                }
             }
-            await MainWindow.Msg.ShowAsync("获取成功!\n" + string.Join('\n',versions.Select(v => v.semver)), "喜报");
+            await MainWindow.Msg.ShowAsync("获取成功!\n" + string.Join('\n', assets.First().binaries.Select(v => v.architecture + " " + v.os + " " + v.package.name)), "喜报");
         }
 
         private void Adoptium_SelectedOS(ReleaseVersionsParams.OS? os) => adoptiumParams.os = os;
         private void Adoptium_SelectedArchitecture(ReleaseVersionsParams.Architecture? arch) => adoptiumParams.architecture = arch;
         private void Adoptium_SelectedType(ReleaseVersionsParams.ImageType? type) => adoptiumParams.image_type = type;
-        private void Adoptium_SelectedVersion(int version) => adoptiumParams.version = $"[{version},{version+1})";
+        private void Adoptium_SelectedVersion(int version) => adoptiumParams.version = $"[{version},{version + 1})";
         bool fetchingJava = false;
 
         private void AdoptiumTab_GotFocus(object sender, RoutedEventArgs e)

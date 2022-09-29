@@ -14,7 +14,8 @@
      FontFamily="{DynamicResource MaterialDesignFont}"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="GraphicalMirai | 插件中心">
+      Title="GraphicalMirai | 插件中心"
+      Loaded="Page_Loaded">
 
     <Grid>
         <TabControl Style="{DynamicResource MaterialDesignNavigatilRailTabControl}">
@@ -122,8 +123,7 @@
                             </ComboBox>
 
                             <TextBlock Grid.Column="4" Grid.Row="0" Text="包类型" Style="{StaticResource TextHead}"/>
-                            <ComboBox x:Name="ComboAdoptiumType" Grid.Column="4" Grid.Row="1" Padding="10,5,10,7" SelectedIndex="0" Style="{StaticResource MaterialDesignOutlinedComboBox}">
-                                <ComboBoxItem Content="Any"/>
+                            <ComboBox x:Name="ComboAdoptiumType" Grid.Column="4" Grid.Row="1" Padding="10,5,10,7" SelectedIndex="1" Style="{StaticResource MaterialDesignOutlinedComboBox}">
                                 <ComboBoxItem Content="JDK" Tag="jdk"/>
                                 <ComboBoxItem Content="JRE" Tag="jre"/>
                             </ComboBox>
