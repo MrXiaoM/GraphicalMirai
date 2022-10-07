@@ -22,6 +22,12 @@ namespace GraphicalMirai.Pages
             tb.LostFocus += delegate { action(tb.Text); action1(); };
         }
 
+        public static void ListenProperty(IntegerTextBox tb, Action<int> action) => ListenProperty(tb, action, saveConfig);
+        public static void ListenProperty(IntegerTextBox tb, Action<int> action, Action action1)
+        {
+            tb.ValueChanged += delegate { action(tb.Value); action1(); };
+        }
+
         private static Config config => Config.Instance;
 
         public PageOptions()
@@ -38,6 +44,7 @@ namespace GraphicalMirai.Pages
             TextJavaPath.Text = config.javaPath;
             TextJavaExtArgs.Text = config.extArgs;
             TextJavaMainClass.Text = config.mainClass;
+            TextBridgePort.Value = config.bridgePort;
 
             // 再注册监听器
             ListenProperty(CheckUseGhProxy, v => config.useGhProxy = v);
@@ -45,6 +52,7 @@ namespace GraphicalMirai.Pages
             ListenProperty(TextJavaPath, v => config.javaPath = v);
             ListenProperty(TextJavaExtArgs, v => config.extArgs = v);
             ListenProperty(TextJavaMainClass, v => config.mainClass = v);
+            ListenProperty(TextBridgePort, v => config.bridgePort = v);
         }
         
         private void Button_Click(object sender, System.Windows.RoutedEventArgs e)

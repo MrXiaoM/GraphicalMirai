@@ -73,6 +73,8 @@ namespace GraphicalMirai
             "开启后，你可以在控制台页面左侧边栏中操作已登录的机器人，比如\n" +
             "管理好友、群聊，发送消息等等。")]
         public bool useBridge { get; set; } = true;
+        [YamlMember(Alias = "bridge-port", Description = " GraphicalMirai 通信桥使用端口，默认为 41919")]
+        public int bridgePort { get; set; } = 41919;
     }
 
     public class Version
