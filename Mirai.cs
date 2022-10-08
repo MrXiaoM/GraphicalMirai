@@ -1,12 +1,12 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Net.NetworkInformation;
+using System.Net;
+using System.Net.Sockets;
+using System.Printing;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Media.Media3D;
 
 namespace GraphicalMirai
 {
@@ -24,6 +24,11 @@ namespace GraphicalMirai
         public string? JavaHome { get; private set; }
         public string? MainClass { get; private set; }
         public Task? task;
+        public int socketPort = 41919;
+        public Task? taskSocket;
+        Socket? socketServer;
+        Socket? socket;
+
         public Mirai()
         {
             onDataReceived += delegate (string s)
@@ -41,13 +46,27 @@ namespace GraphicalMirai
         public bool InitMirai(string javaHome, string workingDir, List<string> libraries, string mainClass, string extArgs = "")
         {
             if (IsRunning && !Process.HasExited) return false;
+            bool useBridge = Config.Instance.useBridge;
+            if (useBridge)
+            {
+                socketServer = new(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                socketPort = Config.Instance.bridgePort;
+                IPEndPoint ipEndPoint = new(IPAddress.Loopback, socketPort);
+                try
+                {
+                    socketServer.Bind(ipEndPoint);
+                }
+                catch (Exception e)
+                {
+                    return false;
+                }
+            }
             JavaHome = javaHome;
             WorkingDir = workingDir;
             Libraries = libraries;
             MainClass = mainClass;
-
-            Process = new Process();
-            ProcessStartInfo psi = new ProcessStartInfo(JavaHome);
+            Process = new();
+            ProcessStartInfo psi = new(JavaHome);
             psi.WorkingDirectory = WorkingDir;
             psi.UseShellExecute = false;
             psi.RedirectStandardOutput = true;
@@ -57,13 +76,14 @@ namespace GraphicalMirai
             psi.StandardInputEncoding = Encoding.UTF8;
             psi.StandardOutputEncoding = Encoding.UTF8;
             psi.CreateNoWindow = true;
-            psi.Arguments = (extArgs + " -classpath \"" + string.Join(";", Libraries) + "\" " + MainClass).TrimStart();
+            psi.Arguments = (useBridge ? $"-Dgraphicalmirai.bridge.port={socketPort} " : "") +
+                (extArgs + " -classpath \"" + string.Join(";", Libraries) + "\" " + MainClass).TrimStart();
             Process.StartInfo = psi;
             Process.EnableRaisingEvents = true;
             Process.Exited += delegate
-            { 
+            {
                 IsRunning = false;
-                onExited(); 
+                onExited();
             };
             return true;
         }
@@ -78,6 +98,32 @@ namespace GraphicalMirai
             Process.Start();
             WriteLine("status");
             if (task != null) task.Dispose();
+            if (Config.Instance.useBridge && socketServer != null)
+            {
+                socketServer.Listen(1);
+                taskSocket = new Task(() =>
+                {
+                    while (!Process.HasExited)
+                    {
+                        socket = socketServer.Accept();
+                        while (socket.Connected)
+                        {
+                            byte[] data = new byte[1024 * 1024 * 1024];
+                            int readLeng = socket.Receive(data, 0, data.Length, SocketFlags.None);
+                            if (readLeng == 0)
+                            {
+                                socket.Shutdown(SocketShutdown.Both);
+                                socket.Close();
+                                break;
+                            }
+                            var msg = Encoding.UTF8.GetString(data, 0, readLeng);
+                            ReceiveRawMessage(msg);
+                        }
+                    }
+                });
+                taskSocket.Start();
+            }
+
             task = new Task(() =>
             {
                 StreamReader output = Process.StandardOutput;
@@ -90,6 +136,21 @@ namespace GraphicalMirai
             task.Start();
         }
 
+        private void ReceiveRawMessage(string msg)
+        {
+            if (msg.StartsWith("SolveSliderCaptcha,"))
+            {
+                var @params = msg.Substring(19);
+                var botId = @params.SubstringBefore(",").ToLong();
+                var url = @params.SubstringAfter(",");
+                // TODO: 处理滑块验证码
+            }
+        }
+
+        private void SendRawMessage(string msg) => socket?.Send(Encoding.UTF8.GetBytes(msg));
+
+        public void SliderCaptcha(string botId, string ticket) => SendRawMessage($"SolveSliderCaptcha,{botId},{ticket}");
+
         public async void Stop()
         {
             if (!IsRunning || Process.HasExited) return;
@@ -97,6 +158,8 @@ namespace GraphicalMirai
             WriteLine("stop");
             await Process.WaitForExitAsync();
             Process.Close();
+            socketServer?.Shutdown(SocketShutdown.Both);
+            socketServer?.Close();
         }
 
         public void WriteLine(string s)
