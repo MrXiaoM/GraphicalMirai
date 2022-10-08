@@ -210,7 +210,45 @@ namespace GraphicalMirai
             XamlWriter.Save(XamlReader.Parse(xaml), xmlWriter);
             return builder.ToString();
         }
+
+        public static bool ExtractResource(string resource, string filePath)
+        {
+            Assembly? assembly = Assembly.GetEntryAssembly();
+            var stream = assembly?.GetManifestResourceStream($"GraphicalMirai.{resource}");
+            if (stream == null) return false;
+            if (File.Exists(filePath))
+            {
+                var md5stream = MD5(stream);
+                var md5file = MD5(File.ReadAllBytes(filePath));
+                if (md5stream == md5file) return true;
+            }
+            else
+            {
+                var parent = new FileInfo(filePath).Directory;
+                if ((!parent?.Exists) ?? false) parent?.Create();
+            }
+            try
+            {
+                using (var input = new BufferedStream(stream))
+                {
+                    using (var output = new FileStream(filePath, FileMode.Create, FileAccess.Write))
+                    {
+                        byte[] buf = new byte[1024];
+                        int len;
+                        while ((len = input.Read(buf, 0, buf.Length)) > 0) output.Write(buf, 0, len);
+                        output.Flush();
+                    }
+                }
+            }
+            catch
+            {
+                // 收声
+                return false;
+            }
+            return true;
         }
+
+        public static bool CheckBridge() => ExtractResource("bridge.jar", path("mirai/plugins/GraphicalMiraiBridge.mirai2.jar"));
     }
 
     public static class HttpClientExt
