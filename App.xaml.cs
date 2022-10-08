@@ -302,4 +302,33 @@ namespace GraphicalMirai
             return type.GetEnumValues().OfType<T>().ToDictionary(a => type.GetEnumName(a) ?? a.ToString());
         }
     }
+
+    public static class StringKt
+    {
+        public static string SubstringBefore(this string s, string value)
+        {
+            int i = s.IndexOf(value);
+            return i < 0 ? "" : s.Substring(0, i);
+        }
+        public static string SubstringAfter(this string s, string value)
+        {
+            int i = s.IndexOf(value);
+            return i < 0 ? s : s.Substring(i + value.Length);
+        }
+        public static string SubstringBeforeLast(this string s, string value)
+        {
+            int i = s.LastIndexOf(value);
+            return i < 0 ? "" : s.Substring(0, i);
+        }
+        public static string SubstringAfterLast(this string s, string value)
+        {
+            int i = s.LastIndexOf(value);
+            return i < 0 ? s : s.Substring(i + value.Length);
+        }
+        public static int ToInt(this string s, int defaultValue = 0) => int.TryParse(s, out int value) ? value : defaultValue;
+        public static long ToLong(this string s, long defaultValue = 0) => long.TryParse(s, out long value) ? value : defaultValue;
+        public static double ToDouble(this string s, double defaultValue = 0) => double.TryParse(s, out double value) ? value : defaultValue;
+        public static float ToFloat(this string s, float defaultValue = 0) => float.TryParse(s, out float value) ? value : defaultValue;
+        public static short ToShort(this string s, short defaultValue = 0) => short.TryParse(s, out short value) ? value : defaultValue;
+    }
 }
