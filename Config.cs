@@ -27,15 +27,16 @@ namespace GraphicalMirai
                 try
                 {
                     if (!File.Exists(ConfigPath)) throw new FileNotFoundException(ConfigPath);
-                    return instance ??= DESERIALIZER.Deserialize<Config>(File.ReadAllText(ConfigPath));
+                    instance ??= DESERIALIZER.Deserialize<Config>(File.ReadAllText(ConfigPath));
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine(e.ToString());
                     instance = new Config();
                     Save();
-                    return instance;
                 }
+                if (instance.bridgePort < 1 || instance.bridgePort > 65535) instance.bridgePort = 41919;
+                return instance;
             }
         }
         public static void Save()
