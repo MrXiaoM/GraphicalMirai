@@ -7,7 +7,6 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
 using System.Windows.Media.Imaging;
 using System.Xml;
 
@@ -90,7 +89,7 @@ namespace GraphicalMirai
                 s.Invoke("WebpCodecSetup.exe");
                 await httpClient.GetByteArrayAsync(
                     "https://storage.googleapis.com/downloads.webmproject.org/releases/webp/WebpCodecSetup.exe",
-                    bytes => 
+                    bytes =>
                     {
                         string exepath = App.path("WebpCodecSetup.exe");
                         File.WriteAllBytes(exepath, bytes);
@@ -98,7 +97,7 @@ namespace GraphicalMirai
                         proc.StartInfo.FileName = exepath;
                         proc.Start();
                     },
-                    ex => 
+                    ex =>
                     {
                         MainWindow.Msg.ShowAsync("WebpCodecSetup.exe 下载错误!\n" + ex.GetType().FullName + "\n" + ex.Message, "下载错误");
                     }
@@ -188,7 +187,7 @@ namespace GraphicalMirai
                             if (ComboMiraiVer.Items.Count > 0) ComboMiraiVer.SelectedIndex = 0;
                         });
                     },
-                    ex => 
+                    ex =>
                     {
                         MainWindow.Msg.ShowAsync("获取版本时出现错误\n" + ex.GetType().FullName + "\n" + ex.Message, "错误");
                     });
@@ -255,7 +254,8 @@ namespace GraphicalMirai
                 s.Invoke("bcprov-jdk15on-" + sel + ".jar (1/4)");
                 await httpClient.GetByteArrayAsync(
                     "org/bouncycastle/bcprov-jdk15on/" + bcprovVer + "/bcprov-jdk15on-" + bcprovVer + ".jar",
-                    bytes => {
+                    bytes =>
+                    {
                         File.WriteAllBytes(App.path("mirai/content/bcprov-jdk15on-" + bcprovVer + ".jar"), bytes);
                     },
                     ex =>

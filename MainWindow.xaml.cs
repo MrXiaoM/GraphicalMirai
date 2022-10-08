@@ -16,11 +16,8 @@ namespace GraphicalMirai
 #pragma warning restore CS8618
         public static void Navigate(object content) => Instance.Navigate0(content);
         public static void SetTitle(string title) => Instance.Title = title;
-        public static InnerMessageBox Msg
-        {
-            get { return Instance.msgBox; }
-        }
-        object pageSwitchTo;
+        public static InnerMessageBox Msg => Instance.msgBox;
+        object? pageSwitchTo;
         Storyboard aniSwitchPage0;
         Storyboard aniSwitchPage1;
 

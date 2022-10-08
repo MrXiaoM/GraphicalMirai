@@ -5,12 +5,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Markup;
 using System.Windows.Media;
 using System.Xml;
+using File = System.IO.File;
 
 namespace GraphicalMirai
 {
@@ -19,6 +21,8 @@ namespace GraphicalMirai
     /// </summary>
     public partial class App : Application
     {
+        private static readonly ASCIIEncoding ASCII = new();
+
         public static readonly string UserAgent = "GraphicalMirai/" + ((object?)System.Reflection.Assembly.GetExecutingAssembly().GetName().Version ?? "1.0.0").ToString() +
             " Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.81 Safari/537.36 Edg/104.0.1293.47";
         private static Lazy<Mirai> miraiLazy = new();
@@ -74,44 +78,23 @@ namespace GraphicalMirai
 #endif
         // 储存一些单例页面实例。
         private static Lazy<PageInit> pageInit = new();
-        public static PageInit PageInit
-        {
-            get { return pageInit.Value; }
-        }
         private static Lazy<PageMain> pageMain = new();
-        public static PageMain PageMain
-        {
-            get { return pageMain.Value; }
-        }
         private static Lazy<PageConsole> pageMainConsole = new();
-        public static PageConsole PageMainConsole
-        {
-            get { return pageMainConsole.Value; }
-        }
         private static Lazy<PageLogin> pageMainLogin = new();
-        public static PageLogin PageMainLogin
-        {
-            get { return pageMainLogin.Value; }
-        }
         private static Lazy<PagePluginCenter> pagePluginCenter = new();
-        public static PagePluginCenter PagePluginCenter
-        {
-            get { return pagePluginCenter.Value; }
-        }
         private static Lazy<PageOptions> pageOptions = new();
-        public static PageOptions PageOptions
-        {
-            get { return pageOptions.Value; }
-        }
-        public static long NowTimestamp { get { return ToTimestamp(DateTime.UtcNow); } }
-        public static DateTime FromTimestamp(long time)
-        {
-            return new DateTime(1970, 1, 1).Add(TimeSpan.FromMilliseconds(time));
-        }
-        public static long ToTimestamp(DateTime time)
-        {
-            return new DateTimeOffset(time).ToUnixTimeMilliseconds();
-        }
+
+        public static PageInit PageInit => pageInit.Value;
+        public static PageMain PageMain => pageMain.Value;
+        public static PageConsole PageMainConsole => pageMainConsole.Value;
+        public static PageLogin PageMainLogin => pageMainLogin.Value;
+        public static PagePluginCenter PagePluginCenter => pagePluginCenter.Value;
+        public static PageOptions PageOptions => pageOptions.Value;
+
+        public static long NowTimestamp => ToTimestamp(DateTime.UtcNow);
+        public static DateTime FromTimestamp(long time) => new DateTime(1970, 1, 1).Add(TimeSpan.FromMilliseconds(time));
+
+        public static long ToTimestamp(DateTime time) => new DateTimeOffset(time).ToUnixTimeMilliseconds();
 
         public static string FormatTimestamp(long time)
         {
@@ -164,7 +147,7 @@ namespace GraphicalMirai
                 System.Diagnostics.Process.Start("explorer", "/e," + s);
         }
 
-        public static bool exists(string path) { return exists(new string[] { path }); }
+        public static bool exists(string path) => exists(new string[] { path });
 
         public static bool exists(string[] path)
         {
@@ -183,10 +166,7 @@ namespace GraphicalMirai
             }
         }
 
-        public static string path(string path)
-        {
-            return Environment.CurrentDirectory + "\\" + path.Replace("/", "\\");
-        }
+        public static string path(string path) => Environment.CurrentDirectory + "\\" + path.Replace("/", "\\");
 
         public static void resetDir(string path)
         {
@@ -198,24 +178,13 @@ namespace GraphicalMirai
             }
         }
 
-        public static void copy(string data)
-        {
-            Clipboard.SetText(data);
-        }
-        public static string pasteText()
-        {
-            return Clipboard.GetText();
-        }
+        public static void copy(string data) => Clipboard.SetText(data);
 
-        public static SolidColorBrush hexBrush(string s)
-        {
-            return new SolidColorBrush(hex(s));
-        }
+        public static string pasteText() => Clipboard.GetText();
 
-        public static Color hex(string s)
-        {
-            return (Color)ColorConverter.ConvertFromString(s);
-        }
+        public static SolidColorBrush hexBrush(string s) => new(hex(s));
+
+        public static Color hex(string s) => (Color)ColorConverter.ConvertFromString(s);
 
         public static string MD5(string s)
         {
@@ -224,16 +193,23 @@ namespace GraphicalMirai
             return result;
         }
 
+        public static string MD5(Stream s) => ASCII.GetString(System.Security.Cryptography.MD5.Create().ComputeHash(s));
+
+        public static string MD5(byte[] b) => ASCII.GetString(System.Security.Cryptography.MD5.Create().ComputeHash(b));
+
         public static string FormatXaml(string xaml)
         {
-            XmlWriterSettings settings = new XmlWriterSettings();
-            settings.Indent = true;
-            settings.IndentChars = "    ";
-            settings.NewLineOnAttributes = true;
-            StringBuilder sb = new StringBuilder();
-            XmlWriter xmlWriter = XmlWriter.Create(sb, settings);
+            XmlWriterSettings settings = new()
+            {
+                Indent = true,
+                IndentChars = "    ",
+                NewLineOnAttributes = true
+            };
+            StringBuilder builder = new();
+            XmlWriter xmlWriter = XmlWriter.Create(builder, settings);
             XamlWriter.Save(XamlReader.Parse(xaml), xmlWriter);
-            return sb.ToString();
+            return builder.ToString();
+        }
         }
     }
 

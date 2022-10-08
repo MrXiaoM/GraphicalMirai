@@ -52,9 +52,9 @@ namespace GraphicalMirai
             BeginStoryboard(AniOptFadeIn);
             new Task(async () =>
             {
-                HttpClientHandler handler = new HttpClientHandler();
-                ProgressMessageHandler processHandler = new ProgressMessageHandler(handler);
-                HttpClient httpClient = new HttpClient(processHandler);
+                HttpClientHandler handler = new();
+                ProgressMessageHandler processHandler = new(handler);
+                HttpClient httpClient = new(processHandler);
 
                 string nowFile = "正在准备";
 

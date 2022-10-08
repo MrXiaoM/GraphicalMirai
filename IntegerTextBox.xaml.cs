@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Printing;
-using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media.Media3D;
 
 namespace GraphicalMirai
 {
@@ -13,7 +10,7 @@ namespace GraphicalMirai
     /// </summary>
     public partial class IntegerTextBox : UserControl
     {
-        private static DependencyProperty RegisterProperty<Value>(string name, Value? defaultValue, Action<IntegerTextBox, DependencyPropertyChangedEventArgs> onValueChanged) => 
+        private static DependencyProperty RegisterProperty<Value>(string name, Value? defaultValue, Action<IntegerTextBox, DependencyPropertyChangedEventArgs> onValueChanged) =>
             DependencyProperty.Register(name, typeof(Value), typeof(IntegerTextBox),
                 new(defaultValue, new((sender, e) => onValueChanged((IntegerTextBox)sender, e))));
 
@@ -24,7 +21,8 @@ namespace GraphicalMirai
             InitializeComponent();
         }
         public static readonly DependencyProperty ValueProperty = RegisterProperty(name: "Value", defaultValue: 0,
-            onValueChanged: (sender, e) => {
+            onValueChanged: (sender, e) =>
+            {
                 sender.InputBox.Text = e.NewValue.ToString();
                 sender.ValueChanged(sender, e);
             }
@@ -76,7 +74,7 @@ namespace GraphicalMirai
 
         private void InputBox_LostFocus(object sender, RoutedEventArgs e)
         {
-            if(int.TryParse(InputBox.Text, out int newValue))
+            if (int.TryParse(InputBox.Text, out int newValue))
             {
                 if (newValue >= Minimum && newValue <= Maximum) Value = newValue;
                 else InputBox.Text = Value.ToString();

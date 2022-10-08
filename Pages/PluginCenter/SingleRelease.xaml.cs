@@ -75,7 +75,8 @@ namespace GraphicalMirai.Pages.PluginCenter
             var existPlugins = new DirectoryInfo(App.path("mirai/plugins")).GetFiles().TakeWhile(f => f.Name.ToLower().StartsWith(prefix.ToLower()));
             if (existPlugins.Count() > 0)
             {
-                var result = await MainWindow.Msg.ShowAsync(() => {
+                var result = await MainWindow.Msg.ShowAsync(() =>
+                {
                     var content = new List<Inline>();
                     content.Add(new Run("GraphicalMirai 在你的 "));
                     content.Add(InnerMessageBox.hyperlink("plugins 文件夹", () => App.openUrl(App.path("mirai/plugins"))));
