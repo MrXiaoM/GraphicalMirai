@@ -1,20 +1,19 @@
 package top.mrxiaom.graphicalmirai
 
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import net.mamoe.mirai.Bot
-import net.mamoe.mirai.console.extensions.BotConfigurationAlterer
+import kotlinx.coroutines.runBlocking
+import net.mamoe.mirai.console.extension.PluginComponentStorage
 import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescription
 import net.mamoe.mirai.console.plugin.jvm.KotlinPlugin
-import net.mamoe.mirai.utils.BotConfiguration
-import net.mamoe.mirai.utils.info
+import net.mamoe.mirai.event.broadcast
+import top.mrxiaom.graphicalmirai.events.BridgeDataPreReceive
 import java.io.BufferedWriter
 import java.io.DataInputStream
 import java.io.OutputStreamWriter
 import java.io.PrintWriter
 import java.net.Socket
-import java.util.concurrent.CompletableFuture
 
 object GraphicalMiraiBridge : KotlinPlugin(
     JvmPluginDescription(
@@ -25,70 +24,72 @@ object GraphicalMiraiBridge : KotlinPlugin(
         author("MrXiaoM")
         info("""GraphicalMirai 通信桥""")
     }
-), BotConfigurationAlterer {
-    val bots = mutableMapOf<Long, CompletableFuture<String>>()
-    lateinit var socket: Socket
-    lateinit var input: DataInputStream
-    lateinit var output: PrintWriter
-    var disable = false
-    override fun onEnable() {
+) {
+    private lateinit var socket: Socket
+    private lateinit var input: DataInputStream
+    private lateinit var output: PrintWriter
+    private val sliderDef = CompletableDeferred<String>()
+    override fun PluginComponentStorage.onLoad() {
         val port = System.getProperty("graphicalmirai.bridge.port")?.toInt()
         if (port == null) {
             logger.warning("找不到通信桥端口，禁用插件功能")
-            // 在插件启用时无法卸载插件 (恼)
-            disable = true
+            logger.warning("在不使用 GraphicalMirai 时请不要使用该插件")
             return
         }
-        // TODO 等待 C# 端实现服务端
-        launch {
-            withContext(Dispatchers.IO) {
-                try {
-                    socket = Socket("127.0.0.1", port)
-                    output = PrintWriter(BufferedWriter(OutputStreamWriter(socket.getOutputStream())), true)
-                    input = DataInputStream(socket.getInputStream())
-                    while (socket.isConnected) {
-                        receiveData(input.readUTF())
-                    }
-                } catch (t: Throwable) {
-                    logger.error(t)
+        runBlocking(Dispatchers.IO) {
+            try {
+                logger.info("正在连接到 GraphicalMirai (:$port)")
+                socket = Socket("127.0.0.1", port)
+                logger.info(":${socket.localPort} 已连接到 GraphicalMirai (:$port)")
+                output = PrintWriter(BufferedWriter(OutputStreamWriter(socket.getOutputStream())), true)
+                input = DataInputStream(socket.getInputStream())
+                while (socket.isConnected) {
+                    receiveData(input.readUTF())
                 }
+            } catch (t: Throwable) {
+                logger.error(t)
             }
         }
-        logger.info { "Plugin loaded" }
-    }
-
-    fun receiveData(data: String) {
-        if (data.startsWith("SolveSliderCaptcha,")) {
-            val params = data.substring(19)
-            val botId = params.substringBefore(',').toLong()
-            val ticket = params.substringAfter(',')
-            bots[botId]?.complete(ticket) ?: run {
-                logger.warning("收到了机器人 $botId 的滑块验证 ticket，但无法找到可使用 ticket 的滑块验证请求")
-                logger.warning(ticket)
-            }
-            return
+        contributeBotConfigurationAlterer { _, conf ->
+            conf.loginSolver = RemoteLoginSolver
+            conf
         }
     }
 
-    suspend fun waitingForTicket(bot: Bot, url: String): String {
-        val future = CompletableFuture<String>()
-        bots[bot.id] = future
-        output.println("SolveSliderCaptcha,${bot.id},$url")
-        return withContext(Dispatchers.IO) {
-            future.get()
-        }.also { bots.remove(bot.id) }
+    private fun receiveData(data: String) {
+        logger.verbose("received: $data")
+        launch {
+            if (data.startsWith("SolveSliderCaptcha,")) {
+                val ticket = data.substring(19)
+                if (!sliderDef.complete(ticket)) {
+                    logger.warning("通信桥收到一个滑块验证回调 ticket，但此时并没有进行滑块验证。如需查看 ticket 详见日志 (VERBOSE)。")
+                }
+                logger.verbose("slider captcha ticket: $ticket")
+                return@launch
+            }
+        }
+    }
+
+    /**
+     * 发送消息到 GraphicalMirai
+     *
+     * @param data 消息内容
+     * @return 是否发送成功
+     */
+    fun sendRawData(data: String): Boolean {
+        if (!this::socket.isInitialized || !this::output.isInitialized) return false
+        output.println(data)
+        return !output.checkError()
+    }
+
+    internal suspend fun waitingForTicket(url: String): String {
+        output.println("SolveSliderCaptcha,$url")
+        return sliderDef.await()
     }
 
     override fun onDisable() {
-        if (!disable) {
-            output.close()
-            input.close()
-            socket.close()
-        }
-    }
-
-    override fun alterConfiguration(botId: Long, configuration: BotConfiguration): BotConfiguration {
-        if (!disable) configuration.loginSolver = RemoteLoginSolver
-        return configuration
+        if (this::output.isInitialized) output.close()
+        if (this::input.isInitialized) input.close()
+        if (this::socket.isInitialized) socket.close()
     }
 }
