@@ -31,7 +31,6 @@ namespace GraphicalMirai
             List<string> control = new();
             string[] split = regex.Split(s);
             Match match = regex.Match(s);
-            if (!match.Success) { Console.WriteLine("没有匹配"); }
             while (match.Success)
             {
                 control.Add(match.Value);
