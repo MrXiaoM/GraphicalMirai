@@ -216,11 +216,14 @@ namespace GraphicalMirai
             Assembly? assembly = Assembly.GetEntryAssembly();
             var stream = assembly?.GetManifestResourceStream($"GraphicalMirai.{resource}");
             if (stream == null) return false;
+            
             if (File.Exists(filePath))
             {
                 var md5stream = MD5(stream);
                 var md5file = MD5(File.ReadAllBytes(filePath));
                 if (md5stream == md5file) return true;
+                File.Delete(filePath);
+                stream.Seek(0, SeekOrigin.Begin);
             }
             else
             {
@@ -240,8 +243,9 @@ namespace GraphicalMirai
                     }
                 }
             }
-            catch
+            catch (Exception e)
             {
+                e.PrintStacktrace();
                 // 收声
                 return false;
             }
@@ -330,5 +334,13 @@ namespace GraphicalMirai
         public static double ToDouble(this string s, double defaultValue = 0) => double.TryParse(s, out double value) ? value : defaultValue;
         public static float ToFloat(this string s, float defaultValue = 0) => float.TryParse(s, out float value) ? value : defaultValue;
         public static short ToShort(this string s, short defaultValue = 0) => short.TryParse(s, out short value) ? value : defaultValue;
+    }
+    public static class ExceptionExt
+    {
+        public static void PrintStacktrace(this Exception e)
+        {
+            Console.WriteLine($"{e.GetType().Name}: {e.Message}");
+            Console.WriteLine(e.StackTrace);
+        }
     }
 }
