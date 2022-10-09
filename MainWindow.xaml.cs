@@ -80,13 +80,12 @@ namespace GraphicalMirai
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if (!stopping) stop();
+            if (!stopping)
+            {
+                stopping = true;
+                App.mirai.Stop();
+            }
         }
         bool stopping = false;
-        private void stop()
-        {
-            stopping = true;
-            App.mirai.Stop();
-        }
     }
 }
