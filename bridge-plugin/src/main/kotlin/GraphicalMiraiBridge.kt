@@ -59,6 +59,7 @@ object GraphicalMiraiBridge : KotlinPlugin(
     private fun receiveData(data: String) {
         logger.verbose("received: $data")
         launch {
+            if (BridgeDataPreReceive(data).broadcast().isCancelled) return@launch
             if (data.startsWith("SolveSliderCaptcha,")) {
                 val ticket = data.substring(19)
                 if (!sliderDef.complete(ticket)) {
