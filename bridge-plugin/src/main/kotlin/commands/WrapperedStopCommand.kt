@@ -5,6 +5,7 @@ import net.mamoe.mirai.console.command.BuiltInCommands.StopCommand.handle
 import net.mamoe.mirai.console.command.CommandManager.INSTANCE.register
 import net.mamoe.mirai.console.command.CommandManager.INSTANCE.unregister
 import net.mamoe.mirai.console.command.CommandSender
+import net.mamoe.mirai.console.command.ConsoleCommandOwner
 import net.mamoe.mirai.console.command.SimpleCommand
 import top.mrxiaom.graphicalmirai.GraphicalMiraiBridge
 
@@ -13,7 +14,7 @@ import top.mrxiaom.graphicalmirai.GraphicalMiraiBridge
  * 只好包装一下 /stop
  */
 object WrapperedStopCommand : SimpleCommand(
-    owner = GraphicalMiraiBridge,
+    owner = ConsoleCommandOwner,
     primaryName = StopCommand.primaryName,
     secondaryNames =  StopCommand.secondaryNames,
     description = StopCommand.description
