@@ -11,8 +11,7 @@
 - [x] 下载 mirai
 - [x] 启动 mirai
 - [x] 控制台着色
-- [ ] ~~调用 JNI 实现与 mirai 通信，打通实现其他功能的道路 (实在不行的话就用 MAH 算了)~~
-- [ ] 使用 Socket 实现 GraphicalMirai 与 mirai 通信，不强制安装 MAH 但强制安装 GraphicalMirai 通信桥
+- [x] 使用 Socket 实现 GraphicalMirai 与 mirai 通信，不强制安装 MAH 但强制安装 GraphicalMirai 通信桥
 - [ ] 登录UI
 - [ ] 管理自动登录
 - [ ] 辅助处理滑块验证
