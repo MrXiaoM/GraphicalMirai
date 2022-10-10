@@ -119,7 +119,6 @@ namespace GraphicalMirai
                     {
                         try
                         {
-                            onDataReceived("[通信桥] 正在等待连接到 mirai...");
                             socket = await socketServer.AcceptAsync();
                             onDataReceived("[通信桥] 已连接到 mirai");
                             while (socket.Connected)
@@ -139,7 +138,14 @@ namespace GraphicalMirai
                         }
                         catch(Exception e)
                         {
-                            e.PrintStacktrace();
+                            if (e is SocketException)
+                            {
+                                onDataReceived("SocketException: " + e.Message);
+                            }
+                            else
+                            {
+                                e.PrintStacktrace();
+                            }
                         }
                     }
                 });
