@@ -13,6 +13,7 @@ namespace GraphicalMirai.Pages
         public PageConsole()
         {
             InitializeComponent();
+            StoppedPanel.Visibility = System.Windows.Visibility.Hidden;
             InitConsole(App.mirai);
         }
 
@@ -24,29 +25,17 @@ namespace GraphicalMirai.Pages
 
         private void Exited()
         {
-            Dispatcher.Invoke(() =>
+            try
             {
-                Paragraph p = new Paragraph();
-                p.LineHeight = 5;
-                Button btnRestart = new Button() { Content = "重新启动" };
-                btnRestart.Click += delegate
+                Dispatcher.Invoke(() =>
                 {
-                    flow.Document.Blocks.Clear();
-                    App.mirai.Start();
-                };
-                Button btnInitMenu = new Button() { Content = "返回欢迎菜单" };
-                btnInitMenu.Click += delegate
-                {
-                    flow.Document.Blocks.Clear();
-                    App.PageInit.BtnStart.IsEnabled = true;
-                    MainWindow.Navigate(App.PageInit);
-                };
-                p.Inlines.Add(btnRestart);
-                p.Inlines.Add(new Rectangle() { Width = 5 });
-                p.Inlines.Add(btnInitMenu);
-                p.Inlines.Add(new LineBreak());
-                doc.Blocks.Add(p);
-            });
+                    StoppedPanel.Visibility = System.Windows.Visibility.Visible;
+                });
+            }
+            catch 
+            {
+                // 收声
+            }
         }
         private void DataReceived(string data)
         {
@@ -68,6 +57,21 @@ namespace GraphicalMirai.Pages
                 App.mirai.WriteLine(textInput.Text);
                 textInput.Text = "";
             }
+        }
+
+        private void ButtonRestart_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            StoppedPanel.Visibility = System.Windows.Visibility.Hidden;
+            flow.Document.Blocks.Clear();
+            App.mirai.Start();
+        }
+
+        private void ButtonInitMenu_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            StoppedPanel.Visibility = System.Windows.Visibility.Hidden;
+            flow.Document.Blocks.Clear();
+            App.PageInit.BtnStart.IsEnabled = true;
+            MainWindow.Navigate(App.PageInit);
         }
     }
 }

@@ -28,8 +28,21 @@
         <Grid Grid.Row="1">
             <TextBox x:Name="textInput" Text="" Padding="10,7,0,0" KeyDown="TextBox_KeyDown" Background="#1F1F1F" Foreground="#FAFAFA" FontFamily="Consolas" Style="{DynamicResource MaterialDesignTextBox}"/>
         </Grid>
-        <Border HorizontalAlignment="Right" VerticalAlignment="Top" Background="#80000000" Margin="0,5,25,0" Padding="5,2,5,2" CornerRadius="5">
-            <CheckBox x:Name="autoScroll" IsChecked="true" Content="自动滚动" Foreground="#FAFAFA" Style="{DynamicResource MaterialDesignUserForegroundCheckBox}"/>
-        </Border>
+        
+        <StackPanel x:Name="TopRightPanel" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top">
+            <StackPanel x:Name="StoppedPanel" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,5,0">
+                <StackPanel.Resources>
+                    <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignRaisedButton}">
+                        <Setter Property="Padding" Value="5,0,5,0"/>
+                    </Style>
+                </StackPanel.Resources>
+                <Button Content="重新启动" Click="ButtonRestart_Click"/>
+                <Rectangle Width="5"/>
+                <Button Content="返回欢迎菜单" Click="ButtonInitMenu_Click"/>
+            </StackPanel>
+            <Border HorizontalAlignment="Right" VerticalAlignment="Top" Background="#80000000" Margin="0,5,25,0" Padding="5,2,5,2" CornerRadius="5">
+                <CheckBox x:Name="autoScroll" IsChecked="true" Content="自动滚动" Foreground="#FAFAFA" Style="{DynamicResource MaterialDesignUserForegroundCheckBox}"/>
+            </Border>
+        </StackPanel>
     </Grid>
 </Page>
