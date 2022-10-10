@@ -1,7 +1,9 @@
 package top.mrxiaom.graphicalmirai
 
-import kotlinx.coroutines.*
-import net.mamoe.mirai.console.command.CommandManager
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import net.mamoe.mirai.console.extension.PluginComponentStorage
 import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescription
 import net.mamoe.mirai.console.plugin.jvm.KotlinPlugin
@@ -11,10 +13,10 @@ import top.mrxiaom.graphicalmirai.commands.WrapperedStopCommand
 import top.mrxiaom.graphicalmirai.events.BridgeDataPreReceive
 import java.io.BufferedWriter
 import java.io.DataInputStream
-import java.io.DataInputStream.readUTF
 import java.io.OutputStreamWriter
 import java.io.PrintWriter
 import java.net.Socket
+import java.net.SocketException
 
 object GraphicalMiraiBridge : KotlinPlugin(
     JvmPluginDescription(
@@ -38,26 +40,33 @@ object GraphicalMiraiBridge : KotlinPlugin(
             logger.warning("在不使用 GraphicalMirai 时请不要使用该插件")
             return
         }
-        WrapperedStopCommand.hack()
         try {
             logger.info("正在连接到 GraphicalMirai (:$port)")
             socket = Socket("127.0.0.1", port)
             logger.info(":${socket.localPort} 已连接到 GraphicalMirai (:$port)")
             output = PrintWriter(BufferedWriter(OutputStreamWriter(socket.getOutputStream())), true)
             input = DataInputStream(socket.getInputStream())
-            launch(coroutineContext) {
+            launch(Dispatchers.IO) {
                 while (!socket.isClosed) {
                     val data = input?.readUTF() ?: continue
                     receiveData(data)
                 }
             }
         } catch (t: Throwable) {
-            logger.error(t)
+            if (t is SocketException && t.message == "Socket closed") {
+                logger.info("和 GraphicalMirai 断开连接")
+            } else {
+                logger.error(t)
+            }
         }
         contributeBotConfigurationAlterer { _, conf ->
             conf.loginSolver = RemoteLoginSolver
             conf
         }
+    }
+
+    override fun onEnable() {
+        WrapperedStopCommand.hack()
     }
 
     private fun receiveData(data: String) {
@@ -94,7 +103,6 @@ object GraphicalMiraiBridge : KotlinPlugin(
     }
 
     internal fun disable() {
-        logger.info("停止")
         try {
             if (!socket.isClosed) {
                 logger.info("正在断开连接")

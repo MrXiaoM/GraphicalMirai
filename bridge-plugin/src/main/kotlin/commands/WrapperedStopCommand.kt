@@ -16,13 +16,14 @@ import top.mrxiaom.graphicalmirai.GraphicalMiraiBridge
 object WrapperedStopCommand : SimpleCommand(
     owner = ConsoleCommandOwner,
     primaryName = StopCommand.primaryName,
-    secondaryNames =  StopCommand.secondaryNames,
+    secondaryNames = StopCommand.secondaryNames,
     description = StopCommand.description
 ) {
-    internal fun hack(){
+    internal fun hack() {
         StopCommand.unregister()
         register()
     }
+
     @Handler
     suspend fun CommandSender.stop() {
         GraphicalMiraiBridge.disable()
