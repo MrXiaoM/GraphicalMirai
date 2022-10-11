@@ -41,12 +41,43 @@
                     </materialDesign:Card>
                     <ScrollViewer Margin="0,80,0,0" Padding="10">
                         <StackPanel  VerticalAlignment="Top" Margin="20,20">
-                            <CheckBox x:Name="CheckUseGhProxy" Content="是否使用 ghproxy.com 进行 Github 访问加速" IsChecked="True" Style="{StaticResource PropertyCheck}"/>
-                            <CheckBox x:Name="CheckSocketBridge" Content="是否开启并自动安装 GraphicalMirai 通信桥及其相关功能 (?)" IsChecked="True" Style="{StaticResource PropertyCheck}">
-                                <CheckBox.ToolTip>
-                                    <ToolTip xml:space="preserve">GraphicalMirai 通信桥是连接 GraphicalMirai 和 mirai 的桥梁。&#10;开启后，你可以在控制台页面左侧边栏中操作已登录的机器人，比如&#10;管理好友、群聊，发送消息等等。</ToolTip>
-                                </CheckBox.ToolTip>
-                            </CheckBox>
+                            <StackPanel.Resources>
+                                <Style TargetType="ToggleButton" BasedOn="{StaticResource MaterialDesignSwitchToggleButton}">
+                                    <Setter Property="Margin" Value="0,5,0,5"/>
+                                    <Setter Property="FontSize" Value="14"/>
+                                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                    <Setter Property="Grid.Column" Value="1"/>
+                                    <Setter Property="Cursor" Value="Hand"/>
+                                </Style>
+                            </StackPanel.Resources>
+                            <Grid>
+                                <Grid.Resources>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="VerticalAlignment" Value="Center"/>
+                                        <Setter Property="Background" Value="#0F000000"/>
+                                        <Setter Property="Padding" Value="5"/>
+                                        <Setter Property="Margin" Value="0,2,5,2"/>
+                                    </Style>
+                                </Grid.Resources>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+                                <TextBlock Grid.Row="0" Text="是否使用 ghproxy.com 进行 Github 访问加速"/>
+                                <ToggleButton x:Name="CheckUseGhProxy" Grid.Row="0" IsChecked="True"/>
+                                <TextBlock Grid.Row="1" Text="是否开启并自动安装 GraphicalMirai 通信桥及其相关功能 (?)">
+                                    <TextBlock.ToolTip>
+                                        <ToolTip xml:space="preserve">GraphicalMirai 通信桥是连接 GraphicalMirai 和 mirai 的桥梁。&#10;开启后，你可以在控制台页面左侧边栏中操作已登录的机器人，比如&#10;管理好友、群聊，发送消息等等。</ToolTip>
+                                    </TextBlock.ToolTip>
+                                </TextBlock>
+                                <ToggleButton x:Name="CheckSocketBridge" Grid.Row="1" IsChecked="True"/>
+                            </Grid>
+                            
                             <TextBlock Text="通信桥端口" Style="{StaticResource PropertyHead}"/>
                             <GraphicalMirai:IntegerTextBox x:Name="TextBridgePort" Value="41919" Minimum="1" Maximum="65535"/>
                             <TextBlock Text="Java 路径" Style="{StaticResource PropertyHead}"/>

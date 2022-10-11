@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 
 namespace GraphicalMirai.Pages
 {
@@ -14,6 +15,13 @@ namespace GraphicalMirai.Pages
         {
             cb.Checked += delegate { action(true); action1(); };
             cb.Unchecked += delegate { action(false); action1(); };
+        }
+
+        public static void ListenProperty(ToggleButton tb, Action<bool> action) => ListenProperty(tb, action, saveConfig);
+        public static void ListenProperty(ToggleButton tb, Action<bool> action, Action action1)
+        {
+            tb.Checked += delegate { action(true); action1(); };
+            tb.Unchecked += delegate { action(false); action1(); };
         }
 
         public static void ListenProperty(TextBox tb, Action<string> action) => ListenProperty(tb, action, saveConfig);
