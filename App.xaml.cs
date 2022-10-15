@@ -1,5 +1,4 @@
-﻿using GraphicalMirai.LoginSolver;
-using GraphicalMirai.Pages;
+﻿using GraphicalMirai.Pages;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -13,7 +12,6 @@ using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Markup;
 using System.Windows.Media;
-using System.Windows.Media.Media3D;
 using System.Xml;
 using File = System.IO.File;
 
@@ -35,11 +33,8 @@ namespace GraphicalMirai
         {
 #if !DEBUG
             DispatcherUnhandledException += App_DispatcherUnhandledException;
-#endif
-            // 初始化登录处理器
-            LoginSolverSetup.Instance.Setup();
         }
-#if !DEBUG
+
         private void App_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
         {
             var ex = e.Exception;
@@ -53,7 +48,7 @@ namespace GraphicalMirai
                             $"  Source:\n{ex.Source}\n" +
                             $"  Stacktrace:\n{ex.StackTrace}\n";
 
-                        while(ex.InnerException != null)
+                        while (ex.InnerException != null)
                         {
                             ex = ex.InnerException;
                             error += $"  InnerException: {ex.GetType().Name}: {ex.Message}\n" +
@@ -77,8 +72,8 @@ namespace GraphicalMirai
                 });
                 e.Handled = true;
             }
-        }
 #endif
+        }
         // 储存一些单例页面实例。
         private static Lazy<PageInit> pageInit = new();
         private static Lazy<PageMain> pageMain = new();
@@ -219,7 +214,7 @@ namespace GraphicalMirai
             Assembly? assembly = Assembly.GetEntryAssembly();
             var stream = assembly?.GetManifestResourceStream($"GraphicalMirai.{resource}");
             if (stream == null) return false;
-            
+
             if (File.Exists(filePath))
             {
                 var md5stream = MD5(stream);
@@ -349,7 +344,7 @@ namespace GraphicalMirai
         {
             try
             {
-                return (T?) obj;
+                return (T?)obj;
             }
             catch { return default(T?); }
         }
@@ -369,10 +364,10 @@ namespace GraphicalMirai
                 obj = JObject.Parse(json);
                 return true;
             }
-            catch 
+            catch
             {
                 obj = new();
-                return false; 
+                return false;
             }
         }
     }

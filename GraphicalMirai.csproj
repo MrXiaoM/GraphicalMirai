@@ -55,10 +55,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="LoginSolver\LoginSolver.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Resource Include="Pages\mirai_card_bg.jpg" />
     <Resource Include="sample.webp" />
   </ItemGroup>

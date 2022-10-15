@@ -10,7 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoginSolver", "LoginSolver\LoginSolver.csproj", "{2D4B8A03-FB06-4706-8A28-9AFBDBFA6ECE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoginSolver", "LoginSolver\LoginSolver.csproj", "{C2BBCF24-BDF3-400A-8FB2-E4D19BEF81A0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -22,10 +22,10 @@ Global
 		{B39DE15A-22A8-4CF4-986C-C354BE005757}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B39DE15A-22A8-4CF4-986C-C354BE005757}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B39DE15A-22A8-4CF4-986C-C354BE005757}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2D4B8A03-FB06-4706-8A28-9AFBDBFA6ECE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2D4B8A03-FB06-4706-8A28-9AFBDBFA6ECE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2D4B8A03-FB06-4706-8A28-9AFBDBFA6ECE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2D4B8A03-FB06-4706-8A28-9AFBDBFA6ECE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C2BBCF24-BDF3-400A-8FB2-E4D19BEF81A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C2BBCF24-BDF3-400A-8FB2-E4D19BEF81A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C2BBCF24-BDF3-400A-8FB2-E4D19BEF81A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C2BBCF24-BDF3-400A-8FB2-E4D19BEF81A0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
