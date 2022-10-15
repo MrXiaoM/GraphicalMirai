@@ -1,5 +1,6 @@
 ﻿using GraphicalMirai.LoginSolver;
 using GraphicalMirai.Pages;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,8 +10,10 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Documents;
 using System.Windows.Markup;
 using System.Windows.Media;
+using System.Windows.Media.Media3D;
 using System.Xml;
 using File = System.IO.File;
 
@@ -341,6 +344,36 @@ namespace GraphicalMirai
         {
             Console.WriteLine($"{e.GetType().Name}: {e.Message}");
             Console.WriteLine(e.StackTrace);
+        }
+        public static T? Cast<T>(object? obj)
+        {
+            try
+            {
+                return (T?) obj;
+            }
+            catch { return default(T?); }
+        }
+        public static bool TryCast<T>(object? obj, out T castObj)
+        {
+#pragma warning disable CS8601
+            return (castObj = Cast<T>(obj)) != null;
+#pragma warning restore CS8601
+        }
+    }
+    public static class JObjectExt
+    {
+        public static bool TryParse(string json, out JObject obj)
+        {
+            try
+            {
+                obj = JObject.Parse(json);
+                return true;
+            }
+            catch 
+            {
+                obj = new();
+                return false; 
+            }
         }
     }
 }

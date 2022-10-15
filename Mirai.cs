@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -135,24 +137,31 @@ namespace GraphicalMirai
         }
         private void ReceiveRawMessage(Socket client, string data)
         {
-            if (data.StartsWith("SolveSliderCaptcha,"))
+            if (JObjectExt.TryParse(data, out JObject json))
             {
-                var @params = data.Substring(19);
-                var botId = @params.SubstringBefore(",").ToLong();
-                var url = @params.SubstringAfter(",");
-                // TODO: 处理滑块验证码
-                onDataReceived($"[通信桥] 滑块验证码请求 {botId}:{url}");
-                return;
+                Type? type = BridgePackets.packetsIn.GetValueOrDefault(json.Value<string>("type") ?? "null");
+
+                if (type != null && ExceptionExt.TryCast(JsonConvert.DeserializeObject(data, type), out IPacketIn packet))
+                {
+                    ReceivePacket(client, packet);
+                    return;
+                }
             }
             onDataReceived("[通信桥] mirai>> " + data);
         }
 
-        private void SendRawMessage(string msg) => socket?.SendRawMessage(msg);
-
-        public void SliderCaptcha(string botId, string ticket) 
+        private void ReceivePacket(Socket client, IPacketIn packet)
         {
-            onDataReceived($"[通信桥] 回应滑块验证码 {botId}:{ticket}");
-            SendRawMessage($"SolveSliderCaptcha,{botId},{ticket}"); 
+            packet.handle();
+        }
+
+        private void SendRawMessage(string msg) => socket?.SendRawMessage(msg);
+        private void SendPacket<T>(T packet) where T : IPacketOut => socket?.SendPacket(packet);
+
+        public void SliderCaptcha(string ticket) 
+        {
+            onDataReceived($"[通信桥] 回应滑块验证码 {ticket}");
+            SendPacket(new OutSolveSliderCaptcha(ticket)); 
         }
 
         public void Stop()

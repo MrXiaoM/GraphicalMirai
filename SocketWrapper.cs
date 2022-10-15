@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace GraphicalMirai
 {
-    internal class SocketWrapper : IDisposable
+    public class SocketWrapper : IDisposable
     {
         public delegate void OnClientConnected(Socket client);
         public OnClientConnected onClientConnected;

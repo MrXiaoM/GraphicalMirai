@@ -2,15 +2,21 @@ package top.mrxiaom.graphicalmirai
 
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import net.mamoe.mirai.console.extension.PluginComponentStorage
 import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescription
 import net.mamoe.mirai.console.plugin.jvm.KotlinPlugin
-import net.mamoe.mirai.event.broadcast
 import okhttp3.internal.closeQuietly
 import top.mrxiaom.graphicalmirai.commands.WrapperedStopCommand
-import top.mrxiaom.graphicalmirai.events.BridgeDataPreReceive
+import top.mrxiaom.graphicalmirai.packets.`in`.IPacketIn
+import top.mrxiaom.graphicalmirai.packets.`in`.InSolveSliderCaptcha
+import top.mrxiaom.graphicalmirai.packets.out.IPacketOut
+import top.mrxiaom.graphicalmirai.packets.out.OutSolveSliderCaptcha
 import java.io.BufferedWriter
 import java.io.DataInputStream
 import java.io.OutputStreamWriter
@@ -28,11 +34,14 @@ object GraphicalMiraiBridge : KotlinPlugin(
         info("""GraphicalMirai 通信桥""")
     }
 ) {
+    val packagesIn = mapOf<String, KSerializer<out IPacketIn>>(
+        "SolveSliderCaptcha" to InSolveSliderCaptcha.serializer()
+    )
+
     private lateinit var socket: Socket
     private var input: DataInputStream? = null
     private var output: PrintWriter? = null
-    private val sliderDef = CompletableDeferred<String>()
-    private val jobs = mutableListOf<Job>()
+    internal val sliderDef = CompletableDeferred<String>()
     override fun PluginComponentStorage.onLoad() {
         val port = System.getProperty("graphicalmirai.bridge.port")?.toInt()
         if (port == null) {
@@ -71,18 +80,13 @@ object GraphicalMiraiBridge : KotlinPlugin(
 
     private fun receiveData(data: String) {
         logger.verbose("received: $data")
+        val jsonElement = Json.parseToJsonElement(data)
+        val type = jsonElement.jsonObject["type"]?.jsonPrimitive?.content
+        val packetSerializer = packagesIn[type] ?: return
+        val packet = Json.decodeFromJsonElement(packetSerializer, jsonElement)
         launch {
-            if (BridgeDataPreReceive(data).broadcast().isCancelled) return@launch
-            if (data.startsWith("SolveSliderCaptcha,")) {
-                val ticket = data.substring(19)
-                if (!sliderDef.complete(ticket)) {
-                    logger.warning("通信桥收到一个滑块验证回调 ticket，但此时并没有进行滑块验证。如需查看 ticket 详见日志 (VERBOSE)。")
-                }
-                logger.verbose("slider captcha ticket: $ticket")
-                return@launch
-            }
+            packet.handle()
         }
-
     }
 
     /**
@@ -97,8 +101,13 @@ object GraphicalMiraiBridge : KotlinPlugin(
         return !((output?.checkError()) ?: true)
     }
 
+    inline fun <reified T : IPacketOut> sendPacket(packet: T): Boolean {
+        val json = Json.encodeToString(packet)
+        return sendRawData(json)
+    }
+
     internal suspend fun waitingForTicket(url: String): String {
-        sendRawData("SolveSliderCaptcha,$url")
+        sendPacket(OutSolveSliderCaptcha(url))
         return sliderDef.await()
     }
 
