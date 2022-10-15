@@ -10,11 +10,11 @@ group = "top.mrxiaom.graphicalmirai"
 version = "0.1.0"
 
 repositories {
-    maven("https://maven.aliyun.com/repository/public")
+    maven("https://maven.aliyun.com/repository/central")
     mavenCentral()
 }
 
-mirai{
+mirai {
     jvmTarget = JavaVersion.VERSION_11
 }
 
