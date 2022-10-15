@@ -111,7 +111,7 @@ namespace GraphicalMirai
         public static void Save()
         {
             if (instance == null) instance = new PackagesData();
-            File.WriteAllText(ConfigPath, SERIALIZER.Serialize(Instance));
+            File.WriteAllText(ConfigPath, SERIALIZER.Serialize(instance));
         }
 
 
