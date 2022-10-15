@@ -87,6 +87,7 @@ namespace GraphicalMirai
 
         public void Dispose()
         {
+            isDisposed = true;
             socket.Close();
             socket.Dispose();
         }

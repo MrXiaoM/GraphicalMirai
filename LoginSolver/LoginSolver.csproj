@@ -5,6 +5,10 @@
     <TargetFramework>net6.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
+    <Authors>MrXiaoM</Authors>
+    <Company>MrXiaoM</Company>
+    <PackageProjectUrl>https://github.com/MrXiaoM/GraphicalMirai</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/MrXiaoM/GraphicalMirai</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>

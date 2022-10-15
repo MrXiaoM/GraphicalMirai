@@ -28,12 +28,6 @@ namespace LoginSolver
     }
     public class CaptchaResult
     {
-        /*
-         {"errorCode":"0","randstr":"@9oY",
-        "ticket":"t034ceb032tex2RwACWSwQlOwAl3e_5TGQ2FOozXnE87DIAaUP7B7RIX_LR3oAs9wrxksnMxX61DiY16Cc5OPllhQZvhbqIdQNwACkikeNj-pIktft7xWr3Ig5hVqLrbADdgK-D-bdepBU*",
-        "errMessage":"",
-        "sess":""}
-         */
         public string errorCode;
         public string randstr;
         public string ticket;

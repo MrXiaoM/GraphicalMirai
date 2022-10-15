@@ -155,14 +155,8 @@ namespace GraphicalMirai
             packet.handle();
         }
 
-        private void SendRawMessage(string msg) => socket?.SendRawMessage(msg);
-        private void SendPacket<T>(T packet) where T : IPacketOut => socket?.SendPacket(packet);
-
-        public void SliderCaptcha(string ticket) 
-        {
-            onDataReceived($"[通信桥] 回应滑块验证码 {ticket}");
-            SendPacket(new OutSolveSliderCaptcha(ticket)); 
-        }
+        internal void SendRawMessage(string msg) => socket?.SendRawMessage(msg);
+        internal void SendPacket<T>(T packet) where T : IPacketOut => socket?.SendPacket(packet);
 
         public void Stop()
         {

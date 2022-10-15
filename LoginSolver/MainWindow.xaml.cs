@@ -1,20 +1,7 @@
 ﻿using Microsoft.Web.WebView2.Core;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Policy;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace LoginSolver
 {
@@ -33,7 +20,8 @@ namespace LoginSolver
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             Console.WriteLine("Creating CoreWebView2...");
-            var env = await CoreWebView2Environment.CreateAsync();
+            var env = await CoreWebView2Environment.CreateAsync(
+                userDataFolder: "cache");
             await webView.EnsureCoreWebView2Async(env);
         }
 
@@ -46,9 +34,18 @@ namespace LoginSolver
                 Environment.Exit(-1);
                 return;
             }
+            webView.CoreWebView2.NavigationCompleted += delegate { textLoading.Visibility = Visibility.Hidden; };
             Console.WriteLine("Created successful!");
             Console.WriteLine("Enabling devTools network features...");
-            await webView.CoreWebView2.CallDevToolsProtocolMethodAsync("Network.enable", "{}");
+            // 开启设备仿真
+            Console.WriteLine("Emulation.setUserAgentOverride(App.UserAgent) >> " + await webView.CoreWebView2.CallDevToolsProtocolMethodAsync("Emulation.setUserAgentOverride",
+                JsonConvert.SerializeObject(new { userAgent = App.UserAgent })
+            ));
+            Console.WriteLine("Emulation.setTouchEmulationEnabled(true) >> " + await webView.CoreWebView2.CallDevToolsProtocolMethodAsync("Emulation.setTouchEmulationEnabled",
+                JsonConvert.SerializeObject(new { enabled = true })
+            ));
+            // 打开网络监视
+            Console.WriteLine("Network.enable() >> " + await webView.CoreWebView2.CallDevToolsProtocolMethodAsync("Network.enable", "{}"));
             var eventRecieiver = webView.CoreWebView2.GetDevToolsProtocolEventReceiver("Network.responseReceived");
             eventRecieiver.DevToolsProtocolEventReceived += async (s, e) =>
             {
@@ -57,7 +54,7 @@ namespace LoginSolver
 
                 string id = received.requestId;
                 string responseBody = await webView.CoreWebView2.CallDevToolsProtocolMethodAsync("Network.getResponseBody",
-                    JsonConvert.SerializeObject(new{ requestId = id, })
+                    JsonConvert.SerializeObject(new { requestId = id, })
                 );
                 var body = JsonConvert.DeserializeObject<ResponseBody>(responseBody)?.GetBody();
                 if (body == null) return;

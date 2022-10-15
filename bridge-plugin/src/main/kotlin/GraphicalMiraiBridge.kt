@@ -14,8 +14,9 @@ import net.mamoe.mirai.console.plugin.jvm.KotlinPlugin
 import okhttp3.internal.closeQuietly
 import top.mrxiaom.graphicalmirai.commands.WrapperedStopCommand
 import top.mrxiaom.graphicalmirai.packets.`in`.IPacketIn
-import top.mrxiaom.graphicalmirai.packets.`in`.InSolveSliderCaptcha
+import top.mrxiaom.graphicalmirai.packets.`in`.InLoginVerify
 import top.mrxiaom.graphicalmirai.packets.out.IPacketOut
+import top.mrxiaom.graphicalmirai.packets.out.OutLoginVerify
 import top.mrxiaom.graphicalmirai.packets.out.OutSolveSliderCaptcha
 import java.io.BufferedWriter
 import java.io.DataInputStream
@@ -35,13 +36,11 @@ object GraphicalMiraiBridge : KotlinPlugin(
     }
 ) {
     val packagesIn = mapOf<String, KSerializer<out IPacketIn>>(
-        "SolveSliderCaptcha" to InSolveSliderCaptcha.serializer()
     )
 
     private lateinit var socket: Socket
     private var input: DataInputStream? = null
     private var output: PrintWriter? = null
-    internal val sliderDef = CompletableDeferred<String>()
     override fun PluginComponentStorage.onLoad() {
         val port = System.getProperty("graphicalmirai.bridge.port")?.toInt()
         if (port == null) {
@@ -49,25 +48,27 @@ object GraphicalMiraiBridge : KotlinPlugin(
             logger.warning("在不使用 GraphicalMirai 时请不要使用该插件")
             return
         }
-        try {
-            logger.info("正在连接到 GraphicalMirai (:$port)")
-            socket = Socket("127.0.0.1", port)
-            logger.info(":${socket.localPort} 已连接到 GraphicalMirai (:$port)")
-            output = PrintWriter(BufferedWriter(OutputStreamWriter(socket.getOutputStream())), true)
-            input = DataInputStream(socket.getInputStream())
-            launch(Dispatchers.IO) {
+        logger.info("正在连接到 GraphicalMirai (:$port)")
+        socket = Socket("127.0.0.1", port)
+        logger.info(":${socket.localPort} 已连接到 GraphicalMirai (:$port)")
+        output = PrintWriter(BufferedWriter(OutputStreamWriter(socket.getOutputStream())), true)
+        input = DataInputStream(socket.getInputStream())
+        launch(Dispatchers.IO) {
+            try {
                 while (!socket.isClosed) {
                     val data = input?.readUTF() ?: continue
                     receiveData(data)
                 }
-            }
-        } catch (t: Throwable) {
-            if (t is SocketException && t.message == "Socket closed") {
-                logger.info("和 GraphicalMirai 断开连接")
-            } else {
-                logger.error(t)
+
+            } catch (t: Throwable) {
+                if (t is SocketException && t.message == "Socket closed") {
+                    logger.info("和 GraphicalMirai 断开连接")
+                } else {
+                    logger.error(t)
+                }
             }
         }
+
         contributeBotConfigurationAlterer { _, conf ->
             conf.loginSolver = RemoteLoginSolver
             conf
@@ -106,9 +107,8 @@ object GraphicalMiraiBridge : KotlinPlugin(
         return sendRawData(json)
     }
 
-    internal suspend fun waitingForTicket(url: String): String {
+    internal suspend fun waitingForTicket(url: String) {
         sendPacket(OutSolveSliderCaptcha(url))
-        return sliderDef.await()
     }
 
     internal fun disable() {
