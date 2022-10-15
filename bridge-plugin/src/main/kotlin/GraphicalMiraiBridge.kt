@@ -36,11 +36,15 @@ object GraphicalMiraiBridge : KotlinPlugin(
     }
 ) {
     val packagesIn = mapOf<String, KSerializer<out IPacketIn>>(
+        "LoginVerify" to InLoginVerify.serializer()
     )
 
     private lateinit var socket: Socket
     private var input: DataInputStream? = null
     private var output: PrintWriter? = null
+
+    internal val defQR = CompletableDeferred<Boolean>()
+
     override fun PluginComponentStorage.onLoad() {
         val port = System.getProperty("graphicalmirai.bridge.port")?.toInt()
         if (port == null) {
@@ -111,6 +115,11 @@ object GraphicalMiraiBridge : KotlinPlugin(
         sendPacket(OutSolveSliderCaptcha(url))
     }
 
+    internal suspend fun waitingForLoginVeriy(url: String) : String {
+        sendPacket(OutLoginVerify(url))
+        defQR.await()
+        return ""
+    }
     internal fun disable() {
         try {
             if (!socket.isClosed) {

@@ -25,7 +25,8 @@ namespace GraphicalMirai
     public class BridgePackets
     {
         public static readonly ReadOnlyDictionary<string, Type> packetsIn = new(new Dictionary<string, Type>() {
-            { "SolveSliderCaptcha", typeof(InSolveSliderCaptcha) }
+            { "SolveSliderCaptcha", typeof(InSolveSliderCaptcha) },
+            { "LoginVerify", typeof(InLoginVerify) }
         });
     }
 #pragma warning disable CS8618
@@ -102,14 +103,9 @@ namespace GraphicalMirai
     {
         public string type();
     }
-    public class OutSolveSliderCaptcha : IPacketOut
+    public class OutLoginVerify : IPacketOut
     {
-        public string type() => "OutSolveSliderCaptcha";
-        string ticket;
-        public OutSolveSliderCaptcha(string ticket)
-        {
-            this.ticket = ticket;
-        }
+        public string type() => "LoginVerify";
     }
 #pragma warning restore CS8618
     public static class SocketWrapperExt

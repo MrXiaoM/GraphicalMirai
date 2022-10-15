@@ -133,6 +133,7 @@ namespace GraphicalMirai
 
         public async Task<MessageBoxResult> ShowAsync(Func<Inline[]> content, string title, MessageBoxButton button = MessageBoxButton.OK)
         {
+            Console.WriteLine("[消息框] " + title);
             if (!task?.Task.IsCompleted ?? false)
             {
                 task?.SetResult(MessageBoxResult.None);
