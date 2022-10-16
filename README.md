@@ -12,9 +12,9 @@
 - [x] 启动 mirai
 - [x] 控制台着色
 - [x] 使用 Socket 实现 GraphicalMirai 与 mirai 通信，不强制安装 MAH 但强制安装 GraphicalMirai 通信桥
-- [ ] 登录UI
+- [x] 登录UI
 - [ ] 管理自动登录
-- [ ] 辅助处理滑块验证
+- [x] 辅助处理滑块验证
 - [ ] 多用户聊天窗口
 - [ ] 管理本地插件
 - [x] 获取论坛上的插件
