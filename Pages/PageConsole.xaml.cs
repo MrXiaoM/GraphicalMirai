@@ -1,7 +1,5 @@
 ﻿using System.Windows.Controls;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Shapes;
 
 namespace GraphicalMirai.Pages
 {
@@ -32,7 +30,7 @@ namespace GraphicalMirai.Pages
                     StoppedPanel.Visibility = System.Windows.Visibility.Visible;
                 });
             }
-            catch 
+            catch
             {
                 // 收声
             }

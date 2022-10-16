@@ -62,7 +62,7 @@ namespace GraphicalMirai.Pages
             ListenProperty(TextJavaMainClass, v => config.mainClass = v);
             ListenProperty(TextBridgePort, v => config.bridgePort = v);
         }
-        
+
         private void Button_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             MainWindow.Navigate(!App.mirai.IsRunning ? App.PageInit : App.PageMain);

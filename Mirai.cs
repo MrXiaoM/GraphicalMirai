@@ -4,10 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Net;
 using System.Net.Sockets;
-using System.Printing;
-using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -42,7 +39,7 @@ namespace GraphicalMirai
             onExited += delegate
             {
                 socket?.Dispose();
-                
+
                 onDataReceived($"\u001b[91mmirai-console 已停止运行 ({Process.ExitCode})\u001b[0m");
             };
         }
@@ -95,7 +92,7 @@ namespace GraphicalMirai
                         socket = new(socketPort);
                         onDataReceived($"[通信桥] 端口已绑定到 {socketPort}");
                         socket.onDataReceive += ReceiveRawMessage;
-                        socket.onClientConnected += client => 
+                        socket.onClientConnected += client =>
                         {
                             onDataReceived("[通信桥] 已连接到 mirai");
                         };

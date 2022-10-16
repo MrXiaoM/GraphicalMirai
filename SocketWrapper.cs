@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace GraphicalMirai
 {
@@ -45,13 +42,13 @@ namespace GraphicalMirai
         {
             while (!isDisposed)
             {
-                try 
+                try
                 {
                     client = socket.Accept();
                 }
-                catch 
+                catch
                 {
-                    continue; 
+                    continue;
                 }
                 onClientConnected(client);
                 byte[] buffer = new byte[1024];
@@ -66,7 +63,7 @@ namespace GraphicalMirai
                     }
                     onClientDisconnected(null);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     onClientDisconnected(ex);
                     ex.PrintStacktrace();
