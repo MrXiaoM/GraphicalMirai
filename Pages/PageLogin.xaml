@@ -25,11 +25,11 @@
                 <PasswordBox x:Name="textPW" HorizontalAlignment="Left" VerticalAlignment="Top" Width="200" Margin="45,30,0,0"/>
                 
                 <CheckBox x:Name="CheckAutoLogin" Content="自动登录" ToolTip="勾选此项，点击登录按钮后该账号将被添加到 mirai 的自动登录配置" HorizontalAlignment="Left" Margin="45,60,0,0" VerticalAlignment="Top" Style="{DynamicResource MaterialDesignUserForegroundCheckBox}"/>
-                <CheckBox x:Name="CheckUseMD5" Content="MD5 密码 (?)" ToolTip="如果你不知道这是什么，请不要勾选" HorizontalAlignment="Right" Margin="0,60,0,0" VerticalAlignment="Top" Style="{DynamicResource MaterialDesignUserForegroundCheckBox}"/>
+                <CheckBox x:Name="CheckUseMD5" Content="MD5 保存 (?)" ToolTip="将账号添加到自动登录时使用 MD5 加密储存密码" HorizontalAlignment="Right" Margin="0,60,0,0" VerticalAlignment="Top" Style="{DynamicResource MaterialDesignUserForegroundCheckBox}"/>
 
-                <Button x:Name="BtnLogin" Content="登录" HorizontalAlignment="Left" VerticalAlignment="Top" Width="115" Height="30" Margin="0,90,0,0"/>
-                <Button x:Name="BtnAutoLogin" Content="管理自动登录" HorizontalAlignment="Left" VerticalAlignment="Top" Width="115" Height="30" Margin="130,90,0,0"/>
-                <Button x:Name="BtnDevice" Content="配置设备信息" HorizontalAlignment="Left" VerticalAlignment="Top" Width="245" Height="30" Margin="0,130,0,0"/>
+                <Button x:Name="BtnLogin" Content="登录" HorizontalAlignment="Left" VerticalAlignment="Top" Width="115" Height="30" Margin="0,90,0,0" Click="BtnLogin_Click"/>
+                <Button x:Name="BtnAutoLogin" Content="管理自动登录" HorizontalAlignment="Left" VerticalAlignment="Top" Width="115" Height="30" Margin="130,90,0,0" Click="BtnAutoLogin_Click"/>
+                <Button x:Name="BtnDevice" Content="配置设备信息" HorizontalAlignment="Left" VerticalAlignment="Top" Width="245" Height="30" Margin="0,130,0,0" Click="BtnDevice_Click"/>
             </Grid>
         </materialDesign:Card>
     </Grid>
