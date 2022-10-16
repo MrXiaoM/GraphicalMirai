@@ -1,17 +1,15 @@
-﻿using Markdig.Helpers;
+﻿using Net.Codecrete.QrCodeGenerator;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using QRCoder;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Controls;
 using System.Windows.Documents;
+using System.Windows.Media;
+using System.Windows.Shapes;
 
 namespace GraphicalMirai
 {
@@ -52,7 +50,7 @@ namespace GraphicalMirai
                 StandardOutputEncoding = Encoding.UTF8,
                 CreateNoWindow = true
             };
-            void processLogReceive(string data) 
+            void processLogReceive(string data)
             {
                 Console.WriteLine("[LoginSolver] " + data);
                 if (data.StartsWith("ticket: "))
@@ -64,7 +62,7 @@ namespace GraphicalMirai
                 }
             };
             process.OutputDataReceived += (s, e) => processLogReceive(e.Data ?? "");
-            process.ErrorDataReceived += (s, e)=> processLogReceive(e.Data ?? "");
+            process.ErrorDataReceived += (s, e) => processLogReceive(e.Data ?? "");
             process.Start();
             process.BeginOutputReadLine();
             process.BeginErrorReadLine();
@@ -75,28 +73,30 @@ namespace GraphicalMirai
         public string url;
         public void handle()
         {
-            Console.WriteLine("登录验证 "+url);
-            Task.Run(async () =>
+            Console.WriteLine("登录验证 " + url);
+            MainWindow.Instance.Dispatcher.BeginInvoke(async () =>
             {
+
+                Geometry qrcode = await Task.Run(() => Geometry.Parse(QrCode.EncodeText(url, QrCode.Ecc.Medium).ToGraphicsPath(1)));
                 await MainWindow.Msg.ShowAsync(() =>
                 {
+
                     List<Inline> content = new();
                     content.Add(new Run()
                     {
                         Text = "该账户有设备锁/不常用登录地点/不常用设备登录的问题\n" +
                         "请在手机 QQ 扫描以下二维码，确认后请点击「确定」\n"
                     });
-                    content.Add(new InlineUIContainer(new Image()
+                    content.Add(new InlineUIContainer(new Path()
                     {
-                        Width = 300,
-                        Height = 300,
-                        Source = App.GenerateQRCode(url).ToBitmapImage()
+                        Fill = App.hexBrush("#FFFFFF"),
+                        Data = qrcode,
+                        LayoutTransform = new ScaleTransform(2, 2)
                     }));
                     return content.ToArray();
                 }, "需要进行账户安全认证");
-                App.mirai.SendPacket(new OutLoginVerify());
+                App.mirai.WriteLine("LoginVerfied");
             });
-
         }
     }
     public interface IPacketOut

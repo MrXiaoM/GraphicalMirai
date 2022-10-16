@@ -1,6 +1,5 @@
 ﻿using GraphicalMirai.Pages;
 using Newtonsoft.Json.Linq;
-using QRCoder;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -10,10 +9,8 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Documents;
 using System.Windows.Markup;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.Xml;
 using File = System.IO.File;
 
@@ -253,19 +250,6 @@ namespace GraphicalMirai
         }
 
         public static bool CheckBridge() => ExtractResource("bridge.jar", path("mirai/plugins/GraphicalMiraiBridge.mirai2.jar"));
-        public static System.Drawing.Bitmap GenerateQRCode(string data, QRCodeGenerator.ECCLevel level = QRCodeGenerator.ECCLevel.Q, int pixelPerModule = 8)
-        {
-            using (QRCodeGenerator qrGenerator = new())
-            {
-                using (QRCodeData qrCodeData = qrGenerator.CreateQrCode(data, level))
-                {
-                    using (QRCode qrCode = new(qrCodeData))
-                    {
-                        return qrCode.GetGraphic(pixelPerModule);
-                    }
-                }
-            }
-        }
     }
 
     public static class HttpClientExt
@@ -384,23 +368,6 @@ namespace GraphicalMirai
                 obj = new();
                 return false;
             }
-        }
-    }
-    public static class WinFormExt
-    {
-        public static BitmapImage ToBitmapImage(this System.Drawing.Bitmap bitmap)
-        {
-            BitmapImage bitmapImage = new();
-            using (MemoryStream stream = new())
-            {
-                bitmap.Save(stream, bitmap.RawFormat);
-                bitmapImage.BeginInit();
-                bitmapImage.StreamSource = stream;
-                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-                bitmapImage.EndInit();
-                bitmapImage.Freeze();
-            }
-            return bitmapImage;
         }
     }
 }

@@ -15,13 +15,13 @@ object RemoteLoginSolver : LoginSolver() {
         return SwingSolver.onSolvePicCaptcha(bot, data)
     }
 
-    override suspend fun onSolveSliderCaptcha(bot: Bot, url: String): String = coroutineScope {
+    override suspend fun onSolveSliderCaptcha(bot: Bot, url: String): String {
         GraphicalMiraiBridge.waitingForTicket(url)
-        return@coroutineScope std.onSolveSliderCaptcha(bot, url)
+        return std.onSolveSliderCaptcha(bot, url)
     }
 
-    @OptIn(MiraiExperimentalApi::class)
     override suspend fun onSolveUnsafeDeviceLoginVerify(bot: Bot, url: String): String {
-        return GraphicalMiraiBridge.waitingForLoginVeriy(url)
+        GraphicalMiraiBridge.waitingForLoginVeriy(url)
+        return std.onSolveUnsafeDeviceLoginVerify(bot, url)
     }
 }
