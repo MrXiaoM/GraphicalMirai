@@ -1,13 +1,12 @@
 package top.mrxiaom.graphicalmirai
 
-import kotlinx.coroutines.coroutineScope
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.utils.LoginSolver
 import net.mamoe.mirai.utils.MiraiExperimentalApi
 import net.mamoe.mirai.utils.StandardCharImageLoginSolver
 import net.mamoe.mirai.utils.SwingSolver
 
-object RemoteLoginSolver : LoginSolver() {
+object RemoteLoginSolver212 : LoginSolver() {
     override val isSliderCaptchaSupported: Boolean = true
     val std = StandardCharImageLoginSolver()
     @OptIn(MiraiExperimentalApi::class)

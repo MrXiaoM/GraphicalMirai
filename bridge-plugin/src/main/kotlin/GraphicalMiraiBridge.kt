@@ -10,13 +10,15 @@ import kotlinx.serialization.json.jsonPrimitive
 import net.mamoe.mirai.console.extension.PluginComponentStorage
 import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescription
 import net.mamoe.mirai.console.plugin.jvm.KotlinPlugin
-import okhttp3.internal.closeQuietly
+import net.mamoe.mirai.utils.LoginSolver
 import top.mrxiaom.graphicalmirai.commands.WrapperedStopCommand
 import top.mrxiaom.graphicalmirai.packets.`in`.IPacketIn
 import top.mrxiaom.graphicalmirai.packets.out.IPacketOut
 import top.mrxiaom.graphicalmirai.packets.out.OutLoginVerify
+import top.mrxiaom.graphicalmirai.packets.out.OutSmsVerify
 import top.mrxiaom.graphicalmirai.packets.out.OutSolveSliderCaptcha
 import java.io.BufferedWriter
+import java.io.Closeable
 import java.io.DataInputStream
 import java.io.OutputStreamWriter
 import java.io.PrintWriter
@@ -36,7 +38,15 @@ object GraphicalMiraiBridge : KotlinPlugin(
     val packagesIn = mapOf<String, KSerializer<out IPacketIn>>(
 
     )
-
+    // 支持 2.13 起加入的短信验证码验证，兼容 2.13 以下的版本
+    private val loginSolver by lazy {
+        try {
+            LoginSolver::onSolveDeviceVerification.isOpen
+            RemoteLoginSolver213
+        } catch (_:Throwable) {
+            RemoteLoginSolver212
+        }
+    }
     private lateinit var socket: Socket
     private var input: DataInputStream? = null
     private var output: PrintWriter? = null
@@ -59,7 +69,6 @@ object GraphicalMiraiBridge : KotlinPlugin(
                     val data = input?.readUTF() ?: continue
                     receiveData(data)
                 }
-
             } catch (t: Throwable) {
                 if (t is SocketException && t.message == "Socket closed") {
                     logger.info("和 GraphicalMirai 断开连接")
@@ -70,7 +79,7 @@ object GraphicalMiraiBridge : KotlinPlugin(
         }
 
         contributeBotConfigurationAlterer { _, conf ->
-            conf.loginSolver = RemoteLoginSolver
+            conf.loginSolver = loginSolver
             conf
         }
     }
@@ -114,6 +123,11 @@ object GraphicalMiraiBridge : KotlinPlugin(
     internal suspend fun waitingForLoginVeriy(url: String) {
         sendPacket(OutLoginVerify(url))
     }
+
+    fun waitingForSmsVerify(countryCode: String?, phoneNumber: String?) {
+        sendPacket(OutSmsVerify(countryCode ?: "", phoneNumber ?: ""))
+    }
+
     internal fun disable() {
         try {
             if (!socket.isClosed) {
@@ -124,5 +138,12 @@ object GraphicalMiraiBridge : KotlinPlugin(
             }
         } catch (_: UninitializedPropertyAccessException) {
         }
+    }
+}
+
+private fun Closeable?.closeQuietly() {
+    try {
+        this?.close()
+    } catch (_: Throwable) {
     }
 }
