@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using ICSharpCode.SharpZipLib.Zip;
+using System.Windows.Controls;
 using System.Windows.Media.Media3D;
 
 namespace GraphicalMirai.Pages
@@ -17,8 +18,16 @@ namespace GraphicalMirai.Pages
         {
             string qq = textQQ.Text;
             string password = textPW.Password;
-            App.PageMain.frame.Navigate(App.PageMainConsole);
-            App.mirai.WriteLine($"/login {qq} {password}");
+            textQQ.Text = textPW.Password = "";
+            App.PageMain.listBox.SelectedIndex = 0;
+            if (CheckAutoLogin.IsChecked ?? false)
+            {
+                bool useMD5 = CheckUseMD5.IsChecked ?? false;
+                if (useMD5) password = App.MD5(password);
+                App.mirai.WriteLine($"/autologin add {qq} {password}" + (useMD5 ? " md5":""));
+                App.mirai.WriteLine($"/login {qq}");
+            }
+            else App.mirai.WriteLine($"/login {qq} {password}");
         }
 
         private void BtnAutoLogin_Click(object sender, System.Windows.RoutedEventArgs e)
