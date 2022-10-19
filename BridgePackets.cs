@@ -119,7 +119,14 @@ namespace GraphicalMirai
                 TextBox? tb = null;
                 await MainWindow.Msg.ShowAsync(() =>
                 {
-                    tb = new();
+                    tb = new()
+                    {
+                        Width = 100,
+                        Padding = new(5, 3, 5, 3),
+                        Background = App.hexBrush("#FFFFFF"),
+                        Foreground = App.hexBrush("#000000")
+                    };
+
                     List<Inline> content = new();
                     content.Add(new Run("验证码已发送，请注意查收。\n" +
                         "收到验证码后填入下方并点击「确定」完成短信验证。\n\n"));
