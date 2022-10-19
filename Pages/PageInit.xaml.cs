@@ -23,7 +23,7 @@ namespace GraphicalMirai
             Load();
         }
 
-        public void Load()
+        public async void Load()
         {
             App.mkdir("mirai/plugins");
             Config config = Config.Instance;
@@ -41,11 +41,15 @@ namespace GraphicalMirai
             }
             UpdateInfo();
             Config.Save();
-
+            await MainWindow.Msg.ShowAsync(
+                $"你正在运行 GraphicalMirai *Alpha {App.VERSION}\n" +
+                $"我们不保证该版本完整且能够正常使用，\n" +
+                $"遇到漏洞请及时向开发者反馈。",
+                "仅作评估的版本");
             if (Config.Instance.webp_codec_check && !CheckWebpCodec())
             {
                 MainWindow.Msg?.ShowAsync(
-                    @"未找到 webp 解码器，插件中心的用户头像将无法显示！
+                    @"未找到 webp 解码器，插件中心的所有图片将无法显示！
 是否需要安装 Google Webp Codec?
 「是」	下载并安装
 「否」	不安装
@@ -220,7 +224,7 @@ namespace GraphicalMirai
                 MessageBox.Show("请选择一个版本");
                 return;
             }
-            if (await MainWindow.Msg.ShowAsync("安装 mirai 之前会清空 ./mirai/content 文件夹，确定要安装吗?", "警告", MessageBoxButton.YesNo) != MessageBoxResult.Yes) return;
+            if (await MainWindow.Msg.ShowAsync("安装 mirai 之前会清空 ./mirai/content 文件夹，确定要安装吗?\n\n//TODO: 完成包管理器后将移除这一粗暴操作", "警告", MessageBoxButton.YesNo) != MessageBoxResult.Yes) return;
             App.resetDir("mirai/content");
             BtnUpdate.IsEnabled = false;
             BtnInstall.IsEnabled = false;
@@ -228,7 +232,7 @@ namespace GraphicalMirai
             ComboMiraiVer.IsEnabled = false;
             ComboRepo.IsEnabled = false;
 
-            MainWindow.Instance.download.StartDownload(async (httpClient, s) =>
+            MainWindow.Instance.download.StartDownload(async (httpClient, recallMessageText) =>
             {
                 httpClient.BaseAddress = new Uri(repo);
                 List<string> downloadFailed = new List<string>();
@@ -236,7 +240,7 @@ namespace GraphicalMirai
                 // TODO: 将下载 mirai 部分移到包管理器
                 #region 下载文件
                 // 获取 bcprov-jdk15on 的版本
-                s.Invoke("[bcprov-jdk15on] maven-metadata.xml");
+                recallMessageText("[bcprov-jdk15on] maven-metadata.xml");
                 string bcprovVer = "1.70";
                 await httpClient.GetStringAsync(
                     "org/bouncycastle/bcprov-jdk15on/maven-metadata.xml", xml =>
@@ -251,7 +255,7 @@ namespace GraphicalMirai
                     });
 
                 // 正式下载
-                s.Invoke("bcprov-jdk15on-" + sel + ".jar (1/4)");
+                recallMessageText($"bcprov-jdk15on-{bcprovVer}.jar (1/4)");
                 await httpClient.GetByteArrayAsync(
                     "org/bouncycastle/bcprov-jdk15on/" + bcprovVer + "/bcprov-jdk15on-" + bcprovVer + ".jar",
                     bytes =>
@@ -263,7 +267,7 @@ namespace GraphicalMirai
                         downloadFailed.Add("bcprov-jdk15on-" + bcprovVer + ".jar\n  " + ex.Message);
                     });
 
-                s.Invoke("mirai-core-all-" + sel + "-all.jar (2/4)");
+                recallMessageText("mirai-core-all-" + sel + "-all.jar (2/4)");
                 await httpClient.GetByteArrayAsync(
                     "net/mamoe/mirai-core-all/" + sel + "/mirai-core-all-" + sel + "-all.jar",
                     bytes =>
@@ -275,7 +279,7 @@ namespace GraphicalMirai
                         downloadFailed.Add("mirai-core-all-" + sel + "-all.jar\n  " + ex.Message);
                     });
 
-                s.Invoke("mirai-console-" + sel + "-all.jar (3/4)");
+                recallMessageText("mirai-console-" + sel + "-all.jar (3/4)");
                 await httpClient.GetByteArrayAsync(
                     "net/mamoe/mirai-console/" + sel + "/mirai-console-" + sel + "-all.jar",
                     bytes =>
@@ -287,7 +291,7 @@ namespace GraphicalMirai
                         downloadFailed.Add("mirai-console-" + sel + "-all.jar\n  " + ex.Message);
                     });
 
-                s.Invoke("mirai-console-terminal-" + sel + "-all.jar (4/4)");
+                recallMessageText("mirai-console-terminal-" + sel + "-all.jar (4/4)");
                 await httpClient.GetByteArrayAsync(
                     "net/mamoe/mirai-console-terminal/" + sel + "/mirai-console-terminal-" + sel + "-all.jar",
                     bytes =>

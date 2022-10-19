@@ -22,9 +22,8 @@ namespace GraphicalMirai
     public partial class App : Application
     {
         private static readonly ASCIIEncoding ASCII = new();
-
-        public static readonly string UserAgent = "GraphicalMirai/" + ((object?)System.Reflection.Assembly.GetExecutingAssembly().GetName().Version ?? "1.0.0").ToString() +
-            " Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.81 Safari/537.36 Edg/104.0.1293.47";
+        public static readonly string VERSION = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "1.0.0.0";
+        public static readonly string UserAgent = $"GraphicalMirai/{VERSION} Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.81 Safari/537.36 Edg/104.0.1293.47";
         private static Lazy<Mirai> miraiLazy = new();
         public static Mirai mirai => miraiLazy.Value;
 
