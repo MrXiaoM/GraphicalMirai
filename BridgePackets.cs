@@ -116,16 +116,17 @@ namespace GraphicalMirai
                 "短信验证", System.Windows.MessageBoxButton.YesNo) == System.Windows.MessageBoxResult.Yes)
             {
                 App.mirai.WriteLine("yes");
-                TextBox tb = new();
+                TextBox? tb = null;
                 await MainWindow.Msg.ShowAsync(() =>
                 {
+                    tb = new();
                     List<Inline> content = new();
                     content.Add(new Run("验证码已发送，请注意查收。\n" +
                         "收到验证码后填入下方并点击「确定」完成短信验证。\n\n"));
                     content.Add(new InlineUIContainer(tb));
                     return content.ToArray();
                 }, "短信验证", System.Windows.MessageBoxButton.OK);
-                App.mirai.WriteLine(tb.Text);
+                App.mirai.WriteLine(tb?.Text ?? "");
             }
             else
             {
