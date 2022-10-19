@@ -48,7 +48,7 @@ namespace GraphicalMirai
                 "仅作评估的版本");
             if (Config.Instance.webp_codec_check && !CheckWebpCodec())
             {
-                MainWindow.Msg?.ShowAsync(
+                await MainWindow.Msg.ShowAsync(
                     @"未找到 webp 解码器，插件中心的所有图片将无法显示！
 是否需要安装 Google Webp Codec?
 「是」	下载并安装
