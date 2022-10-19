@@ -7,6 +7,7 @@ import net.mamoe.mirai.utils.*
 
 object RemoteLoginSolver213 : LoginSolver() {
     override val isSliderCaptchaSupported: Boolean = true
+
     val std = StandardCharImageLoginSolver()
     @OptIn(MiraiExperimentalApi::class)
     override suspend fun onSolvePicCaptcha(bot: Bot, data: ByteArray): String {
@@ -22,17 +23,21 @@ object RemoteLoginSolver213 : LoginSolver() {
         bot: Bot,
         requests: DeviceVerificationRequests,
     ): DeviceVerificationResult {
-        requests.fallback?.let { fallback ->
-            GraphicalMiraiBridge.waitingForLoginVeriy(fallback.url)
-        }
         requests.sms?.let { sms ->
             GraphicalMiraiBridge.waitingForSmsVerify(sms.countryCode, sms.phoneNumber)
+            return std.onSolveDeviceVerification(bot, requests)
+        }
+        requests.fallback?.let { fallback ->
+            GraphicalMiraiBridge.waitingForLoginVeriy(fallback.url)
+            return std.onSolveDeviceVerification(bot, requests)
         }
         return std.onSolveDeviceVerification(bot, requests)
     }
 
-    override suspend fun onSolveUnsafeDeviceLoginVerify(bot: Bot, url: String): String {
-        GraphicalMiraiBridge.waitingForLoginVeriy(url)
-        return std.onSolveUnsafeDeviceLoginVerify(bot, url)
-    }
+    @Deprecated(
+        "Please use onSolveDeviceVerification instead",
+        replaceWith = ReplaceWith("onSolveDeviceVerification(bot, url, null)"),
+        level = DeprecationLevel.WARNING
+    )
+    override suspend fun onSolveUnsafeDeviceLoginVerify(bot: Bot, url: String): String = std.onSolveUnsafeDeviceLoginVerify(bot, url)
 }

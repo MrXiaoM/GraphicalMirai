@@ -7,11 +7,14 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
+import net.mamoe.mirai.console.command.CommandManager.INSTANCE.register
 import net.mamoe.mirai.console.extension.PluginComponentStorage
 import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescription
 import net.mamoe.mirai.console.plugin.jvm.KotlinPlugin
+import net.mamoe.mirai.event.broadcast
 import net.mamoe.mirai.utils.LoginSolver
 import top.mrxiaom.graphicalmirai.commands.WrapperedStopCommand
+import top.mrxiaom.graphicalmirai.events.BridgeDataPreReceive
 import top.mrxiaom.graphicalmirai.packets.`in`.IPacketIn
 import top.mrxiaom.graphicalmirai.packets.out.IPacketOut
 import top.mrxiaom.graphicalmirai.packets.out.OutLoginVerify
@@ -38,8 +41,11 @@ object GraphicalMiraiBridge : KotlinPlugin(
     val packagesIn = mapOf<String, KSerializer<out IPacketIn>>(
 
     )
-    // 支持 2.13 起加入的短信验证码验证，兼容 2.13 以下的版本
-    private val loginSolver by lazy {
+    /**
+     * GraphicalMirai 登录解决器代理，用于通知启动器弹出相应 UI。
+     * 支持 2.13 起加入的短信验证码验证，兼容 2.13 以下的版本
+     */
+    internal val loginSolver by lazy {
         try {
             LoginSolver::onSolveDeviceVerification.isOpen
             RemoteLoginSolver213
@@ -50,7 +56,6 @@ object GraphicalMiraiBridge : KotlinPlugin(
     private lateinit var socket: Socket
     private var input: DataInputStream? = null
     private var output: PrintWriter? = null
-
     override fun PluginComponentStorage.onLoad() {
         val port = System.getProperty("graphicalmirai.bridge.port")?.toInt()
         if (port == null) {
@@ -58,6 +63,7 @@ object GraphicalMiraiBridge : KotlinPlugin(
             logger.warning("在不使用 GraphicalMirai 时请不要使用该插件")
             return
         }
+        logger.info("正在使用登录解决器代理 ${loginSolver.javaClass.simpleName}")
         logger.info("正在连接到 GraphicalMirai (:$port)")
         socket = Socket("127.0.0.1", port)
         logger.info(":${socket.localPort} 已连接到 GraphicalMirai (:$port)")
@@ -88,15 +94,17 @@ object GraphicalMiraiBridge : KotlinPlugin(
         WrapperedStopCommand.hack()
     }
 
-    private fun receiveData(data: String) {
+    private suspend fun receiveData(data: String) {
         logger.verbose("received: $data")
+        if (BridgeDataPreReceive(data).broadcast().isCancelled) {
+            logger.verbose("cancelled by other plugins")
+            return
+        }
         val jsonElement = Json.parseToJsonElement(data)
         val type = jsonElement.jsonObject["type"]?.jsonPrimitive?.content
         val packetSerializer = packagesIn[type] ?: return
         val packet = Json.decodeFromJsonElement(packetSerializer, jsonElement)
-        launch {
-            packet.handle()
-        }
+        packet.handle()
     }
 
     /**
@@ -116,11 +124,11 @@ object GraphicalMiraiBridge : KotlinPlugin(
         return sendRawData(json)
     }
 
-    internal suspend fun waitingForTicket(url: String) {
+    internal fun waitingForTicket(url: String) {
         sendPacket(OutSolveSliderCaptcha(url))
     }
 
-    internal suspend fun waitingForLoginVeriy(url: String) {
+    internal fun waitingForLoginVeriy(url: String) {
         sendPacket(OutLoginVerify(url))
     }
 

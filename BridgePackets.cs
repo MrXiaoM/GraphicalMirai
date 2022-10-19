@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Shapes;
@@ -24,7 +25,8 @@ namespace GraphicalMirai
     {
         public static readonly ReadOnlyDictionary<string, Type> packetsIn = new(new Dictionary<string, Type>() {
             { "SolveSliderCaptcha", typeof(InSolveSliderCaptcha) },
-            { "LoginVerify", typeof(InLoginVerify) }
+            { "LoginVerify", typeof(InLoginVerify) },
+            { "SmsVerify", typeof(InSmsVerify) },
         });
     }
 #pragma warning disable CS8618
@@ -76,8 +78,8 @@ namespace GraphicalMirai
             Console.WriteLine("登录验证 " + url);
             MainWindow.Instance.Dispatcher.BeginInvoke(async () =>
             {
-
                 Geometry qrcode = await Task.Run(() => Geometry.Parse(QrCode.EncodeText(url, QrCode.Ecc.Medium).ToGraphicsPath(1)));
+                qrcode.Freeze();
                 await MainWindow.Msg.ShowAsync(() =>
                 {
 
@@ -99,6 +101,39 @@ namespace GraphicalMirai
             });
         }
     }
+
+    public class InSmsVerify : IPacketIn
+    {
+
+        public string countryCode;
+        public string phoneNumber;
+        public async void handle()
+        {
+            string phone = countryCode.Length > 0 && phoneNumber.Length > 0 ? $"(+{countryCode}) {phoneNumber}" : "(无法获取到手机号码)";
+            if(await MainWindow.Msg.ShowAsync(
+                $"一条短信验证码将发送到你的手机 {phone}.\n" +
+                $"运营商可能会收取正常短信费用, 是否继续?", 
+                "短信验证", System.Windows.MessageBoxButton.YesNo) == System.Windows.MessageBoxResult.Yes)
+            {
+                App.mirai.WriteLine("yes");
+                TextBox tb = new();
+                await MainWindow.Msg.ShowAsync(() =>
+                {
+                    List<Inline> content = new();
+                    content.Add(new Run("验证码已发送，请注意查收。\n" +
+                        "收到验证码后填入下方并点击「确定」完成短信验证。\n\n"));
+                    content.Add(new InlineUIContainer(tb));
+                    return content.ToArray();
+                }, "短信验证", System.Windows.MessageBoxButton.OK);
+                App.mirai.WriteLine(tb.Text);
+            }
+            else
+            {
+                App.mirai.WriteLine("no");
+            }
+        }
+    }
+
     public interface IPacketOut
     {
         public string type();
