@@ -32,6 +32,7 @@ namespace GraphicalMirai
     public partial class InnerMessageBox : UserControl
     {
         TaskCompletionSource<MessageBoxResult>? task;
+        TaskCompletionSource? taskOut;
         DoubleAnimation AniOptFadeIn = new()
         {
             From = 0,
@@ -95,7 +96,7 @@ namespace GraphicalMirai
                 Storyboard.SetTargetProperty(aniOut, new("Height"));
                 storyboard.Children.Add(AniOptFadeOut);
                 storyboard.Children.Add(aniOut);
-                storyboard.Completed += delegate { Visibility = Visibility.Hidden; BgMsgBox.Height = double.NaN; };
+                storyboard.Completed += delegate { Visibility = Visibility.Hidden; BgMsgBox.Height = double.NaN; taskOut?.SetResult(); };
                 return storyboard;
             }
         }
@@ -134,7 +135,8 @@ namespace GraphicalMirai
         public async Task<MessageBoxResult> ShowAsync(Func<Inline[]> content, string title, MessageBoxButton button = MessageBoxButton.OK)
         {
             Console.WriteLine("[消息框] " + title);
-            if (!task?.Task.IsCompleted ?? false)
+            
+            if ((!task?.Task.IsCompleted) ?? false)
             {
                 task?.SetResult(MessageBoxResult.None);
             }
@@ -156,10 +158,12 @@ namespace GraphicalMirai
                 }
             });
             ShowMessageBg();
-            task = new TaskCompletionSource<MessageBoxResult>();
+            task = new();
             // 等待响应
             MessageBoxResult result = await task.Task;
+            taskOut = new();
             HideMessageBg();
+            await taskOut.Task;
             return result;
         }
 
