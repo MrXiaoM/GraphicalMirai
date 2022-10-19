@@ -80,3 +80,5 @@ ModelManifest.xml
 
 # Built bridge.jar
 /bridge.jar
+
+build/
