@@ -53,14 +53,14 @@ namespace GraphicalMirai
                             $"  Source:\n{ex.Source}\n" +
                             $"  Stacktrace:\n{ex.StackTrace}\n";
                         }
-                        List<Inline> content = new();
-                        content.Add(new Run("GraphicalMirai 在运行时出现一个异常!\n请通过 "));
+                        List<System.Windows.Documents.Inline> content = new();
+                        content.Add(new System.Windows.Documents.Run("GraphicalMirai 在运行时出现一个异常!\n请通过 "));
                         content.Add(InnerMessageBox.hyperlink("Github Issues", () => openUrl("https://github.com/MrXiaoM/GraphicalMirai/issues/new/choose")));
-                        content.Add(new Run(" 将以下信息反馈给作者\n" +
+                        content.Add(new System.Windows.Documents.Run(" 将以下信息反馈给作者\n" +
                             "「是」\t忽略异常继续使用\n" +
                             "「否」\t退出程序\n("));
                         content.Add(InnerMessageBox.hyperlink("点此复制", () => copy(error)));
-                        content.Add(new Run($"以下内容。)\n\n{error}"));
+                        content.Add(new System.Windows.Documents.Run($"以下内容。)\n\n{error}"));
                         return content.ToArray();
                     }, "出现错误", MessageBoxButton.YesNo);
                     if (result == MessageBoxResult.No)
