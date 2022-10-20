@@ -17,6 +17,7 @@ namespace GraphicalMirai.Pages.PluginCenter
         public int viewcount;
         public int votes;
         public int deleted;
+        public int pinned;
         public List<CTag> tags;
         public CUser user;
     }

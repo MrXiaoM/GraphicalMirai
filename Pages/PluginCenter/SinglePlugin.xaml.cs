@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using YamlDotNet.Core.Tokens;
 
 namespace GraphicalMirai.Pages.PluginCenter
 {
@@ -13,10 +14,19 @@ namespace GraphicalMirai.Pages.PluginCenter
     /// </summary>
     public partial class SinglePlugin : Grid
     {
-        public SinglePlugin(bool IsDeleted, int tid, string Title = "", string Author = "", int Votes = 0, int ViewCount = 0, List<string>? TopicTags = null, long CreateTime = 0, string? picture = null)
+        public SinglePlugin(CTopic topic)
         {
             InitializeComponent();
-            if (IsDeleted)
+
+            List<string> tags = new List<string>();
+            foreach (CTag tag in topic.tags)
+            {
+                tags.Add(tag.value);
+            }
+            bool isDeleted = topic.deleted != 0;
+            string author = topic.user.displayname;
+            string? picture = topic.user.picture;
+            if (isDeleted)
             {
                 this.Cursor = Cursors.No;
                 this.Opacity = 0.5;
@@ -27,21 +37,38 @@ namespace GraphicalMirai.Pages.PluginCenter
                 this.Cursor = Cursors.Hand;
                 this.MouseDown += delegate
                 {
-                    MainWindow.Navigate(new PagePlugin(tid));
+                    MainWindow.Navigate(new PagePlugin(topic.tid));
                 };
             }
-            TopicTitle.Text = IsDeleted ? "此主题已被删除!" : Title;
-            TopicTitle.ToolTip = IsDeleted ? "此主题已被删除!" : Title;
+            TopicTitle.Text = isDeleted ? "此主题已被删除!" : topic.titleRaw;
+            TopicTitle.ToolTip = isDeleted ? "此主题已被删除!" : topic.titleRaw;
 
-            AuthorHeadimgSimple.Text = Author.Length > 0 ? Author.Substring(0, 1).ToUpper() : "";
-            TextLike.Text = App.FormatNumber(Votes);
-            TextView.Text = App.FormatNumber(ViewCount);
+            AuthorHeadimgSimple.Text = author.Length > 0 ? author.Substring(0, 1).ToUpper() : "";
+            TextLike.Text = App.FormatNumber(topic.votes);
+            TextView.Text = App.FormatNumber(topic.viewcount);
 
-            string time = App.FormatTimestamp(CreateTime);
-
-            if (!IsDeleted && TopicTags != null)
+            string time = App.FormatTimestamp(topic.timestamp);
+            if (topic.pinned == 1)
             {
-                foreach (string tag in TopicTags)
+                Border border = new Border()
+                {
+                    CornerRadius = new CornerRadius(4),
+                    Background = App.hexBrush("#A9672F"),
+                    Padding = new Thickness(5, 2, 5, 2),
+                };
+                TextBlock tb = new TextBlock()
+                {
+                    FontWeight = FontWeights.Bold,
+                    Foreground = App.hexBrush("#FFFFFF"),
+                    Text = "置顶"
+                };
+                border.Child = tb;
+                TopicSubtitle.Inlines.Add(border);
+                TopicSubtitle.Inlines.Add(new Rectangle() { Width = 5 });
+            }
+            if (!isDeleted && tags != null)
+            {
+                foreach (string tag in tags)
                 {
                     Border border = new Border()
                     {
@@ -65,8 +92,8 @@ namespace GraphicalMirai.Pages.PluginCenter
             {
                 FontWeight = FontWeights.Bold,
                 Foreground = App.hexBrush("#999999"),
-                ToolTip = time + " 由 " + Author + " 发布",
-                Text = time + " 由 " + Author + " 发布"
+                ToolTip = time + " 由 " + author + " 发布",
+                Text = time + " 由 " + author + " 发布"
             };
             border1.Child = tb1;
             TopicSubtitle.Inlines.Add(border1);
