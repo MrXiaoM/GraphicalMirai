@@ -126,14 +126,14 @@ namespace GraphicalMirai
                         Background = App.hexBrush("#FFFFFF"),
                         Foreground = App.hexBrush("#000000")
                     };
-
+                    
                     List<Inline> content = new();
                     content.Add(new Run("验证码已发送，请注意查收。\n" +
                         "收到验证码后填入下方并点击「确定」完成短信验证。\n\n"));
                     content.Add(new InlineUIContainer(tb));
                     return content.ToArray();
                 }, "短信验证", System.Windows.MessageBoxButton.OK);
-                App.mirai.WriteLine(tb?.Text ?? "");
+                App.mirai.WriteLine(tb?.Dispatcher.Invoke<string>(() => tb.Text) ?? "");
             }
             else
             {
