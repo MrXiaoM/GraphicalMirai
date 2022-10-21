@@ -9,6 +9,7 @@
     <Company>MrXiaoM</Company>
     <PackageProjectUrl>https://github.com/MrXiaoM/GraphicalMirai</PackageProjectUrl>
     <RepositoryUrl>https://github.com/MrXiaoM/GraphicalMirai</RepositoryUrl>
+    <Version>1.0.1.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
