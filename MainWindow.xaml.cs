@@ -50,6 +50,15 @@ namespace GraphicalMirai
             aniSwitchPage0.Children.Add(aniOut);
             aniSwitchPage1.Children.Add(aniIn);
             Instance = this;
+            frame.NavigationService.Navigating += (sender, e) => 
+            {
+                if (e.Uri == null) return;
+                if (e.Uri.Scheme == "http" || e.Uri.Scheme == "https")
+                {
+                    e.Cancel = true;
+                    App.openUrl(e.Uri.ToString());
+                }
+            };
             frame.Navigate(App.PageInit);
         }
 
