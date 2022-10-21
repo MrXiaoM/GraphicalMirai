@@ -96,24 +96,9 @@ namespace GraphicalMirai.Pages
                 });
                 foreach (CTopic topic in category.topics)
                 {
-                    List<string> tags = new List<string>();
-                    foreach (CTag tag in topic.tags)
-                    {
-                        tags.Add(tag.value);
-                    }
                     Dispatcher.Invoke(() =>
                     {
-                        StackPluginList.Children.Add(new SinglePlugin(
-                            topic.deleted == 1,
-                            topic.tid,
-                            topic.titleRaw,
-                            topic.user.displayname,
-                            topic.votes,
-                            topic.viewcount,
-                            tags,
-                            topic.timestamp,
-                            topic.user.picture
-                        ));
+                        StackPluginList.Children.Add(new SinglePlugin(topic));
                         StackPluginList.Children.Add(new Rectangle() { Height = 10 });
                     });
                 }
@@ -178,7 +163,7 @@ namespace GraphicalMirai.Pages
             var oss = EnumExt.valuesWithNames<ReleaseVersionsParams.OS>();
             var archs = EnumExt.valuesWithNames<ReleaseVersionsParams.Architecture>();
             var types = EnumExt.valuesWithNames<ReleaseVersionsParams.ImageType>();
-            
+
             foreach (ComboBoxItem item in ComboAdoptiumOS.Items)
             {
                 ReleaseVersionsParams.OS? os = null;

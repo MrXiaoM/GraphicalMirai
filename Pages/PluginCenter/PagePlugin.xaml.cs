@@ -23,47 +23,54 @@ namespace GraphicalMirai.Pages.PluginCenter
         private static readonly Regex regexLink = new Regex("(<a .*?)(target=\".*?\")(.*?>)", RegexOptions.IgnoreCase);
         private static readonly Regex regexImage = new Regex("(<img .*?)(src=\"/)(.*?\")(.*?>)", RegexOptions.IgnoreCase);
         Topic? topic;
+        int commentsPage = 1;
+        int tid;
         public PagePlugin(int tid)
         {
+            this.tid = tid;
             InitializeComponent();
             AuthorTag.Visibility = Visibility.Hidden;
 
-            Dispatcher.BeginInvoke(Load, tid);
+            Dispatcher.BeginInvoke(Load, tid, 1);
         }
 
-        private async void Load(int tid)
+        private async void Load(int tid, int page = 1)
         {
-            string json = await App.PagePluginCenter.forumClient.GetStringAsync("topic/" + tid);
+            StackComments.Opacity = 0.5;
+            CommentsPageNext.IsEnabled = CommentsPagePrev.IsEnabled = CommentsComboPages.IsEnabled = false;
+            string json = await App.PagePluginCenter.forumClient.GetStringAsync($"topic/{tid}?page={page}");
             Topic? topic = JsonConvert.DeserializeObject<Topic>(json);
             if (topic == null)
             {
                 MessageBox.Show("json 解析错误");
                 return;
             }
-            this.topic = topic;
-            bool isDeleted = topic.deleted == 1;
-            string time = App.FormatTimestamp(topic.timestamp);
-            string content = topic.ToString();
-            // 将相对于网站根目录的图片路径替换成链接
-            content = regexImage.Replace(content, new MatchEvaluator((m) =>
+            // 加载帖子
+            if (page == 1)
             {
-                return string.Join("", m.Groups
-                             .OfType<Group>()
-                             .Select((g, i) => i == 2 ? "src=\"https://mirai.mamoe.net/" : g.Value)
-                             .Skip(1)
-                             .ToArray());
-            }));
+                this.topic = topic;
+                bool isDeleted = topic.deleted == 1;
+                string time = App.FormatTimestamp(topic.timestamp);
+                string content = topic.ToString();
+                // 将相对于网站根目录的图片路径替换成链接
+                content = regexImage.Replace(content, new MatchEvaluator((m) =>
+                {
+                    return string.Join("", m.Groups
+                                 .OfType<Group>()
+                                 .Select((g, i) => i == 2 ? "src=\"https://mirai.mamoe.net/" : g.Value)
+                                 .Skip(1)
+                                 .ToArray());
+                }));
 
-            string xaml = HtmlToXaml.HtmlToXamlConverter.ConvertHtmlToXaml(content, true);
+                string xaml = HtmlToXaml.HtmlToXamlConverter.ConvertHtmlToXaml(content, true);
 
-            FlowDocument doc = (FlowDocument)XamlReader.Parse(xaml);
-            doc.PagePadding = new Thickness(10);
-            doc.FontFamily = FontFamily;
-            flowInfo.Document = doc;
+                FlowDocument doc = (FlowDocument)XamlReader.Parse(xaml);
+                doc.PagePadding = new Thickness(10);
+                doc.FontFamily = FontFamily;
+                flowInfo.Document = doc;
 
-            CUser? author = topic.posts.Count > 0 ? topic.posts[0].user : null;
-            Dispatcher.Invoke(() =>
-            {
+                CUser? author = topic.posts.Count > 0 ? topic.posts[0].user : null;
+
                 if (!isDeleted && topic.tags != null)
                 {
                     foreach (var tag in topic.tags)
@@ -119,8 +126,56 @@ namespace GraphicalMirai.Pages.PluginCenter
                 }
 
                 temp.Text += "\n\n额外调试信息:\n  Github/Gitee 链接列表:\n    " + string.Join("\n    ", topic.posts[0].repo().Select(r => r.ToString()).ToArray());
-            });
-            await refreshDownloadList();
+
+                // 加载评论
+                // 第一页第一条为楼主帖，需要移除
+                List<Post> comments = new List<Post>(topic.posts);
+                comments.RemoveAt(0);
+                refreshCommentsPages(topic.pagination);
+                refreshComments(comments);
+                await refreshDownloadList();
+            }
+            else
+            {
+                // 加载评论
+                refreshCommentsPages(topic.pagination);
+                refreshComments(topic.posts);
+            }
+            StackComments.Opacity = 1;
+            GC.Collect();
+        }
+
+        public void refreshCommentsPages(CPagination page)
+        {
+            CommentsPagePrev.IsEnabled = page.currentPage > 1;
+            CommentsPageNext.IsEnabled = page.currentPage < page.pageCount;
+            CommentsComboPages.IsEnabled = false;
+            CommentsComboPages.Items.Clear();
+            for (int i = 1; i <= page.pageCount; i++)
+            {
+                ComboBoxItem item = new ComboBoxItem();
+                int nowPage = i;
+                item.Content = "第 " + nowPage + " 页";
+                item.Selected += delegate
+                {
+                    if (!CommentsComboPages.IsEnabled) return;
+                    commentsPage = nowPage;
+                    Load(tid, commentsPage);
+                };
+                CommentsComboPages.Items.Add(item);
+            }
+            commentsPage = page.currentPage;
+            CommentsComboPages.SelectedIndex = page.currentPage - 1;
+            CommentsComboPages.IsEnabled = true;
+        }
+
+        public void refreshComments(List<Post> posts)
+        {
+            StackComments.Children.Clear();
+            foreach (Post post in posts) 
+            {
+                StackComments.Children.Add(new SingleComment(post, FontFamily));
+            }
         }
 
         public async Task refreshDownloadList()
@@ -181,6 +236,16 @@ namespace GraphicalMirai.Pages.PluginCenter
         private void BtnBack_Click(object sender, RoutedEventArgs e)
         {
             MainWindow.Navigate(App.PagePluginCenter);
+        }
+
+        private void CommentsPagePrev_Click(object sender, RoutedEventArgs e)
+        {
+            Load(tid, commentsPage - 1);
+        }
+
+        private void CommentsPageNext_Click(object sender, RoutedEventArgs e)
+        {
+            Load(tid, commentsPage + 1);
         }
     }
 }

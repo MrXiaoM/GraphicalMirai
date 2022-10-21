@@ -56,7 +56,25 @@
                 </ScrollViewer>
             </TabItem>
             <TabItem Header="评论">
-
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <StackPanel.Resources>
+                            <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignFlatButton}"/>
+                        </StackPanel.Resources>
+                        <Button x:Name="CommentsPagePrev" Click="CommentsPagePrev_Click" Content="{materialDesign:PackIcon Kind=ArrowLeftBold}"/>
+                        <ComboBox x:Name="CommentsComboPages" IsEnabled="False" Width="60"/>
+                        <Button x:Name="CommentsPageNext" Click="CommentsPageNext_Click" Content="{materialDesign:PackIcon Kind=ArrowRightBold}"/>
+                    </StackPanel>
+                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled" Background="#F4F4F4">
+                        <StackPanel Name="StackComments" VerticalAlignment="Top" Orientation="Vertical">
+                            <TextBlock Text="正在加载..." TextAlignment="Center" Padding="50"/>
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
             </TabItem>
             <TabItem Header="源代码">
                 <TextBox AcceptsReturn="True" x:Name="temp" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Auto"/>

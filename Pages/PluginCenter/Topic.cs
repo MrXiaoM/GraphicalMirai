@@ -13,9 +13,12 @@ namespace GraphicalMirai.Pages.PluginCenter
         public int viewcount;
         public int votes;
         public int deleted;
+        public int pinned;
         public List<CTag> tags;
         public CUser user;
         public List<Post> posts;
+        
+        public CPagination pagination;
 
         public THeader _header;
 
@@ -61,6 +64,10 @@ namespace GraphicalMirai.Pages.PluginCenter
         public long edited;
         public int deleted;
         public int index;
+        public int pid;
+        public string toPid;
+        public PReplies replies;
+        public int votes;
 
         public List<Repo> repo()
         {
@@ -86,7 +93,22 @@ namespace GraphicalMirai.Pages.PluginCenter
             return links;
         }
     }
-
+    public class PReplies
+    {
+        public bool hasMore;
+        public List<PRUser> users;
+        public int count;
+        public string timestampISO;
+    }
+    public class PRUser
+    {
+        public int uid;
+        public string username;
+        public string userslug;
+        public string picture;
+        public string fullname;
+        public string displayname;
+    }
     public class THeader
     {
         public HTags tags;
